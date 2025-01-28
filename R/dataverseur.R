@@ -30,7 +30,7 @@ format_full_metadata = function (file="rechercheDataGouv-full-metadata.json",
     if (dev) {
         path = file.path("inst", "extdata", file)
     } else {
-        path = system.file("extdata", file, package="RDGf")
+        path = system.file("extdata", file, package="dataverseur")
     }
     metadata = jsonlite::fromJSON(path, simplifyDataFrame=FALSE)
     
@@ -42,7 +42,7 @@ format_full_metadata = function (file="rechercheDataGouv-full-metadata.json",
     } else {
         full_template_path = system.file("extdata",
                                          "RDG_full_metadata_template.json",
-                                         package="RDGf")
+                                         package="dataverseur")
     }
     write(jsonlite::toJSON(metadata,
                            pretty=TRUE,
@@ -50,9 +50,9 @@ format_full_metadata = function (file="rechercheDataGouv-full-metadata.json",
           full_template_path)
 }
 
-    
 
-initialise_RDGf = function (environment_name="RDGf") {
+
+initialise_dataset = function (environment_name="DS") {
     assign(environment_name, new.env(), envir=as.environment(1))
 }
 
@@ -202,12 +202,12 @@ clean_metadata = function (metadata) {
 }
 
 
-generate_RDGf = function (out_dir=".",
-                          out_file="RDG_metadata_template.json",
-                          environment_name="RDGf",
-                          overwrite=TRUE,
-                          dev=FALSE,
-                          verbose=FALSE) {
+generate_dataset = function (out_dir=".",
+                             out_file="RDG_metadata_template.json",
+                             environment_name="DS",
+                             overwrite=TRUE,
+                             dev=FALSE,
+                             verbose=FALSE) {
 
     if (dev) {
         full_template_path = file.path("inst", "extdata",
@@ -215,16 +215,16 @@ generate_RDGf = function (out_dir=".",
     } else {
         full_template_path = system.file("extdata",
                                          "RDG_full_metadata_template.json",
-                                         package="RDGf")
+                                         package="dataverseur")
     }
     
     metadata = jsonlite::fromJSON(full_template_path,
                                   simplifyVector=FALSE,
                                   simplifyDataFrame=FALSE)
     
-    RDGf = get(environment_name, envir=.GlobalEnv)
+    DS = get(environment_name, envir=.GlobalEnv)
 
-    TypeNames = ls(envir=RDGf)
+    TypeNames = ls(envir=DS)
     TypeNames_Num = TypeNames[grepl("[[:digit:]]+$", TypeNames)]
 
     TypeNames_Num_noNum = unique(gsub("[[:digit:]]+$", "",
@@ -249,7 +249,7 @@ generate_RDGf = function (out_dir=".",
     }
 
     for (typeName in TypeNames) {
-        value = get(typeName, envir=RDGf)
+        value = get(typeName, envir=DS)
         metadata = add_typeName(metadata, typeName, value)
     }
 
@@ -263,7 +263,7 @@ generate_RDGf = function (out_dir=".",
         }
     }
 
-    rm (list=ls(envir=RDGf), envir=RDGf)
+    rm (list=ls(envir=DS), envir=DS)
 
     json = jsonlite::toJSON(metadata,
                             pretty=TRUE,

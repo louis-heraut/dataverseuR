@@ -325,3 +325,58 @@ generate_metadata = function (out_dir=".",
     write(json, out_path)
     return (res)
 }
+
+
+# convert_metadata_hide = function (metadata,
+#                                   environment_name,
+#                                   Lines) {
+#     if (is.list(metadata)) {
+#         return (lapply(metadata, function(x) {
+            
+#             if ("typeName" %in% names(x) &
+#                 "value" %in% names(x)) {
+#                 if (!is.list(x$value) & !is.na(x$value)) {
+#                     # print(paste0(x$typeName, " : ", x$value))
+#                     line = paste0(environment_name, "$", x$typeName,
+#                                   " = \"", x$value, "\"")
+#                     Lines = c(Lines, line)
+#                 }
+#             }
+#             Lines = convert_metadata_hide(x,
+#                                           environment_name,
+#                                           Lines)
+#             return (Lines)
+#         }))
+#     }
+# }
+
+convert_metadata_hide <- function(metadata, environment_name, Lines) {
+    if (is.list(metadata)) {
+        for (x in metadata) {
+            if ("typeName" %in% names(x) & "value" %in% names(x)) {
+                if (!is.list(x$value)) { ####### pas bon
+                    # if (!is.na(x$value)) {
+                    # print(x$value)
+                    line <- paste0(environment_name, "$", x$typeName,
+                                       " = \"", x$value, "\"")
+                        Lines <- c(Lines, line)
+                    # }
+                }
+            }
+            Lines <- convert_metadata_hide(x, environment_name, Lines)
+        }
+    }
+    return (Lines)
+}
+
+
+convert_metadata = function (metadata,
+                             environment_name="META") {
+    Lines = c()
+    Lines = convert_metadata_hide(metadata=metadata,
+                                  environment_name=environment_name,
+                                  Lines=Lines)
+
+    print(Lines)
+    # writeLines(Lines, "tmp.R")
+}

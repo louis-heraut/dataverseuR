@@ -19,7 +19,7 @@
 # If not, see <https://www.gnu.org/licenses/>.
 
 
-devtools::load_all(".")
+# devtools::load_all(".")
 source("R/api.R")
 source("R/dataverseur.R")
 
@@ -29,8 +29,8 @@ dotenv::load_dot_env(file=".env-entrepot")
 
 
 to_do = c(
-    # "search",
-    "create_dataset"
+    "search_datasets"
+    # "create_dataset"
     # "modify_dataset"
     # "add_files"
     # "delete_files"
@@ -39,21 +39,21 @@ to_do = c(
 )
 
 
-if ("search" %in% to_do) {
+if ("search_datasets" %in% to_do) {
     query = "*"
     publication_status =
         "RELEASED"
     # "DRAFT"
     type = "dataset"
     dataverse = "riverly"
-    n_search = 1000
+    n_search = 10
     
-    datasets = search(query=query,
+    datasets_search = search(query=query,
                       publication_status=publication_status,
                       type=type,
                       dataverse=dataverse,
                       n_search=n_search)
-    datasets
+    datasets_search
 }
 
 if ("create_dataset" %in% to_do) {
@@ -61,7 +61,7 @@ if ("create_dataset" %in% to_do) {
     source("dataset_template.R")
     res = generate_metadata()
     dataset_DOI = create_dataset(dataverse="explore2",
-                                 metadata_path=res$path)
+                                 metadata_path=res$file_path)
 }
 
 if ("modify_dataset" %in% to_do) {
@@ -91,3 +91,18 @@ if ("delete_files" %in% to_do) {
 if ("publish_dataset" %in% to_do) {
     publish_dataset(dataset_DOI, type="major")
 }
+
+
+
+datasets_DOI = get_DOI_from_datasets_search(datasets_search)
+dataset_DOI = datasets_DOI[1]
+metadata = get_dataset_metadata(dataset_DOI=dataset_DOI)
+
+
+json = jsonlite::toJSON(metadata,
+                 pretty=TRUE,
+                 auto_unbox=TRUE)
+write(json, "tmp.json")
+
+convert_metadata(metadata)
+

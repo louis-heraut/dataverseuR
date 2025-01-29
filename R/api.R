@@ -136,7 +136,7 @@ search = function(query="*", publication_status="*",
 #' get_DOI_from_datasets(datasets)
 #' @export
 #' @md
-get_DOI_from_datasets = function (datasets) {
+get_DOI_from_datasets_search = function (datasets) {
     name = sapply(datasets$items, function (x) x$name)
     DOI = sapply(datasets$items, function (x) x$global_id)
     names(DOI) = name
@@ -218,20 +218,25 @@ get_dataset_metadata = function(dataset_DOI,
     
     api_url = paste0(BASE_URL, "/api/datasets/:persistentId/?persistentId=", dataset_DOI)
     # get_url = paste0(BASE_URL, "/api/datasets/:persistentId/versions/:latest?persistentId=", dataset_DOI)
+
+    # https://demo.dataverse.org/api/datasets/24/versions/1.0/metadata
     
     response = httr::GET(api_url, httr::add_headers("X-Dataverse-key" = API_TOKEN))
     
-    if (httr::status_code(response) == 200) {
-        response_content = httr::content(response, as = "text", encoding = "UTF-8")
-        dataset_info = jsonlite::fromJSON(response_content)
-        return(dataset_info$data)
-
-    } else {
+    if (httr::status_code(response) != 200) {
         cat("Failed to retrieve dataset metadata.\n")
         cat("Status code: ", httr::status_code(response), "\n")
         cat("Response content: ", httr::content(response, as = "text", encoding = "UTF-8"), "\n")
         stop("Error during metadata retrieval.")
     }
+
+    response_content = httr::content(response, as="text",
+                                     encoding="UTF-8")
+    dataset_info = jsonlite::fromJSON(response_content)
+
+    metadata = dataset_info$data[c("metadataLanguage",
+                                   "latestVersion")]
+    return (metadata)
 }
 
 

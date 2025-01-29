@@ -1,3 +1,22 @@
+# Copyright 2025 Louis Héraut (louis.heraut@inrae.fr)*1
+#
+# *1   INRAE, France
+#
+# This file is part of dataverseur R package.
+#
+# dataverseur R package is free software: you can redistribute it
+# and/or modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation, either version 3 of
+# the License, or (at your option) any later version.
+#
+# dataverseur R package is distributed in the hope that it will be
+# useful, but WITHOUT ANY WARRANTY; without even the implied warranty
+# of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+# See the GNU xGeneral Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with dataverseur R package.
+# If not, see <https://www.gnu.org/licenses/>.
 
 
 devtools::load_all(".")
@@ -11,12 +30,12 @@ dotenv::load_dot_env(file=".env-entrepot")
 
 to_do = c(
     # "search",
-    # "create"
-    # "modify"
+    "create_dataset"
+    # "modify_dataset"
     # "add_files"
-    "delete_files"
-    # "publish",
-    # "delete"
+    # "delete_files"
+    # "delete_dataset"
+    # "publish_dataset"
 )
 
 
@@ -37,130 +56,38 @@ if ("search" %in% to_do) {
     datasets
 }
 
-if ("create" %in% to_do) {
-    initialise_dataset()
-    source("template_fiche_incertitude.R")
-    res = generate_dataset(dev=TRUE)
+if ("create_dataset" %in% to_do) {
+    initialise_metadata()
+    source("dataset_template.R")
+    res = generate_metadata()
     dataset_DOI = create_dataset(dataverse="explore2",
                                  metadata_path=res$path)
 }
 
-if ("modify" %in% to_do) {
-    initialise_dataset()
-    source("template_fiche_incertitude.R")
-    DS$title = gsub("XXX", "Rhône", DS$title)
-    res = generate_dataset(dev=TRUE)
-    dataset_DOI = modify_dataset_metadata(dataset_DOI=dataset_DOI,
-                                          metadata_path=res$path)
+if ("modify_dataset" %in% to_do) {
+    initialise_metadata()
+    source("dataset_template.R")
+    META$title = gsub("XXX", "Rhône", META$title)
+    res = generate_metadata()
+    dataset_DOI = modify_dataset_metadata(dataverse="explore2",
+                                          dataset_DOI=dataset_DOI,
+                                          metadata_path=res$file_path)
 }
 
 if ("add_files" %in% to_do) {
-    add_dataset_files(dataset_DOI=dataset_DOI, paths="LICENSE")
+    add_dataset_files(dataset_DOI=dataset_DOI,
+                      paths="LICENSE")
 }
 
 if ("delete_files" %in% to_do) {
     delete_dataset_files(dataset_DOI=dataset_DOI)
 }
 
+# if ("delete_dataset" %in% to_do) {
+#     delete_dataset(dataset_DOI=dataset_DOI)
+# }
 
 
-stop()
-
-
-
-if ("modify_incertitude_fiche" %in% to_do) {
-
-    figure_path = "/home/lheraut/Documents/INRAE/projects/Explore2_project/Explore2_toolbox/figures/incertitude"
-    fiche_dir = "fiche"
-    notice_file = "Explore2_Notice_fiche_incertitude_VF.pdf"
-
-    query = "Fiches incertitudes des modèles hydrologiques"
-
-    publication_status =
-        # "RELEASED"
-        "DRAFT"
-    type = "dataset"
-    collection = "Explore2"
-    n_search = 40
-
-    # datasets = search(BASE_URL, API_TOKEN,
-                      # query=query,
-                      # publication_status=publication_status,
-                      # type=type,
-                      # collection=collection,
-                      # n_search=n_search)
-    # datasets_DOI = get_doi_from_datasets(datasets)
-
-    for (i in 1:length(datasets_DOI)) {
-        initialise_RDGf()
-        source("template_fiche_incertitude.R")
-
-        title = names(datasets_DOI)[i]
-        region = gsub(".*[:] ", "", title)
-        RDGf$title = title
-        RDGf$dsDescriptionValue = gsub("XXX", region,
-                                       RDGf$dsDescriptionValue)
-        res = generate_RDGf(dev=TRUE)
-        
-        modify_dataset_metadata(BASE_URL,
-                                API_TOKEN,
-                                datasets_DOI[i],
-                                res$path) 
-    }
-}
-
-
-
-
-
-
-if ("add diagnostic" %in% to_do) {
-
-    figure_dir = "/home/louis/Documents/bouleau/INRAE/project/Explore2_project/Explore2_toolbox/figures/diagnostic/Fiche_diagnostic_région"
-    paths = list.files(figure_dir, recursive=TRUE, full.names=TRUE)
-    paths = paths[!grepl("sommaire", paths)]
-
-    name_paths = gsub("[/].*", "", gsub("^[/]", "", gsub(figure_dir, "", paths)))
-    # name_paths = gsub("([(])|([)])", "", name_paths)
-    # name_paths = gsub("é|è|ê", "e", name_paths)
-    # name_paths = gsub("à", "a", name_paths)
-    # name_paths = gsub("[']", "_", name_paths)
-    # name_paths = gsub("ô", "o", name_paths)
-    names(paths) = name_paths
-    
-    for (k in 1:length(datasets_DOI)) {
-        dataset_name = names(datasets_DOI)[k]
-        dataset_doi = datasets_DOI[k]
-
-        add_dataset_files(BASE_URL, API_TOKEN, dataset_doi, paths=paths)
-        if ("publish" %in% to_do) {
-            publish_dataset(BASE_URL, API_TOKEN,
-                            dataset_doi, type="major")
-        }
-    }
-}
-
-
-if ("add projection" %in% to_do) {
-
-    figure_dir = "/home/louis/Documents/bouleau/INRAE/project/Explore2_project/Explore2_toolbox/figures/diagnostic/Fiche_diagnostic_région"
-    figure_dirs = list.dirs(figure_dir, recursive=FALSE)
-    figure_letters = substr(basename(figure_dirs), 1, 1)
-    names(figure_dirs) = figure_letters
-    
-    for (k in 1:length(datasets_DOI)) {
-        dataset_name = names(datasets_DOI)[k]
-        dataset_doi = datasets_DOI[k]
-        letter = gsub(".*[:][ ]", "", dataset_name)
-        letter = substr(letter, 1, 1)
-        dir = figure_dirs[names(figure_dirs) == letter]
-        paths = list.files(dir, full.names=TRUE)
-        print(letter)
-        add_dataset_files(BASE_URL, API_TOKEN, dataset_doi,
-                          paths=paths)
-        if ("publish" %in% to_do) {
-            publish_dataset(BASE_URL, API_TOKEN,
-                            dataset_doi, type="major")
-        }
-    }
+if ("publish_dataset" %in% to_do) {
+    publish_dataset(dataset_DOI, type="major")
 }

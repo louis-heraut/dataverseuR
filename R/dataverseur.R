@@ -1,5 +1,22 @@
-
-
+# Copyright 2025 Louis Héraut (louis.heraut@inrae.fr)*1
+#
+# *1   INRAE, France
+#
+# This file is part of dataverseur R package.
+#
+# dataverseur R package is free software: you can redistribute it
+# and/or modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation, either version 3 of
+# the License, or (at your option) any later version.
+#
+# dataverseur R package is distributed in the hope that it will be
+# useful, but WITHOUT ANY WARRANTY; without even the implied warranty
+# of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+# See the GNU xGeneral Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with dataverseur R package.
+# If not, see <https://www.gnu.org/licenses/>.
 
 
 format_full_metadata_hide = function(metadata) {
@@ -51,8 +68,19 @@ format_full_metadata = function (file="rechercheDataGouv-full-metadata.json",
 }
 
 
-
-initialise_dataset = function (environment_name="DS") {
+#' @title initialise_metadata
+#' @description This function creates a new environment and assigns it to a specified variable name. By default, the environment is assigned to a variable named "META". This function is useful for initializing metadata storage in a separate environment.
+#' @param environment_name A character string representing the name of the environment to be created. The default value is "META".
+#' @return The function does not return a value. It creates a new environment and assigns it to the specified variable in the global environment.
+#' @examples
+#' # Initialize metadata with the default environment name "META"
+#' initialise_metadata()
+#' 
+#' # Initialize metadata with a custom environment name
+#' initialise_metadata("CustomEnv")
+#' @export
+#' @md
+initialise_metadata = function (environment_name="META") {
     assign(environment_name, new.env(), envir=as.environment(1))
 }
 
@@ -202,31 +230,58 @@ clean_metadata = function (metadata) {
 }
 
 
-generate_dataset = function (out_dir=".",
-                             out_file="RDG_metadata_template.json",
-                             environment_name="DS",
-                             overwrite=TRUE,
-                             dev=FALSE,
-                             verbose=FALSE) {
+#' @title generate_metadata
+#' @description This function generates a metadata JSON file based on a template. It retrieves values from the global environment (via the specified `environment_name`) and populates the template with these values. The resulting metadata is saved as a JSON file in the specified output directory. If the file already exists, it can be overwritten depending on the `overwrite_metadata` argument.
+#' @param out_dir A character string specifying the directory where the generated metadata JSON file will be saved. Defaults to the current directory ("./").
+#' @param file_name_overwrite A character string specifying a custom file name for the generated metadata. If NULL, the default file name is taken from the `META$file_name` variable. Defaults to NULL.
+#' @param environment_name The name of the global environment variable containing the metadata values. Defaults to "META".
+#' @param overwrite_metadata A logical value indicating whether to overwrite an existing metadata file. Defaults to TRUE.
+#' @param dev A logical value indicating whether to use the development template for metadata. Defaults to FALSE.
+#' @param verbose A logical value for whether to print additional information for debugging. Defaults to FALSE.
+#' @return A list containing two elements: `file_path` (the path to the generated metadata file) and `json` (the JSON content of the metadata).
+#' @examples
+#' # Generate metadata and save it to the current directory
+#' generate_metadata()
+#'
+#' # Generate metadata and save it to a custom directory with a custom file name
+#' generate_metadata(out_dir="path/to/output", file_name_overwrite="custom_metadata")
+#' @export
+#' @md
+generate_metadata = function (out_dir=".",
+                              file_name_overwrite=NULL,
+                              environment_name="META",
+                              overwrite_metadata=TRUE,
+                              dev=FALSE,
+                              verbose=FALSE) {
 
     if (dev) {
-        full_template_path = file.path("inst", "extdata",
-                                       "RDG_full_metadata_template.json")
+        full_template_path =
+            file.path("inst", "extdata",
+                      "RDG_full_metadata_template.json")
     } else {
-        full_template_path = system.file("extdata",
-                                         "RDG_full_metadata_template.json",
-                                         package="dataverseur")
+        full_template_path =
+            system.file("extdata",
+                        "RDG_full_metadata_template.json",
+                        package="dataverseur")
     }
     
     metadata = jsonlite::fromJSON(full_template_path,
                                   simplifyVector=FALSE,
                                   simplifyDataFrame=FALSE)
     
-    DS = get(environment_name, envir=.GlobalEnv)
+    META = get(environment_name, envir=.GlobalEnv)
 
-    TypeNames = ls(envir=DS)
+    
+    if (is.null(file_name_overwrite)) {
+        out_file = paste0(META$file_name, ".json")
+        rm (file_name, envir=META)
+    } else {
+        out_file = paste0(file_name_overwrite, ".json")
+    }
+    out_path = file.path(out_dir, out_file)
+    
+    TypeNames = ls(envir=META)
     TypeNames_Num = TypeNames[grepl("[[:digit:]]+$", TypeNames)]
-
     TypeNames_Num_noNum = unique(gsub("[[:digit:]]+$", "",
                                       TypeNames_Num))
 
@@ -249,27 +304,24 @@ generate_dataset = function (out_dir=".",
     }
 
     for (typeName in TypeNames) {
-        value = get(typeName, envir=DS)
+        value = get(typeName, envir=META)
         metadata = add_typeName(metadata, typeName, value)
     }
+    metadata = clean_metadata(metadata)
 
-    metadata = clean_metadata(metadata)    
-
-    out_path = file.path(out_dir, out_file)
-    
-    if (overwrite) {        
-        if (file.exists(out_path)) {
-            file.remove(out_path)
-        }
-    }
-
-    rm (list=ls(envir=DS), envir=DS)
+    rm (list=ls(envir=META), envir=META)
 
     json = jsonlite::toJSON(metadata,
                             pretty=TRUE,
                             auto_unbox=TRUE)
+    res = list(file_path=out_path, json=json)
+    
+    if (file.exists(out_path) & !overwrite_metadata) {
+        message (paste0("Metadata file already exists in ",
+                        out_path))
+        return (res)
+    }
+    
     write(json, out_path)
-
-    res = list(path=out_path, json=json)
     return (res)
 }

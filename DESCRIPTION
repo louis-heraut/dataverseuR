@@ -1,4 +1,4 @@
-Package: dataverseur
+Package: dataverseuR
 Version: 0.0.1
 Date: 2025-01-28
 Title: dataverseur
@@ -15,6 +15,7 @@ License: GPL-3 + file LICENSE
 Imports: 
     dplyr,
     tidyr,
+    purrr,
     httr,
     jsonlite,
     dotenv

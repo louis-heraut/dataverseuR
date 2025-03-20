@@ -125,9 +125,9 @@ search = function(query="*", publication_status="*",
 }
 
 
-#' @title get_DOI_from_datasets
+#' @title get_DOI_from_datasets_search
 #' @description This function extracts the DOIs (Digital Object Identifiers) from a dataset object. It takes a list of datasets and returns a named vector where the names correspond to the dataset names and the values correspond to their respective DOIs.
-#' @param datasets A dataset object, typically a list or data frame, containing items with `name` and `global_id` attributes, where `global_id` represents the DOI.
+#' @param datasets_search A dataset object, typically a list or data frame, containing items with `name` and `global_id` attributes, where `global_id` represents the DOI.
 #' @return A named vector where each name is the dataset name and each value is the corresponding DOI.
 #' @examples
 #' # Example dataset with items containing names and global_ids
@@ -136,12 +136,126 @@ search = function(query="*", publication_status="*",
 #' get_DOI_from_datasets(datasets)
 #' @export
 #' @md
-get_DOI_from_datasets_search = function (datasets) {
-    name = sapply(datasets$items, function (x) x$name)
-    DOI = sapply(datasets$items, function (x) x$global_id)
+get_DOI_from_datasets_search = function (datasets_search) {
+    name = sapply(datasets_search$items, function (x) x$name)
+    DOI = sapply(datasets_search$items, function (x) x$global_id)
     names(DOI) = name
     return (DOI)
 }
+
+
+convert_datasets_to_tibble_hide = function(dataset) {
+    dataset_flat = purrr::map(dataset, function(x) {
+        if (is.atomic(x)) {
+            x
+        } else {
+      list(x)
+        }
+    })
+    dplyr::as_tibble(dataset_flat) 
+}
+
+convert_datasets_search_to_tibble = function (datasets_search) {
+    results = dplyr::tibble()
+    for (dataset in datasets_search$items) {
+        results_tmp = convert_datasets_to_tibble_hide(dataset)
+        results = dplyr::bind_rows(results, results_tmp)
+    }
+    results = dplyr::rename(results, dataset_DOI=global_id)
+    return (results)
+}
+
+#' @title get_datasets_size
+#' @description This function retrieves the total storage size (in bytes) of a dataset from the Dataverse API.
+#' @param datasets_DOI A character string or vector representing the dataset DOIs.
+#' @param BASE_URL A character string representing the base URL for the Dataverse installation (default is the environment variable `BASE_URL`).
+#' @param API_TOKEN A character string representing the API token for authentication (default is the environment variable `API_TOKEN`).
+#' @return A tibble containing dataset DOIs and their corresponding total storage sizes in bytes.
+#' @examples
+#' # Retrieve dataset storage size
+#' get_datasets_size("24")
+#' @export
+#' @md
+get_datasets_size = function(datasets_DOI,
+                             BASE_URL=Sys.getenv("BASE_URL"),
+                             API_TOKEN=Sys.getenv("API_TOKEN")) {
+
+    results = dplyr::tibble()
+    
+    for (dataset_DOI in datasets_DOI) {        
+        query_url = paste0(BASE_URL, "/api/datasets/:persistentId/storagesize/?persistentId=", dataset_DOI)
+        
+        response = httr::GET(query_url, 
+                         httr::add_headers("X-Dataverse-key"=API_TOKEN))
+        
+        if (httr::status_code(response) == 200) {
+            size_value = httr::content(response,
+                                       "parsed")$data$message
+            size_value = gsub("(.*[:] )|( bytes)|(,)", "",
+                              size_value)
+            size_value = as.numeric(size_value)
+        } else {
+            size_value = NA
+        }
+        
+        results_tmp = dplyr::tibble(dataset_DOI=dataset_DOI,
+                                    storage_size_bytes=size_value)
+        results = dplyr::bind_rows(results, results_tmp)
+    }
+    results$storage_size_GB = round(results$storage_size_bytes/1024**3, 3)
+    
+    return(results)
+}
+
+
+
+#' @title get_datasets_metrics
+#' @description This function retrieves dataset metrics (views, downloads, and citations) from the Dataverse API for a given dataset DOI.
+#' @param datasets_DOI A character string or vector representing the DOI of the datasets.
+#' @param BASE_URL A character string representing the base URL for the Dataverse installation (default is the environment variable `BASE_URL`).
+#' @param API_TOKEN A character string representing the API token for authentication (default is the environment variable `API_TOKEN`).
+#' @return A named list containing total views, unique views, total downloads, unique downloads, and citations.
+#' @examples
+#' # Retrieve dataset metrics
+#' get_dataset_metrics("doi:10.5072/FK2/J8SJZB")
+#' @export
+#' @md
+get_datasets_metrics = function(datasets_DOI,
+                               BASE_URL=Sys.getenv("BASE_URL"),
+                               API_TOKEN=Sys.getenv("API_TOKEN")) {
+
+    results = dplyr::tibble()
+    metrics = c("viewsTotal", "viewsUnique",
+                "downloadsTotal", "downloadsUnique") #"citations"
+    
+    for (dataset_DOI in datasets_DOI) {
+        results_tmp = c()
+        for (metric in metrics) {
+            query_url = paste0(BASE_URL, "/api/datasets/:persistentId/makeDataCount/", 
+                               metric, "?persistentId=", dataset_DOI)
+            
+            response = httr::GET(query_url, 
+                                 httr::add_headers("X-Dataverse-key"=API_TOKEN))
+            
+            if (httr::status_code(response) == 200) {
+                metric_value = unlist(httr::content(response,
+                                                    "parsed")$data)
+            } else {
+                metric_value = NA
+            }
+            results_tmp = c(results_tmp, metric_value)
+        }
+        # results_tmp = as.numeric(results_tmp)
+        results_tmp = c(dataset_DOI=dataset_DOI, results_tmp)
+        results_tmp = dplyr::tibble(!!!results_tmp)
+        results = dplyr::bind_rows(results, results_tmp)
+    }
+    results = dplyr::mutate(results,
+                            dplyr::across(.cols=metrics,
+                                          .fns=as.numeric))
+    return (results)
+}
+
 
 
 #' @title create_dataset
@@ -217,9 +331,6 @@ get_dataset_metadata = function(dataset_DOI,
                                 API_TOKEN=Sys.getenv("API_TOKEN")) {
     
     api_url = paste0(BASE_URL, "/api/datasets/:persistentId/?persistentId=", dataset_DOI)
-    # get_url = paste0(BASE_URL, "/api/datasets/:persistentId/versions/:latest?persistentId=", dataset_DOI)
-
-    # https://demo.dataverse.org/api/datasets/24/versions/1.0/metadata
     
     response = httr::GET(api_url, httr::add_headers("X-Dataverse-key" = API_TOKEN))
     
@@ -232,7 +343,9 @@ get_dataset_metadata = function(dataset_DOI,
 
     response_content = httr::content(response, as="text",
                                      encoding="UTF-8")
-    dataset_info = jsonlite::fromJSON(response_content)
+    dataset_info = jsonlite::fromJSON(response_content,
+                                      simplifyDataFrame=FALSE,
+                                      simplifyVector=TRUE)
 
     metadata = dataset_info$data[c("metadataLanguage",
                                    "latestVersion")]
@@ -473,3 +586,4 @@ publish_dataset = function(dataset_DOI, type="major",
         stop("Error during dataset publication.")
     }
 }
+

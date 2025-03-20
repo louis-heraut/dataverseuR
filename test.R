@@ -36,24 +36,37 @@ to_do = c(
     # "delete_files"
     # "delete_dataset"
     # "publish_dataset"
+    # "get_metrics"
 )
 
 
 if ("search_datasets" %in% to_do) {
-    query = "*"
-    publication_status =
-        "RELEASED"
-    # "DRAFT"
-    type = "dataset"
-    dataverse = "riverly"
-    n_search = 10
+
+    cols = c("dataset_DOI",
+             "url",
+             "name",
+             "citation",
+             "description",
+             "identifier_of_dataverse",
+             "subjects",
+             "keywords",
+             "fileCount",
+             "createdAt",
+             "authors")
     
-    datasets_search = search(query=query,
-                      publication_status=publication_status,
-                      type=type,
-                      dataverse=dataverse,
-                      n_search=n_search)
-    datasets_search
+    query = "*"
+    publication_status = "RELEASED"
+    type = "dataset"
+    n_search = 1000
+    
+    datasets_search =
+        search(query=query,
+               publication_status=publication_status,
+               type=type,
+               dataverse="DRYvER-WP1-DRN-EU",
+               n_search=n_search)
+    
+    datasets_info = convert_datasets_search_to_tibble(datasets_search)
 }
 
 if ("create_dataset" %in% to_do) {
@@ -94,15 +107,42 @@ if ("publish_dataset" %in% to_do) {
 
 
 
-datasets_DOI = get_DOI_from_datasets_search(datasets_search)
-dataset_DOI = datasets_DOI[1]
-metadata = get_dataset_metadata(dataset_DOI=dataset_DOI)
+# datasets_DOI = get_DOI_from_datasets_search(datasets_search)
+# dataset_DOI = datasets_DOI[1]
+# metadata = get_dataset_metadata(dataset_DOI=dataset_DOI)
 
 
-json = jsonlite::toJSON(metadata,
-                 pretty=TRUE,
-                 auto_unbox=TRUE)
-write(json, "tmp.json")
+# json = jsonlite::toJSON(metadata,
+#                  pretty=TRUE,
+#                  auto_unbox=TRUE)
+# write(json, "tmp.json")
 
-convert_metadata(metadata)
+# convert_metadata(metadata)
 
+
+# flatten_tibble = function (tbl, delimiter="; ") {
+#     tbl = dplyr::mutate(tbl,
+#                         across(everything(),
+#                                ~ ifelse(
+#     purrr::map_lgl(.x, is.list),
+#     purrr::map_chr(.x, ~paste(unlist(.x),
+#                               collapse=delimiter)),
+#     .x)))
+#     return (tbl)
+# }
+
+
+
+if ("get_metrics" %in% to_do) {
+    # datasets_DOI = get_DOI_from_datasets_search(datasets_search)
+    datasets_metrics = get_datasets_metrics(datasets_info$dataset_DOI)
+    datasets_info = dplyr::full_join(datasets_info, datasets_metrics,
+                                     by="dataset_DOI")
+
+    datasets_size = get_datasets_size(datasets_info$dataset_DOI)
+    datasets_info = dplyr::full_join(datasets_info, datasets_size,
+                                     by="dataset_DOI")
+    
+    ASHE::write_tibble(datasets_info,
+                       path="datasets_info.csv")
+}

@@ -25,13 +25,13 @@
             "roleName": "Maintainer"
         }
     ],
-    "codeRepository": "https://github.com/super-lou/dataverseur",
+    "codeRepository": "https://github.com/super-lou/dataverseuR",
     "dateCreated": "2024-01-28",
     "dateModified": "2024-01-28",
     "datePublished": "2024-01-28",
     "description": "A Dataverse API wrapper to streamline the deposit process using only R variable declarations.\n\nUn wrapper pour l'API Dataverse afin de simplifier le processus de dépôt en utilisant uniquement des déclarations de variables R.",
     "license": "https://spdx.org/licenses/AGPL-3.0-or-later",
-    "name": "dataverseur",
+    "name": "dataverseuR",
     "operatingSystem": "Debian 12.x",
     "programmingLanguage": "R 4.x.x",
     "version": "0.0.1",

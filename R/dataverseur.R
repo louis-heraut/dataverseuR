@@ -270,7 +270,6 @@ generate_metadata = function (out_dir=".",
                                   simplifyDataFrame=FALSE)
     
     META = get(environment_name, envir=.GlobalEnv)
-
     
     if (is.null(file_name_overwrite)) {
         out_file = paste0(META$file_name, ".json")
@@ -350,20 +349,89 @@ generate_metadata = function (out_dir=".",
 #     }
 # }
 
-convert_metadata_hide <- function(metadata, environment_name, Lines) {
+insert_spaces = function(to_space, with_order) {
+    spaced = c(to_space[1])
+    for (i in 2:length(with_order)) {
+        if (with_order[i] != with_order[i - 1]) {
+            spaced = c(spaced, "")
+        }
+        spaced = c(spaced, to_space[i])
+    }
+    return (spaced)
+}
+
+
+insert_spaces <- function(vec2, vec1) {
+    vec2_spaced <- c(vec2[1])
+    for (i in 2:length(vec1)) {
+        if (vec1[i] != vec1[i - 1]) {
+            vec2_spaced <- c(vec2_spaced, "")  # Insert a space
+        }
+        vec2_spaced <- c(vec2_spaced, vec2[i])  # Add the current element
+    }
+    
+    return(vec2_spaced)
+}
+
+
+
+convert_metadata_hide = function(metadata, environment_name,
+                                 Lines, previous) {
     if (is.list(metadata)) {
         for (x in metadata) {
+
             if ("typeName" %in% names(x) & "value" %in% names(x)) {
-                if (!is.list(x$value)) { ####### pas bon
-                    # if (!is.na(x$value)) {
-                    # print(x$value)
-                    line <- paste0(environment_name, "$", x$typeName,
-                                       " = \"", x$value, "\"")
-                        Lines <- c(Lines, line)
+                if (is.character(x$value)) {
+                    following = gsub("[[:upper:]].*", "", x$typeName)
+                    following = following[!is.na(following)]
+
+                    # TypeNames = gsub(".*[$]", "", Lines_tmp)
+                    # TypeNames = gsub(" [=].*", "", TypeNames)
+                    # TypeNames_noNum = gsub("[[:digit:]]+", "",
+                    #                        TypeNames)
+                    # TypeNames_Num = stringr::str_extract("[[:digit:]]+",
+                    #                                      TypeNames)
+
+                    # typeName = gsub(".*[$]", "", line)
+                    # typeName = gsub(" [=].*", "", typeName)
+
+                    # Ok = TypeNames_noNum %in% typeName[1] &
+                    #     TypeNames_noNum != ""
+
+                    # print(typeName)
+                    # print(TypeNames)
+                    # print(TypeNames_noNum)
+                    # print(TypeNames_Num)
+                    # print("")
+                    
+                    # if (any(Ok)) {
+                    #     if (all(is.na(TypeNames_Num[Ok]))) {
+                    #         typeName = paste0(typeName, "1")
+                    #     } else {
+                    #         typeName = paste0(typeName,
+                    #                           max(TypeNames_Num[Ok],
+                    #                               na.rm=TRUE)+1)
+                    #     }
+                    #     LinestypeName
                     # }
+
+
+
+
+                    line = paste0(environment_name, "$",
+                                  x$typeName, " = \"",
+                                  x$value, "\"")
+
+                    if (previous[1] == following[1]) {
+                        Lines = c(Lines, line)
+                    } else {
+                        Lines = c(Lines, "", line)
+                    }
+                    previous = following
                 }
             }
-            Lines <- convert_metadata_hide(x, environment_name, Lines)
+            Lines = convert_metadata_hide(x, environment_name,
+                                          Lines, previous)
         }
     }
     return (Lines)
@@ -375,8 +443,9 @@ convert_metadata = function (metadata,
     Lines = c()
     Lines = convert_metadata_hide(metadata=metadata,
                                   environment_name=environment_name,
-                                  Lines=Lines)
-
-    print(Lines)
-    # writeLines(Lines, "tmp.R")
+                                  Lines=Lines,
+                                  previous="")
+    writeLines(Lines, "tmp.R")
 }
+
+

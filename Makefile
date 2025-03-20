@@ -6,4 +6,4 @@ check:
 	R -e 'devtools::check()'
 
 install:
-	R -e 'remotes::install_github("super-lou/dataverseur")'
+	R -e 'remotes::install_github("super-lou/dataverseuR")'

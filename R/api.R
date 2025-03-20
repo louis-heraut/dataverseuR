@@ -133,7 +133,7 @@ search = function(query="*", publication_status="*",
 #' # Example dataset with items containing names and global_ids
 #' datasets <- list(items = list(list(name = "Dataset 1", global_id = "10.1234/abc"), 
 #'                               list(name = "Dataset 2", global_id = "10.5678/def")))
-#' get_DOI_from_datasets(datasets)
+#' get_DOI_from_datasets_search(datasets)
 #' @export
 #' @md
 get_DOI_from_datasets_search = function (datasets_search) {

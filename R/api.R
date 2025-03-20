@@ -155,6 +155,9 @@ convert_datasets_to_tibble_hide = function(dataset) {
     dplyr::as_tibble(dataset_flat) 
 }
 
+#' @title convert_datasets_search_to_tibble
+#' @export
+#' @md
 convert_datasets_search_to_tibble = function (datasets_search) {
     results = dplyr::tibble()
     for (dataset in datasets_search$items) {

@@ -47,7 +47,7 @@ format_full_metadata = function (file="rechercheDataGouv-full-metadata.json",
     if (dev) {
         path = file.path("inst", "extdata", file)
     } else {
-        path = system.file("extdata", file, package="dataverseur")
+        path = system.file("extdata", file, package="dataverseuR")
     }
     metadata = jsonlite::fromJSON(path, simplifyDataFrame=FALSE)
     
@@ -59,7 +59,7 @@ format_full_metadata = function (file="rechercheDataGouv-full-metadata.json",
     } else {
         full_template_path = system.file("extdata",
                                          "RDG_full_metadata_template.json",
-                                         package="dataverseur")
+                                         package="dataverseuR")
     }
     write(jsonlite::toJSON(metadata,
                            pretty=TRUE,
@@ -248,7 +248,7 @@ clean_metadata = function (metadata) {
 #' @export
 #' @md
 generate_metadata = function (out_dir=".",
-                              file_name_overwrite=NULL,
+                              file_name_overwrite="metadata",
                               environment_name="META",
                               overwrite_metadata=TRUE,
                               dev=FALSE,
@@ -262,7 +262,7 @@ generate_metadata = function (out_dir=".",
         full_template_path =
             system.file("extdata",
                         "RDG_full_metadata_template.json",
-                        package="dataverseur")
+                        package="dataverseuR")
     }
     
     metadata = jsonlite::fromJSON(full_template_path,
@@ -271,7 +271,7 @@ generate_metadata = function (out_dir=".",
     
     META = get(environment_name, envir=.GlobalEnv)
     
-    if (is.null(file_name_overwrite)) {
+    if (!is.null(META$file_name)) {
         out_file = paste0(META$file_name, ".json")
         rm (file_name, envir=META)
     } else {

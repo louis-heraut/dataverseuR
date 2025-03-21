@@ -74,7 +74,7 @@ if ("search_datasets" %in% to_do) {
 
 if ("create_dataset" %in% to_do) {
     initialise_metadata()
-    source("dataset_template.R")
+    source("template/projection_hydrologique.R")
     res = generate_metadata()
     dataset_DOI = create_dataset(dataverse="explore2",
                                  metadata_path=res$file_path)

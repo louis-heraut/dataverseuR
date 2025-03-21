@@ -2,6 +2,7 @@
 
 export(add_dataset_files)
 export(convert_datasets_search_to_tibble)
+export(convert_metadata)
 export(create_dataset)
 export(delete_dataset_files)
 export(generate_metadata)

@@ -35,6 +35,19 @@ A list of datasets returned from the Dataverse search query. If the API request 
 \description{
 This function performs a search query on the Dataverse API. It allows users to search for datasets based on a query, publication status, type, and associated dataverse. The function returns datasets matching the search parameters, fetched via an API call to the Dataverse platform.
 }
+\details{
+ChatGPT help (need to be tested) :
+
+QUERY TYPE	     SYNTAX EXAMPLE                      DESCRIPTION
+Basic Search	     query="climate"	                 Finds "climate" anywhere
+Exact Phrase	     query='"climate change"'	         Finds the exact phrase
+Wildcard (* & ?)  query="climat*" or query="cl?mate"	 Matches variations
+Boolean Search    query="climate AND temperature"	 Combines terms
+Field Search	     query="title:climate"	         Searches specific fields
+Fuzzy Search	     query="climate~"	                 Finds similar words
+Proximity Search  query='"climate temperature"~5'	 Finds nearby words
+Regex (Limited)   query="climate*"                    Limited pattern matching
+}
 \examples{
 # Perform a search for datasets with the default parameters
 search()

@@ -54,7 +54,7 @@ if ("search_datasets" %in% to_do) {
              "createdAt",
              "authors")
     
-    query = "*"
+    query = '(title:"Fiches de résultats*" OR title:"Fiches incertitudes*" OR title:"Fiches de diagnostic*" OR title:"Ensemble des fiches") NOT title:"Notice" NOT title:"Accompagnement"'
     publication_status = "RELEASED"
     type = "dataset"
     n_search = 1000
@@ -63,11 +63,14 @@ if ("search_datasets" %in% to_do) {
         search(query=query,
                publication_status=publication_status,
                type=type,
-               dataverse="DRYvER-WP1-DRN-EU",
+               dataverse="explore2",
                n_search=n_search)
     
     datasets_info = convert_datasets_search_to_tibble(datasets_search)
+    datasets_info$name
 }
+
+
 
 if ("create_dataset" %in% to_do) {
     initialise_metadata()

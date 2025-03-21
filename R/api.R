@@ -70,6 +70,19 @@ search_metadata_blocks = function() {
 #' @param n_search A character string indicating the number of results to return. Default is "10".
 #' @param BASE_URL A character string for the base URL of the Dataverse API. By default, it uses the value from the environment variable `BASE_URL`.
 #' @param API_TOKEN A character string for the API token required to authenticate the request. By default, it uses the value from the environment variable `API_TOKEN`.
+#' @details
+#' ChatGPT help (need to be tested) :
+#' 
+#' QUERY TYPE	     SYNTAX EXAMPLE                      DESCRIPTION
+#' Basic Search	     query="climate"	                 Finds "climate" anywhere
+#' Exact Phrase	     query='"climate change"'	         Finds the exact phrase
+#' Wildcard (* & ?)  query="climat*" or query="cl?mate"	 Matches variations
+#' Boolean Search    query="climate AND temperature"	 Combines terms
+#' Field Search	     query="title:climate"	         Searches specific fields
+#' Fuzzy Search	     query="climate~"	                 Finds similar words
+#' Proximity Search  query='"climate temperature"~5'	 Finds nearby words
+#' Regex (Limited)   query="climate*"                    Limited pattern matching
+#' 
 #' @return A list of datasets returned from the Dataverse search query. If the API request fails, an error message is printed, and the function stops.
 #' @examples
 #' # Perform a search for datasets with the default parameters

@@ -438,6 +438,9 @@ convert_metadata_hide = function(metadata, environment_name,
 }
 
 
+#' @title convert_metadata
+#' @export
+#' @md
 convert_metadata = function (metadata,
                              environment_name="META") {
     Lines = c()

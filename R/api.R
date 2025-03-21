@@ -603,3 +603,35 @@ publish_dataset = function(dataset_DOI, type="major",
     }
 }
 
+
+#' @title delete_dataset
+#' @description This function deletes a dataset in Dataverse using its DOI. It sends a DELETE request to the Dataverse API, passing the DOI of the dataset. Upon success, it prints a success message; otherwise, it reports an error.
+#' @param dataset_DOI A character string representing the DOI (Digital Object Identifier) of the dataset to be deleted.
+#' @param BASE_URL A character string representing the base URL of the Dataverse installation. Default is fetched from the `BASE_URL` environment variable.
+#' @param API_TOKEN A character string representing the API token used for authentication. Default is fetched from the `API_TOKEN` environment variable.
+#' @return The function does not return any value. It prints messages indicating whether the dataset was successfully deleted or if an error occurred.
+#' @examples
+#' # Delete a dataset with a specific DOI
+#' delete_dataset("doi:10.1234/abcd")
+#' 
+#' # Delete a dataset with custom parameters
+#' delete_dataset("doi:10.1234/abcd", BASE_URL = "https://dataverse.example.com", API_TOKEN = "your_api_token")
+#' @export
+#' @md
+delete_dataset = function(dataset_DOI,
+                          BASE_URL=Sys.getenv("BASE_URL"),
+                          API_TOKEN=Sys.getenv("API_TOKEN")) {
+    
+    delete_url = paste0(BASE_URL, "/api/datasets/:persistentId/?persistentId=", dataset_DOI)
+    response = httr::DELETE(delete_url,
+                            httr::add_headers("X-Dataverse-key"=API_TOKEN))
+    
+    if (httr::status_code(response) == 200) {
+        cat("Dataset deleted successfully.\n")
+    } else {
+        cat("Failed to delete dataset.\n")
+        cat("Status code: ", httr::status_code(response), "\n")
+        cat("Response content: ", httr::content(response, as = "text", encoding = "UTF-8"), "\n")
+        stop("Error during dataset deletion.")
+    }
+}

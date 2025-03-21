@@ -409,23 +409,9 @@
           },
           {
             "typeName": "series",
-            "multiple": false,
+            "multiple": true,
             "typeClass": "compound",
             "value": [
-              {
-                "seriesName": {
-                  "typeName": "seriesName",
-                  "multiple": false,
-                  "typeClass": "primitive",
-                  "value": ""
-                },
-                "seriesInformation": {
-                  "typeName": "seriesInformation",
-                  "multiple": false,
-                  "typeClass": "primitive",
-                  "value": ""
-                }
-              },
               {
                 "seriesName": {
                   "typeName": "seriesName",

@@ -549,7 +549,7 @@ delete_dataset_files = function(dataset_DOI,
                                 BASE_URL=Sys.getenv("BASE_URL"),
                                 API_TOKEN=Sys.getenv("API_TOKEN")) {
     
-    files = list_dataset_files(BASE_URL, API_TOKEN, dataset_DOI)
+    files = list_dataset_files(dataset_DOI, BASE_URL, API_TOKEN)
     
     for (i in 1:nrow(files)) {
         file_info = files[i, ]

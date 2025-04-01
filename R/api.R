@@ -369,6 +369,54 @@ get_dataset_metadata = function(dataset_DOI,
 }
 
 
+#' @title download_file
+#' @description This function downloads a file from a Dataverse repository using its DOI (Digital Object Identifier).  
+#' It makes an API call to the Dataverse server and saves the file locally.
+#' @param file_DOI A character string representing the DOI of the file to be downloaded.
+#' @param save_path A character string representing the local path where the file should be saved.
+#' @param BASE_URL A character string representing the base URL of the Dataverse repository.  
+#' Default is the value of the environment variable `BASE_URL`.
+#' @param API_TOKEN A character string representing the API token for authentication.  
+#' Default is the value of the environment variable `API_TOKEN`.
+#' @return The function downloads the file and saves it to the specified location. If the request fails, an error is returned.
+#' @examples
+#' # Download a file using its DOI
+#' download_file("doi:10.5072/FK2/J8SJZB", "downloaded_file.txt")
+#' 
+#' # Using custom BASE_URL and API_TOKEN
+#' download_file("doi:10.5072/FK2/J8SJZB", "data.csv",
+#'               BASE_URL="https://dataverse.example.com",
+#'               API_TOKEN="your_api_token")
+#' @export
+#' @md
+download_file = function(file_DOI,
+                         save_path,
+                         BASE_URL=Sys.getenv("BASE_URL"),
+                         API_TOKEN=Sys.getenv("API_TOKEN")) {
+    
+    # Construct API URL
+    api_url = paste0(BASE_URL, "/api/access/datafile/:persistentId/?persistentId=", file_DOI)
+    
+    # Make the request
+    response = httr::GET(api_url, 
+                         httr::add_headers("X-Dataverse-key"=API_TOKEN),
+                         httr::write_disk(save_path, overwrite=TRUE))
+    
+    # Check response status
+    if (httr::status_code(response) != 200) {
+        cat("Failed to download the file.\n")
+        cat("Status code: ", httr::status_code(response), "\n")
+        cat("Response content: ",
+            httr::content(response, as="text", encoding="UTF-8"), "\n")
+        stop("Error during file download.")
+    }
+    
+    cat("File downloaded successfully to:", save_path, "\n")
+}
+
+
+
+
 #' @title modify_dataset_metadata
 #' @description This function modifies the metadata of a dataset in a Dataverse repository. It accepts the dataset DOI, the path to a metadata JSON file, and uses the Dataverse API to update the dataset's metadata. The function checks the response for success and outputs relevant information. It is designed to facilitate metadata management and updating in Dataverse.
 #' @param dataverse A character string representing the name of the Dataverse repository.
@@ -524,10 +572,10 @@ list_dataset_files = function(dataset_DOI,
                                      encoding="UTF-8")
     dataset_info = jsonlite::fromJSON(response_content)
     files = dataset_info$data$latestVersion$files
-    files = dplyr::select(files, -description)
+    # files = dplyr::select(files, -description)
     files = tidyr::unnest(files, cols=c(dataFile))
     
-    return(files)
+    return (files)
 }
 
 
@@ -567,6 +615,37 @@ delete_dataset_files = function(dataset_DOI,
         }
     }
 }
+
+
+#' @title delete_file
+#' @description . 
+#' @param file_DOI A character string representing the DOI (Digital Object Identifier) of the file that will be deleted.
+#' @param BASE_URL A character string representing the base URL of the Dataverse installation. Default is fetched from the `BASE_URL` environment variable.
+#' @param API_TOKEN A character string representing the API token used for authentication. Default is fetched from the `API_TOKEN` environment variable.
+#' @return The function does not return any value. It prints messages indicating the status of the file deletion.
+#' @examples
+#' .
+#' @export
+#' @md
+delete_file = function(file_DOI,
+                       BASE_URL=Sys.getenv("BASE_URL"),
+                       API_TOKEN=Sys.getenv("API_TOKEN")) {
+    
+    delete_url =
+        paste0(BASE_URL, "/api/files/:persistentId/?persistentId=", file_DOI)
+
+    response = httr::DELETE(delete_url,
+                            httr::add_headers("X-Dataverse-key"=API_TOKEN))
+    
+    if (httr::status_code(response) == 200) {
+        print(paste0("ok"))
+    } else {
+        print(paste0("error ",
+                     httr::status_code(response), " ",
+                     httr::content(response, "text")))
+    }
+}
+
 
 
 #' @title publish_dataset

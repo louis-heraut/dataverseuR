@@ -572,7 +572,9 @@ list_dataset_files = function(dataset_DOI,
                                      encoding="UTF-8")
     dataset_info = jsonlite::fromJSON(response_content)
     files = dataset_info$data$latestVersion$files
-    # files = dplyr::select(files, -description)
+    if ("description" %in% names(files)) {
+        files = dplyr::select(files, -description)
+    }
     files = tidyr::unnest(files, cols=c(dataFile))
     
     return (files)

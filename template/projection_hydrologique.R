@@ -1,5 +1,5 @@
 
-META$file_name = "dataset_template"
+META$filename = "dataset_template"
 
 META$title = "Projections hydrologiques Explore2 du débit pour le modèles {HM} sous {RCP}"
 

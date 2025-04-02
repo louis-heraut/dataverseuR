@@ -7,18 +7,11 @@
 initialise_metadata(environment_name = "META")
 }
 \arguments{
-\item{environment_name}{A character string representing the name of the environment to be created. The default value is "META".}
-}
-\value{
-The function does not return a value. It creates a new environment and assigns it to the specified variable in the global environment.
+\item{environment_name}{A character string representing the name of the R variable metadata environment to be created. The default value is \code{"META"}.}
 }
 \description{
-This function creates a new environment and assigns it to a specified variable name. By default, the environment is assigned to a variable named "META". This function is useful for initializing metadata storage in a separate environment.
+Create an empty R variable metadata environment in which all assigned R variables will represent a dataverse metadata for a unique dataset. See \code{\link[=generate_metadata]{generate_metadata()}} to create the associated json metadata file.
 }
 \examples{
-# Initialize metadata with the default environment name "META"
-initialise_metadata()
-
-# Initialize metadata with a custom environment name
-initialise_metadata("CustomEnv")
+a
 }

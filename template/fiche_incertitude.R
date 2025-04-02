@@ -12,7 +12,7 @@
 # it is done in the META environment.
 
 
-META$file_name = "dataset_template"
+META$filename = "dataset_template"
 
 META$title = "Fiches incertitudes des modèles hydrologiques de surface du projet Explore2 : XXX"
 

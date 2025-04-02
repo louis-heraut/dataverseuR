@@ -69,15 +69,10 @@ format_full_metadata = function (file="rechercheDataGouv-full-metadata.json",
 
 
 #' @title initialise_metadata
-#' @description This function creates a new environment and assigns it to a specified variable name. By default, the environment is assigned to a variable named "META". This function is useful for initializing metadata storage in a separate environment.
-#' @param environment_name A character string representing the name of the environment to be created. The default value is "META".
-#' @return The function does not return a value. It creates a new environment and assigns it to the specified variable in the global environment.
+#' @description Create an empty R variable metadata environment in which all assigned R variables will represent a dataverse metadata for a unique dataset. See [generate_metadata()] to create the associated json metadata file.
+#' @param environment_name A character string representing the name of the R variable metadata environment to be created. The default value is `"META"`.
 #' @examples
-#' # Initialize metadata with the default environment name "META"
-#' initialise_metadata()
-#' 
-#' # Initialize metadata with a custom environment name
-#' initialise_metadata("CustomEnv")
+#' a
 #' @export
 #' @md
 initialise_metadata = function (environment_name="META") {
@@ -231,24 +226,22 @@ clean_metadata = function (metadata) {
 
 
 #' @title generate_metadata
-#' @description This function generates a metadata JSON file based on a template. It retrieves values from the global environment (via the specified `environment_name`) and populates the template with these values. The resulting metadata is saved as a JSON file in the specified output directory. If the file already exists, it can be overwritten depending on the `overwrite_metadata` argument.
-#' @param out_dir A character string specifying the directory where the generated metadata JSON file will be saved. Defaults to the current directory ("./").
-#' @param file_name_overwrite A character string specifying a custom file name for the generated metadata. If NULL, the default file name is taken from the `META$file_name` variable. Defaults to NULL.
-#' @param environment_name The name of the global environment variable containing the metadata values. Defaults to "META".
+#' @description Write a metadata json file and return the associated metadata list based on the R variables contained in the previously initialised R variable metadata environment. See [initialise_metadata()] to create a new R variable environment.
+#' @param metadata_dir A character string specifying the directory where the generated metadata json file will be saved. Defaults to the current directory (".").
+#' @param metadata_filename A character string specifying filename for the generated metadata. If their is a `filename` variable in the R metadata environment, the default filename is taken from this variable. Default to `"metadata"`.
+#' @param environment_name The name of the R variable metadata environment variable containing the metadata values. Defaults to "META".
 #' @param overwrite_metadata A logical value indicating whether to overwrite an existing metadata file. Defaults to TRUE.
-#' @param dev A logical value indicating whether to use the development template for metadata. Defaults to FALSE.
-#' @param verbose A logical value for whether to print additional information for debugging. Defaults to FALSE.
-#' @return A list containing two elements: `file_path` (the path to the generated metadata file) and `json` (the JSON content of the metadata).
+#' @param dev A logical value indicating whether to use the development template for metadata. Default to FALSE.
+#' @param verbose A logical value for whether to print additional information. Default to FALSE.
+#' @return A list containing two elements :
+#' - `metadata_path` the path to the generated metadata file and
+#' - `json` the json list equivalent content of the metadata
 #' @examples
-#' # Generate metadata and save it to the current directory
-#' generate_metadata()
-#'
-#' # Generate metadata and save it to a custom directory with a custom file name
-#' generate_metadata(out_dir="path/to/output", file_name_overwrite="custom_metadata")
+#' a
 #' @export
 #' @md
-generate_metadata = function (out_dir=".",
-                              file_name_overwrite="metadata",
+generate_metadata = function (metadata_dir=".",
+                              metadata_filename="metadata",
                               environment_name="META",
                               overwrite_metadata=TRUE,
                               dev=FALSE,
@@ -271,13 +264,13 @@ generate_metadata = function (out_dir=".",
     
     META = get(environment_name, envir=.GlobalEnv)
     
-    if (!is.null(META$file_name)) {
-        out_file = paste0(META$file_name, ".json")
-        rm (file_name, envir=META)
+    if (!is.null(META$filename)) {
+        metadata_filename = paste0(META$filename, ".json")
+        rm (filename, envir=META)
     } else {
-        out_file = paste0(file_name_overwrite, ".json")
+        metadata_filename = paste0(metadata_filename, ".json")
     }
-    out_path = file.path(out_dir, out_file)
+    metadata_path = file.path(metadata_dir, metadata_filename)
     
     TypeNames = ls(envir=META)
     TypeNames_Num = TypeNames[grepl("[[:digit:]]+$", TypeNames)]
@@ -313,15 +306,15 @@ generate_metadata = function (out_dir=".",
     json = jsonlite::toJSON(metadata,
                             pretty=TRUE,
                             auto_unbox=TRUE)
-    res = list(file_path=out_path, json=json)
+    res = list(metadata_path=metadata_path, json=json)
     
-    if (file.exists(out_path) & !overwrite_metadata) {
+    if (file.exists(metadata_path) & !overwrite_metadata) {
         message (paste0("Metadata file already exists in ",
-                        out_path))
+                        metadata_path))
         return (res)
     }
     
-    write(json, out_path)
+    write(json, metadata_path)
     return (res)
 }
 

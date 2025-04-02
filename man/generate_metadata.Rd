@@ -5,8 +5,8 @@
 \title{generate_metadata}
 \usage{
 generate_metadata(
-  out_dir = ".",
-  file_name_overwrite = "metadata",
+  metadata_dir = ".",
+  metadata_filename = "metadata",
   environment_name = "META",
   overwrite_metadata = TRUE,
   dev = FALSE,
@@ -14,28 +14,28 @@ generate_metadata(
 )
 }
 \arguments{
-\item{out_dir}{A character string specifying the directory where the generated metadata JSON file will be saved. Defaults to the current directory ("./").}
+\item{metadata_dir}{A character string specifying the directory where the generated metadata json file will be saved. Defaults to the current directory (".").}
 
-\item{file_name_overwrite}{A character string specifying a custom file name for the generated metadata. If NULL, the default file name is taken from the \code{META$file_name} variable. Defaults to NULL.}
+\item{metadata_filename}{A character string specifying filename for the generated metadata. If their is a \code{filename} variable in the R metadata environment, the default filename is taken from this variable. Default to \code{"metadata"}.}
 
-\item{environment_name}{The name of the global environment variable containing the metadata values. Defaults to "META".}
+\item{environment_name}{The name of the R variable metadata environment variable containing the metadata values. Defaults to "META".}
 
 \item{overwrite_metadata}{A logical value indicating whether to overwrite an existing metadata file. Defaults to TRUE.}
 
-\item{dev}{A logical value indicating whether to use the development template for metadata. Defaults to FALSE.}
+\item{dev}{A logical value indicating whether to use the development template for metadata. Default to FALSE.}
 
-\item{verbose}{A logical value for whether to print additional information for debugging. Defaults to FALSE.}
+\item{verbose}{A logical value for whether to print additional information. Default to FALSE.}
 }
 \value{
-A list containing two elements: \code{file_path} (the path to the generated metadata file) and \code{json} (the JSON content of the metadata).
+A list containing two elements :
+\itemize{
+\item \code{metadata_path} the path to the generated metadata file and
+\item \code{json} the json list equivalent content of the metadata
+}
 }
 \description{
-This function generates a metadata JSON file based on a template. It retrieves values from the global environment (via the specified \code{environment_name}) and populates the template with these values. The resulting metadata is saved as a JSON file in the specified output directory. If the file already exists, it can be overwritten depending on the \code{overwrite_metadata} argument.
+Write a metadata json file and return the associated metadata list based on the R variables contained in the previously initialised R variable metadata environment. See \code{\link[=initialise_metadata]{initialise_metadata()}} to create a new R variable environment.
 }
 \examples{
-# Generate metadata and save it to the current directory
-generate_metadata()
-
-# Generate metadata and save it to a custom directory with a custom file name
-generate_metadata(out_dir="path/to/output", file_name_overwrite="custom_metadata")
+a
 }

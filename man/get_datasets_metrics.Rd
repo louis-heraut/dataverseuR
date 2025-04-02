@@ -7,23 +7,25 @@
 get_datasets_metrics(
   datasets_DOI,
   BASE_URL = Sys.getenv("BASE_URL"),
-  API_TOKEN = Sys.getenv("API_TOKEN")
+  API_TOKEN = Sys.getenv("API_TOKEN"),
+  verbose = TRUE
 )
 }
 \arguments{
-\item{datasets_DOI}{A character string or vector representing the DOI of the datasets.}
+\item{datasets_DOI}{A vector of character string representing the DOI of datasets that will be process.}
 
-\item{BASE_URL}{A character string representing the base URL for the Dataverse installation (default is the environment variable \code{BASE_URL}).}
+\item{BASE_URL}{A character string for the base URL of the Dataverse API. By default, it uses the value from the environment variable \code{BASE_URL}.}
 
-\item{API_TOKEN}{A character string representing the API token for authentication (default is the environment variable \code{API_TOKEN}).}
+\item{API_TOKEN}{A character string for the API token required to authenticate the request. By default, it uses the value from the environment variable \code{API_TOKEN}.}
+
+\item{verbose}{If FALSE, no processing informations are displayed. By default, TRUE.}
 }
 \value{
 A named list containing total views, unique views, total downloads, unique downloads, and citations.
 }
 \description{
-This function retrieves dataset metrics (views, downloads, and citations) from the Dataverse API for a given dataset DOI.
+Retrieves dataset metrics of views and downloads from a selection of datasets.
 }
 \examples{
-# Retrieve dataset metrics
-get_dataset_metrics("doi:10.5072/FK2/J8SJZB")
+a
 }

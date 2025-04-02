@@ -19,26 +19,32 @@
 # If not, see <https://www.gnu.org/licenses/>.
 
 
-#' @title get_dotenv
-#' @description This function copies a predefined `.env` file from the package's extdata directory to a specified path. It also prints a message advising the user to fill in their credentials and rename the file to `.env`. The copied file serves as a template for environment variables required for authentication or other configuration.
-#' @param dotenv_path A character string representing the destination path where the `.env` file should be copied. By default, it copies to the `dist.env` file in the working directory.
-#' @return The function returns the path to the copied `.env` file.
+#' @title create_dotenv
+#' @description Create a default .env file necessary to fill in environment variables required for dataverse authentication.
+#' @param dotenv_path A character string for the path of the .env file that will be created. By default, it create a file named `dist.env` in the working directory. This file should be rename `.env`.
+#' @param verbose If FALSE, no processing informations are displayed. By default, TRUE.
+#' @return The function returns the path to the created .env file.
 #' @examples
-#' # Copy the .env file to a specific location
-#' get_dotenv("path/to/your/.env")
-#' 
-#' # Copy the .env file to the default location (current working directory)
-#' get_dotenv()
+#' # Create the .env file to the working directory
+#' create_dotenv()
+#'
+#' # Create the .env file in a remote location with no informations displayed
+#' create_dotenv("/path/to/dir/.env-demo", verbose=FALSE)
 #' @export
 #' @md
-get_dotenv = function(dotenv_path=file.path(getwd(), "dist.env")) {
+create_dotenv = function(dotenv_path=file.path(getwd(), "dist.env"),
+                         verbose=TRUE) {
+    
     dotenv_from_path = system.file("extdata", "dist.env",
                                    package="dataverseur")
     file.copy(dotenv_from_path, dotenv_path, overwrite=TRUE)
-    message(paste0("The '", basename(dotenv_path),
-                   "' file has been copied to : '",
-                   dotenv_path,
-                   "'\n\nPLease fill in your credential and rename that file '.env'.\n/!\\ NEVER give your personnal credential through a GIT repo."))
+
+    if (verbose) {
+        message(paste0("The '", basename(dotenv_path),
+                       "' file has been copied to : '",
+                       dotenv_path,
+                       "'\n\nPLease fill in your credential and rename that file '.env'.\n/!\\ NEVER give your personnal credential through a GIT repo."))
+    }
     return (dotenv_path)
 }
 
@@ -69,9 +75,6 @@ convert_datasets_to_tibble_hide = function(dataset) {
     dplyr::as_tibble(dataset_flat) 
 }
 
-#' @title convert_datasets_search_to_tibble
-#' @export
-#' @md
 convert_datasets_search_to_tibble = function (datasets_search) {
     results = dplyr::tibble()
     for (dataset in datasets_search$items) {
@@ -83,19 +86,12 @@ convert_datasets_search_to_tibble = function (datasets_search) {
 }
 
 
-# status “RELEASED” or “DRAFT”
 #' @title search_datasets
-#' @description This function performs a search query on the Dataverse API. It allows users to search for datasets based on a query, publication status, type, and associated dataverse. The function returns datasets matching the search parameters, fetched via an API call to the Dataverse platform.
-#' @param query A character string specifying the search query. The default value is "*" which means a search for all datasets.
-#' @param publication_status A character string specifying the publication status of the datasets. Valid options are "DRAFT", "RELEASED", or a specific status. The default is "*", meaning all statuses.
-#' @param type A character string specifying the type of the dataset. The default is "*", meaning all types.
-#' @param dataverse A character string specifying the dataverse to search within. If left empty, the search will query all available dataverses.
-#' @param n_search A character string indicating the number of results to return. Default is "10".
-#' @param BASE_URL A character string for the base URL of the Dataverse API. By default, it uses the value from the environment variable `BASE_URL`.
-#' @param API_TOKEN A character string for the API token required to authenticate the request. By default, it uses the value from the environment variable `API_TOKEN`.
-#' @details
-#' ChatGPT help (need to be tested) :
+#' @description Performs a search query on the Dataverse API.
+#' @param query A character string specifying the search query. The default value is `"*"` which means a search for all datasets.
 #' 
+#' More information on search formatting through an example:
+#'
 #' QUERY TYPE	     SYNTAX EXAMPLE                      DESCRIPTION
 #' Basic Search	     query="climate"	                 Finds "climate" anywhere
 #' Exact Phrase	     query='"climate change"'	         Finds the exact phrase
@@ -106,21 +102,20 @@ convert_datasets_search_to_tibble = function (datasets_search) {
 #' Proximity Search  query='"climate temperature"~5'	 Finds nearby words
 #' Regex (Limited)   query="climate*"                    Limited pattern matching
 #' 
-#' @return A list of datasets returned from the Dataverse search query. If the API request fails, an error message is printed, and the function stops.
+#' @param publication_status A character string specifying the publication status of the datasets. Valid options are "DRAFT", "RELEASED". The default is `"*"`, meaning all statuses.
+#' @param type A character string specifying the type of object to search between `"dataverse"`, `"dataset"`, or `"file"`. The default is `"dataset"` for searching only dataset.
+#' @param dataverse A character string specifying the dataverse to search within. If left empty, the search will query all available dataverses in the `BASE_URL`.
+#' @param n_search An integer indicating the maximum number of results to return. Default is 10.
+#' @param BASE_URL A character string for the base URL of the Dataverse API. By default, it uses the value from the environment variable `BASE_URL`.
+#' @param API_TOKEN A character string for the API token required to authenticate the request. By default, it uses the value from the environment variable `API_TOKEN`.
+#' @return A tibble of the restult of the search.
 #' @examples
-#' # Perform a search for datasets with the default parameters
-#' search()
-#' 
-#' # Perform a search for datasets in a specific dataverse with publication status 'RELEASED'
-#' search(query="climate change", publication_status="RELEASED", dataverse="earth-sciences")
-#' 
-#' # Perform a search with custom results per page
-#' search(n_search="20")
+#' a
 #' @export
 #' @md
 search_datasets = function(query="*", publication_status="*",
-                           type="*", dataverse="",
-                           n_search="10",
+                           type="dataset", dataverse="",
+                           n_search=10,
                            BASE_URL=Sys.getenv("BASE_URL"),
                            API_TOKEN=Sys.getenv("API_TOKEN")) {
 
@@ -191,14 +186,14 @@ search_datasets = function(query="*", publication_status="*",
 
 
 #' @title get_datasets_size
-#' @description This function retrieves the total storage size (in bytes) of a dataset from the Dataverse API.
-#' @param datasets_DOI A character string or vector representing the dataset DOIs.
-#' @param BASE_URL A character string representing the base URL for the Dataverse installation (default is the environment variable `BASE_URL`).
-#' @param API_TOKEN A character string representing the API token for authentication (default is the environment variable `API_TOKEN`).
-#' @return A tibble containing dataset DOIs and their corresponding total storage sizes in bytes.
+#' @description Retrieves the total storage size (in bytes) of a selection of datasets.
+#' @param datasets_DOI A vector of character string representing the DOI of datasets that will be process.
+#' @param BASE_URL A character string for the base URL of the Dataverse API. By default, it uses the value from the environment variable `BASE_URL`.
+#' @param API_TOKEN A character string for the API token required to authenticate the request. By default, it uses the value from the environment variable `API_TOKEN`.
+#' @param verbose If FALSE, no processing informations are displayed. By default, TRUE.
+#' @return A tibble containing datasets DOI and their corresponding total storage sizes in bytes.
 #' @examples
-#' # Retrieve dataset storage size
-#' get_datasets_size("24")
+#' a
 #' @export
 #' @md
 get_datasets_size = function(datasets_DOI,
@@ -246,14 +241,14 @@ get_datasets_size = function(datasets_DOI,
 
 
 #' @title get_datasets_metrics
-#' @description This function retrieves dataset metrics (views, downloads, and citations) from the Dataverse API for a given dataset DOI.
-#' @param datasets_DOI A character string or vector representing the DOI of the datasets.
-#' @param BASE_URL A character string representing the base URL for the Dataverse installation (default is the environment variable `BASE_URL`).
-#' @param API_TOKEN A character string representing the API token for authentication (default is the environment variable `API_TOKEN`).
+#' @description Retrieves dataset metrics of views and downloads from a selection of datasets.
+#' @param datasets_DOI A vector of character string representing the DOI of datasets that will be process.
+#' @param BASE_URL A character string for the base URL of the Dataverse API. By default, it uses the value from the environment variable `BASE_URL`.
+#' @param API_TOKEN A character string for the API token required to authenticate the request. By default, it uses the value from the environment variable `API_TOKEN`.
+#' @param verbose If FALSE, no processing informations are displayed. By default, TRUE.
 #' @return A named list containing total views, unique views, total downloads, unique downloads, and citations.
 #' @examples
-#' # Retrieve dataset metrics
-#' get_dataset_metrics("doi:10.5072/FK2/J8SJZB")
+#' a
 #' @export
 #' @md
 get_datasets_metrics = function(datasets_DOI,
@@ -308,18 +303,15 @@ get_datasets_metrics = function(datasets_DOI,
 
 
 #' @title create_datasets
-#' @description This function creates a new dataset in a specified Dataverse. It takes metadata from a JSON file, sends a request to the Dataverse API to create the dataset, and returns the persistent DOI of the newly created dataset. If the request fails, the function provides an error message with status code and response content.
-#' @param dataverse A character string specifying the name of the Dataverse in which to create the dataset.
-#' @param metadata_paths A character string representing the path to a JSON file containing the dataset metadata.
-#' @param BASE_URL A character string representing the base URL for the Dataverse installation (default is the environment variable `BASE_URL`).
-#' @param API_TOKEN A character string representing the API token for authenticating with the Dataverse API (default is the environment variable `API_TOKEN`).
-#' @return The function returns the DOI of the newly created dataset as a character string.
+#' @description Create new datasets in a specified dataverse for a selection of metadata json file. See [generate_metadata()] in order to generate efficiently metadata json file.
+#' @param dataverse A character string specifying the name of the dataverse in which to create datasets.
+#' @param metadata_paths A vector of character string for the paths of json files containing the datasets metadata.
+#' @param BASE_URL A character string for the base URL of the Dataverse API. By default, it uses the value from the environment variable `BASE_URL`.
+#' @param API_TOKEN A character string for the API token required to authenticate the request. By default, it uses the value from the environment variable `API_TOKEN`.
+#' @param verbose If FALSE, no processing informations are displayed. By default, TRUE.
+#' @return The function returns DOI of the newly created datasets as a vector of character string.
 #' @examples
-#' # Create a new dataset using a metadata file
-#' create_dataset("my_dataverse", "path/to/metadata.json")
-#' 
-#' # Create a new dataset with custom API token and base URL
-#' create_dataset("my_dataverse", "path/to/metadata.json", BASE_URL="https://mydataverse.example.com", API_TOKEN="your_api_token")
+#' a
 #' @export
 #' @md
 create_datasets = function(dataverse,
@@ -372,17 +364,14 @@ create_datasets = function(dataverse,
 
 
 #' @title get_datasets_metadata
-#' @description This function retrieves metadata for a dataset using its DOI (Digital Object Identifier) from a Dataverse repository. It makes an API call to the Dataverse server using the provided or default credentials (BASE_URL and API_TOKEN), and returns the dataset's metadata if the request is successful. If the request fails, it prints an error message with the status code and response content.
-#' @param datasets_DOI A character string representing the DOI of the dataset whose metadata is to be retrieved.
-#' @param BASE_URL A character string representing the base URL of the Dataverse repository. The default is the value of the environment variable `BASE_URL`.
-#' @param API_TOKEN A character string representing the API token for authentication. The default is the value of the environment variable `API_TOKEN`.
-#' @return A list containing the dataset metadata if the request is successful. If the request fails, the function stops and returns an error message.
+#' @description Retrieves metadata for a selection of dataset. See [convert_metadata()] in order to convert metadata extracted by this function to R parameterisation file.
+#' @param datasets_DOI A vector of character string representing the DOI of datasets that will be process.
+#' @param BASE_URL A character string for the base URL of the Dataverse API. By default, it uses the value from the environment variable `BASE_URL`.
+#' @param API_TOKEN A character string for the API token required to authenticate the request. By default, it uses the value from the environment variable `API_TOKEN`.
+#' @param verbose If FALSE, no processing informations are displayed. By default, TRUE.
+#' @return A list containing the datasets metadata.
 #' @examples
-#' # Retrieve metadata for a dataset using its DOI
-#' dataset_info = get_dataset_metadata("doi:10.1234/abcde12345")
-#' 
-#' # Using custom BASE_URL and API_TOKEN
-#' dataset_info = get_dataset_metadata("doi:10.1234/abcde12345", BASE_URL="https://dataverse.example.com", API_TOKEN="your_api_token")
+#' a
 #' @export
 #' @md
 get_datasets_metadata = function(datasets_DOI,
@@ -426,34 +415,24 @@ get_datasets_metadata = function(datasets_DOI,
 }
 
 
-#' @title modify_datasets_metadata
-#' @description This function modifies the metadata of a dataset in a Dataverse repository. It accepts the dataset DOI, the path to a metadata JSON file, and uses the Dataverse API to update the dataset's metadata. The function checks the response for success and outputs relevant information. It is designed to facilitate metadata management and updating in Dataverse.
-#' @param dataverse A character string representing the name of the Dataverse repository.
-#' @param datasets_DOI A character string representing the DOI of the dataset to modify.
-#' @param metadata_paths A character string indicating the file path to the metadata JSON file that will be used for the update.
-#' @param BASE_URL A character string representing the base URL of the Dataverse installation. Defaults to the environment variable `BASE_URL`.
-#' @param API_TOKEN A character string representing the API token for authentication. Defaults to the environment variable `API_TOKEN`.
-#' @return The function returns the DOI of the modified dataset.
+#' @title modify_datasets
+#' @description Modify datasets metadata from a selection of metadata json file. See [generate_metadata()] in order to generate efficiently metadata json file.
+#' @param dataverse A character string specifying the name of the dataverse in which to create datasets.
+#' @param datasets_DOI A vector of character string representing the DOI of datasets that will be process.
+#' @param metadata_paths A vector of character string for the paths of json files containing the datasets metadata.
+#' @param BASE_URL A character string for the base URL of the Dataverse API. By default, it uses the value from the environment variable `BASE_URL`.
+#' @param API_TOKEN A character string for the API token required to authenticate the request. By default, it uses the value from the environment variable `API_TOKEN`.
+#' @param verbose If FALSE, no processing informations are displayed. By default, TRUE.
 #' @examples
-#' # Modify the metadata of a dataset
-#' modify_dataset_metadata(dataverse = "myDataverse", 
-#'                          dataset_DOI = "doi:10.1234/abcd", 
-#'                          metadata_path = "metadata.json")
-#' 
-#' # Modify the metadata with a custom BASE_URL and API_TOKEN
-#' modify_dataset_metadata(dataverse = "myDataverse", 
-#'                          dataset_DOI = "doi:10.1234/abcd", 
-#'                          metadata_path = "metadata.json",
-#'                          BASE_URL = "https://mydataverse.org", 
-#'                          API_TOKEN = "myapitoken123")
+#' a
 #' @export
 #' @md
-modify_datasets_metadata = function(dataverse,
-                                    datasets_DOI,
-                                    metadata_paths,
-                                    BASE_URL=Sys.getenv("BASE_URL"),
-                                    API_TOKEN=Sys.getenv("API_TOKEN"),
-                                    verbose=TRUE) {
+modify_datasets = function(dataverse,
+                           datasets_DOI,
+                           metadata_paths,
+                           BASE_URL=Sys.getenv("BASE_URL"),
+                           API_TOKEN=Sys.getenv("API_TOKEN"),
+                           verbose=TRUE) {
 
     N = length(metadata_paths)
     
@@ -494,29 +473,24 @@ modify_datasets_metadata = function(dataverse,
         }
     }
     if (verbose) close(pb)
-    return (dataset_DOI)
 }
 
 
 #' @title add_dataset_files
-#' @description This function uploads files to a specified Dataverse dataset using its DOI. The function sends HTTP POST requests to the Dataverse API to add files, and reports the status of each upload. If a file cannot be uploaded, it is added to the `not_added` list, which is returned at the end.
-#' @param dataset_DOI A character string representing the DOI of the dataset to which files will be added.
-#' @param paths A named list where the names correspond to the directory labels and the values are paths to the files to be uploaded.
-#' @param BASE_URL A character string specifying the base URL of the Dataverse instance. Defaults to the value of the `BASE_URL` environment variable.
-#' @param API_TOKEN A character string representing the API token for authenticating with the Dataverse API. Defaults to the value of the `API_TOKEN` environment variable.
+#' @description This function uploads files to a dataset.
+#' @param dataset_DOI A character string representing the DOI of dataset that will be process
+#' @param paths A vector of character string of paths of the files that needs to be uploaded. If you want to conserve a directory structure, set the name of each file path to the directory name wanted.
+#' @param BASE_URL A character string for the base URL of the Dataverse API. By default, it uses the value from the environment variable `BASE_URL`.
+#' @param API_TOKEN A character string for the API token required to authenticate the request. By default, it uses the value from the environment variable `API_TOKEN`.
+#' @param verbose If FALSE, no processing informations are displayed. By default, TRUE.
 #' @return A character vector containing the paths of the files that could not be uploaded, if any.
 #' @examples
-#' # Add files to a dataset with a specific DOI
-#' not_uploaded = add_dataset_files("doi:10.1234/abcde", c("file1.txt", "file2.csv"))
-#' 
-#' # Add files to a dataset with directory labels
-#' paths = list("directory1" = "file1.txt", "directory2" = "file2.csv")
-#' not_uploaded = add_dataset_files("doi:10.1234/abcde", paths)
+#' a
 #' @export
 #' @md
 add_dataset_files = function(dataset_DOI, paths,
                              BASE_URL=Sys.getenv("BASE_URL"),
-                             API_TOKEN=Sys.getenv("API_TOKEN")
+                             API_TOKEN=Sys.getenv("API_TOKEN"),
                              verbose=TRUE) {
     url = paste0(BASE_URL,
                  '/api/datasets/:persistentId/add?persistentId=',
@@ -564,17 +538,13 @@ add_dataset_files = function(dataset_DOI, paths,
 
 
 #' @title list_datasets_files
-#' @description This function retrieves the list of files associated with a dataset from a Dataverse repository, given the dataset's DOI. It makes an API request to the Dataverse server and processes the response to extract file information, such as file names and metadata. The function uses the base URL and API token provided by the user or defaults to system environment variables.
-#' @param datasets_DOI A character string representing the DOI (Digital Object Identifier) of the dataset for which the files are to be listed.
-#' @param BASE_URL A character string representing the base URL of the Dataverse API (default is taken from the system environment variable `BASE_URL`).
-#' @param API_TOKEN A character string representing the API token used for authentication with the Dataverse API (default is taken from the system environment variable `API_TOKEN`).
-#' @return A data frame containing information about the files associated with the dataset, excluding the description field.
+#' @description Retrieves files informations of a selection of datasets.
+#' @param datasets_DOI A vector of character string representing the DOI of datasets that will be process.
+#' @param BASE_URL A character string for the base URL of the Dataverse API. By default, it uses the value from the environment variable `BASE_URL`.
+#' @param API_TOKEN A character string for the API token required to authenticate the request. By default, it uses the value from the environment variable `API_TOKEN`.
+#' @return A [tibble][dplyr::tibble()] containing files information.
 #' @examples
-#' # List files for a dataset with a specific DOI
-#' files <- list_dataset_files("doi:10.1234/abc123")
-#' 
-#' # Use custom URL and token to list dataset files
-#' files <- list_dataset_files("doi:10.1234/abc123", BASE_URL = "https://dataverse.example.com", API_TOKEN = "your_api_token")
+#' a
 #' @export
 #' @md
 list_datasets_files = function(datasets_DOI,
@@ -623,23 +593,14 @@ list_datasets_files = function(datasets_DOI,
 
 
 #' @title download_files
-#' @description This function downloads a file from a Dataverse repository using its DOI (Digital Object Identifier).  
-#' It makes an API call to the Dataverse server and saves the file locally.
-#' @param files_DOI A character string representing the DOI of the file to be downloaded.
-#' @param save_paths A character string representing the local path where the file should be saved.
-#' @param BASE_URL A character string representing the base URL of the Dataverse repository.  
-#' Default is the value of the environment variable `BASE_URL`.
-#' @param API_TOKEN A character string representing the API token for authentication.  
-#' Default is the value of the environment variable `API_TOKEN`.
-#' @return The function downloads the file and saves it to the specified location. If the request fails, an error is returned.
+#' @description Download files based on their DOI.
+#' @param files_DOI A vector of character string of the DOI of files to be processed.
+#' @param save_paths A vector of character string representing the local path where files should be saved.
+#' @param BASE_URL A character string for the base URL of the Dataverse API. By default, it uses the value from the environment variable `BASE_URL`.
+#' @param API_TOKEN A character string for the API token required to authenticate the request. By default, it uses the value from the environment variable `API_TOKEN`.
+#' @param verbose If FALSE, no processing informations are displayed. By default, TRUE.
 #' @examples
-#' # Download a file using its DOI
-#' download_file("doi:10.5072/FK2/J8SJZB", "downloaded_file.txt")
-#' 
-#' # Using custom BASE_URL and API_TOKEN
-#' download_file("doi:10.5072/FK2/J8SJZB", "data.csv",
-#'               BASE_URL="https://dataverse.example.com",
-#'               API_TOKEN="your_api_token")
+#' a
 #' @export
 #' @md
 download_files = function(files_DOI,
@@ -679,11 +640,11 @@ download_files = function(files_DOI,
 
 
 #' @title delete_datasets_files
-#' @description . 
-#' @param files_DOI A character string representing the DOI (Digital Object Identifier) of the file that will be deleted.
-#' @param BASE_URL A character string representing the base URL of the Dataverse installation. Default is fetched from the `BASE_URL` environment variable.
-#' @param API_TOKEN A character string representing the API token used for authentication. Default is fetched from the `API_TOKEN` environment variable.
-#' @return The function does not return any value. It prints messages indicating the status of the file deletion.
+#' @description Delete files based on their DOI.
+#' @param files_DOI A vector of character string of the DOI of files to be processed.
+#' @param BASE_URL A character string for the base URL of the Dataverse API. By default, it uses the value from the environment variable `BASE_URL`.
+#' @param API_TOKEN A character string for the API token required to authenticate the request. By default, it uses the value from the environment variable `API_TOKEN`.
+#' @param verbose If FALSE, no processing informations are displayed. By default, TRUE.
 #' @examples
 #' .
 #' @export
@@ -720,17 +681,13 @@ delete_datasets_files = function(files_DOI,
 
 
 #' @title delete_all_datasets_files
-#' @description This function deletes all files associated with a dataset in the Dataverse repository. It first retrieves the list of files from the specified dataset and then iterates through each file, sending a DELETE request to remove each one. The function reports success or failure for each file.
-#' @param datasets_DOI A character string representing the DOI (Digital Object Identifier) of the dataset from which the files will be deleted.
-#' @param BASE_URL A character string representing the base URL of the Dataverse installation. Default is fetched from the `BASE_URL` environment variable.
-#' @param API_TOKEN A character string representing the API token used for authentication. Default is fetched from the `API_TOKEN` environment variable.
-#' @return The function does not return any value. It prints messages indicating the status of each file deletion.
+#' @description Delete all files from a selection of datasets.
+#' @param datasets_DOI A vector of character string representing the DOI of datasets that will be process.
+#' @param BASE_URL A character string for the base URL of the Dataverse API. By default, it uses the value from the environment variable `BASE_URL`.
+#' @param API_TOKEN A character string for the API token required to authenticate the request. By default, it uses the value from the environment variable `API_TOKEN`.
+#' @param verbose If FALSE, no processing informations are displayed. By default, TRUE.
 #' @examples
-#' # Delete files from a dataset with a specific DOI
-#' delete_dataset_files("doi:10.1234/abcd")
-#' 
-#' # Delete files from a dataset using custom URL and API token
-#' delete_dataset_files("doi:10.1234/abcd", BASE_URL = "https://dataverse.example.com", API_TOKEN = "your_api_token")
+#' a
 #' @export
 #' @md
 delete_all_datasets_files = function(datasets_DOI,
@@ -779,18 +736,14 @@ delete_all_datasets_files = function(datasets_DOI,
 
 
 #' @title publish_datasets
-#' @description This function publishes a dataset in Dataverse using its DOI. The function sends a POST request to the Dataverse API, passing the DOI of the dataset and a specified type (e.g., major or minor) of publication. Upon success, it prints a success message, otherwise, it reports an error.
-#' @param datasets_DOI A character string representing the DOI (Digital Object Identifier) of the dataset to be published.
-#' @param type A character string specifying the type of publication. Options are "major" or "minor". Default is "major".
-#' @param BASE_URL A character string representing the base URL of the Dataverse installation. Default is fetched from the `BASE_URL` environment variable.
-#' @param API_TOKEN A character string representing the API token used for authentication. Default is fetched from the `API_TOKEN` environment variable.
-#' @return The function does not return any value. It prints messages indicating whether the dataset was successfully published or if an error occurred.
+#' @description Publish a selection of datasets.
+#' @param datasets_DOI A vector of character string representing the DOI of datasets that will be process.
+#' @param type A character string specifying the type of publication. Use `"major"` if at least a file as been modified of supressed, if only metadata have changed, use `"minor"`.
+#' @param BASE_URL A character string for the base URL of the Dataverse API. By default, it uses the value from the environment variable `BASE_URL`.
+#' @param API_TOKEN A character string for the API token required to authenticate the request. By default, it uses the value from the environment variable `API_TOKEN`.
+#' @param verbose If FALSE, no processing informations are displayed. By default, TRUE.
 #' @examples
-#' # Publish a dataset with a specific DOI
-#' publish_dataset("doi:10.1234/abcd")
-#' 
-#' # Publish a dataset with custom parameters
-#' publish_dataset("doi:10.1234/abcd", type = "minor", BASE_URL = "https://dataverse.example.com", API_TOKEN = "your_api_token")
+#' a
 #' @export
 #' @md
 publish_datasets = function(datasets_DOI, type="major",
@@ -825,22 +778,18 @@ publish_datasets = function(datasets_DOI, type="major",
 
 
 #' @title delete_datasets
-#' @description This function deletes a dataset in Dataverse using its DOI. It sends a DELETE request to the Dataverse API, passing the DOI of the dataset. Upon success, it prints a success message; otherwise, it reports an error.
-#' @param datasets_DOI A character string representing the DOI (Digital Object Identifier) of the dataset to be deleted.
-#' @param BASE_URL A character string representing the base URL of the Dataverse installation. Default is fetched from the `BASE_URL` environment variable.
-#' @param API_TOKEN A character string representing the API token used for authentication. Default is fetched from the `API_TOKEN` environment variable.
-#' @return The function does not return any value. It prints messages indicating whether the dataset was successfully deleted or if an error occurred.
+#' @description Delete a selection of unpublished datasets.
+#' @param datasets_DOI A vector of character string representing the DOI of datasets that will be process.
+#' @param BASE_URL A character string for the base URL of the Dataverse API. By default, it uses the value from the environment variable `BASE_URL`.
+#' @param API_TOKEN A character string for the API token required to authenticate the request. By default, it uses the value from the environment variable `API_TOKEN`.
+#' @param verbose If FALSE, no processing informations are displayed. By default, TRUE.
 #' @examples
-#' # Delete a dataset with a specific DOI
-#' delete_dataset("doi:10.1234/abcd")
-#' 
-#' # Delete a dataset with custom parameters
-#' delete_dataset("doi:10.1234/abcd", BASE_URL = "https://dataverse.example.com", API_TOKEN = "your_api_token")
+#' a
 #' @export
 #' @md
 delete_datasets = function(datasets_DOI,
                            BASE_URL=Sys.getenv("BASE_URL"),
-                           API_TOKEN=Sys.getenv("API_TOKEN")
+                           API_TOKEN=Sys.getenv("API_TOKEN"),
                            verbose=TRUE) {
     
     N = length(datasets_DOI)

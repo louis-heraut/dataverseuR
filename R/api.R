@@ -86,6 +86,22 @@ convert_datasets_search_to_tibble = function (datasets_search) {
 }
 
 
+#' @title convert_DOI_to_URL
+#' @description Convert a DOI to a functional URL.
+#' @param DOI A character string specifying the DOI to convert.
+#' @return A character string for the associated URL.
+#' @examples
+#' convert_DOI_to_URL("doi:10.57745/LNBEGZ")
+#' @export
+#' @md
+convert_DOI_to_URL = function (DOI) {
+    URL = gsub("doi[:]",
+               "https://doi.org/",
+               DOI)
+    return (URL)
+}
+
+
 #' @title search_datasets
 #' @description Performs a search query on the Dataverse API.
 #' @param query A character string specifying the search query. The default value is `"*"` which means a search for all datasets.
@@ -110,7 +126,24 @@ convert_datasets_search_to_tibble = function (datasets_search) {
 #' @param API_TOKEN A character string for the API token required to authenticate the request. By default, it uses the value from the environment variable `API_TOKEN`.
 #' @return A tibble of the restult of the search.
 #' @examples
-#' a
+#' \dontrun{
+#' # A simple example to search all datasets from a dataverse
+#' datasets = search_datasets(query="*",
+#'                            publication_status="RELEASED",
+#'                            type="dataset",
+#'                            dataverse="riverly",
+#'                            n_search=1000)
+#'
+#' # A more difficult one with a complexe query 
+#' query = '(title:"Fiches de résultats*" OR title:"Fiches incertitudes*" OR title:"Fiches de diagnostic*" OR title:"Ensemble des fiches") NOT title:"Notice" NOT title:"Accompagnement"'
+#' datasets = search_datasets(query=query,
+#'                            publication_status="RELEASED",
+#'                            type="dataset",
+#'                            dataverse="explore2",
+#'                            n_search=1000)
+#' }
+#' @seealso [R example in context](https://github.com/super-lou/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R)
+#' @references [Search API documentation](https://guides.dataverse.org/en/5.3/api/search.html)
 #' @export
 #' @md
 search_datasets = function(query="*", publication_status="*",
@@ -147,19 +180,6 @@ search_datasets = function(query="*", publication_status="*",
         stop(paste0(httr::status_code(response), " ",
                     httr::content(response, "text")))
     }
-
-    # cols = c("dataset_DOI",
-    #          "url",
-    #          "name",
-    #          "citation",
-    #          "description",
-    #          "identifier_of_dataverse",
-    #          "subjects",
-    #          "keywords",
-    #          "fileCount",
-    #          "createdAt",
-    #          "authors")
-    
     datasets = httr::content(response, "parsed")$data
     datasets = convert_datasets_search_to_tibble(datasets)
     
@@ -187,31 +207,28 @@ search_datasets = function(query="*", publication_status="*",
 
 #' @title get_datasets_size
 #' @description Retrieves the total storage size (in bytes) of a selection of datasets.
-#' @param datasets_DOI A vector of character string representing the DOI of datasets that will be process.
+#' @param dataset_DOI A vector of character string representing the DOI of datasets that will be process.
 #' @param BASE_URL A character string for the base URL of the Dataverse API. By default, it uses the value from the environment variable `BASE_URL`.
 #' @param API_TOKEN A character string for the API token required to authenticate the request. By default, it uses the value from the environment variable `API_TOKEN`.
 #' @param verbose If FALSE, no processing informations are displayed. By default, TRUE.
 #' @return A tibble containing datasets DOI and their corresponding total storage sizes in bytes.
-#' @examples
-#' a
 #' @export
+#' @seealso [R example in context](https://github.com/super-lou/dataverseuR_toolbox/blob/main/RiverLy_HCERES_2025/script.R)
+#' @references [Native API documentation](https://guides.dataverse.org/en/5.3/api/native-api.html#report-the-data-file-size-of-a-dataverse)
 #' @md
-get_datasets_size = function(datasets_DOI,
+get_datasets_size = function(dataset_DOI,
                              BASE_URL=Sys.getenv("BASE_URL"),
                              API_TOKEN=Sys.getenv("API_TOKEN"),
                              verbose=TRUE) {
 
     results = dplyr::tibble()
     
-    N = length(datasets_DOI)
+    nDOI = length(dataset_DOI)
     
-    if (verbose) {pb = txtProgressBar(min=0, max=N, style=3)}
-    for (i in 1:N) {
-        if (verbose) setTxtProgressBar(pb, i)
+    for (i in 1:nDOI) {
+        dDOI = dataset_DOI[i]
         
-        dataset_DOI = datasets_DOI[i]
-        
-        query_url = paste0(BASE_URL, "/api/datasets/:persistentId/storagesize/?persistentId=", dataset_DOI)
+        query_url = paste0(BASE_URL, "/api/datasets/:persistentId/storagesize/?persistentId=", dDOI)
         response = httr::GET(query_url, 
                          httr::add_headers("X-Dataverse-key"=API_TOKEN))
         
@@ -222,17 +239,18 @@ get_datasets_size = function(datasets_DOI,
                               size_value)
             size_value = as.numeric(size_value)
         } else {
-            warning(paste0(dataset_DOI, " : ",
+            warning(paste0(dDOI, " : ",
                            httr::status_code(response), " ",
                            httr::content(response, "text")))
             size_value = NA
         }
         
-        results_tmp = dplyr::tibble(dataset_DOI=dataset_DOI,
+        results_tmp = dplyr::tibble(dataset_DOI=dDOI,
                                     storage_size_bytes=size_value)
         results = dplyr::bind_rows(results, results_tmp)
+
+        if (verbose) message(paste0(round(i/nDOI*100, 1), "% : size of dataset ", convert_DOI_to_URL(dDOI), " retrieved"))
     }
-    if (verbose) close(pb)
     
     results$storage_size_GB = round(results$storage_size_bytes/1024**3, 3)
     return(results)
@@ -242,16 +260,16 @@ get_datasets_size = function(datasets_DOI,
 
 #' @title get_datasets_metrics
 #' @description Retrieves dataset metrics of views and downloads from a selection of datasets.
-#' @param datasets_DOI A vector of character string representing the DOI of datasets that will be process.
+#' @param dataset_DOI A vector of character string representing the DOI of datasets that will be process.
 #' @param BASE_URL A character string for the base URL of the Dataverse API. By default, it uses the value from the environment variable `BASE_URL`.
 #' @param API_TOKEN A character string for the API token required to authenticate the request. By default, it uses the value from the environment variable `API_TOKEN`.
 #' @param verbose If FALSE, no processing informations are displayed. By default, TRUE.
 #' @return A named list containing total views, unique views, total downloads, unique downloads, and citations.
-#' @examples
-#' a
+#' @seealso [R example in context](https://github.com/super-lou/dataverseuR_toolbox/blob/main/RiverLy_HCERES_2025/script.R)
+#' @references [Native API documentation](https://guides.dataverse.org/en/5.3/api/native-api.html#dataset-metrics)
 #' @export
 #' @md
-get_datasets_metrics = function(datasets_DOI,
+get_datasets_metrics = function(dataset_DOI,
                                 BASE_URL=Sys.getenv("BASE_URL"),
                                 API_TOKEN=Sys.getenv("API_TOKEN"),
                                 verbose=TRUE) {
@@ -260,18 +278,15 @@ get_datasets_metrics = function(datasets_DOI,
     metrics = c("viewsTotal", "viewsUnique",
                 "downloadsTotal", "downloadsUnique") #"citations"
 
-    N = length(datasets_DOI)
+    nDOI = length(dataset_DOI)
     
-    if (verbose) {pb = txtProgressBar(min=0, max=N, style=3)}
-    for (i in 1:N) {
-        if (verbose) setTxtProgressBar(pb, i)
-        
-        dataset_DOI = datasets_DOI[i]
+    for (i in 1:nDOI) {
+        dDOI = dataset_DOI[i]
                     
         results_tmp = c()
         for (metric in metrics) {
             query_url = paste0(BASE_URL, "/api/datasets/:persistentId/makeDataCount/", 
-                               metric, "?persistentId=", dataset_DOI)
+                               metric, "?persistentId=", dDOI)
             
             response = httr::GET(query_url, 
                                  httr::add_headers("X-Dataverse-key"=API_TOKEN))
@@ -280,7 +295,7 @@ get_datasets_metrics = function(datasets_DOI,
                 metric_value = unlist(httr::content(response,
                                                     "parsed")$data)
             } else {
-                warning(paste0(dataset_DOI, " - ", metric, " : ",
+                warning(paste0(dDOI, " - ", metric, " : ",
                                httr::status_code(response), " ",
                                httr::content(response, "text")))
                 metric_value = NA
@@ -288,11 +303,12 @@ get_datasets_metrics = function(datasets_DOI,
             results_tmp = c(results_tmp, metric_value)
         }
         # results_tmp = as.numeric(results_tmp)
-        results_tmp = c(dataset_DOI=dataset_DOI, results_tmp)
+        results_tmp = c(dataset_DOI=dDOI, results_tmp)
         results_tmp = dplyr::tibble(!!!results_tmp)
         results = dplyr::bind_rows(results, results_tmp)
+
+        if (verbose) message(paste0(round(i/nDOI*100, 1), "% : metrics for dataset ", convert_DOI_to_URL(dDOI), " retrieved"))
     }
-    if (verbose) close(pb)
     
     results = dplyr::mutate(results,
                             dplyr::across(.cols=metrics,
@@ -305,39 +321,36 @@ get_datasets_metrics = function(datasets_DOI,
 #' @title create_datasets
 #' @description Create new datasets in a specified dataverse for a selection of metadata json file. See [generate_metadata()] in order to generate efficiently metadata json file.
 #' @param dataverse A character string specifying the name of the dataverse in which to create datasets.
-#' @param metadata_paths A vector of character string for the paths of json files containing the datasets metadata.
+#' @param metadata_path A vector of character string for the paths of json files containing the datasets metadata.
 #' @param BASE_URL A character string for the base URL of the Dataverse API. By default, it uses the value from the environment variable `BASE_URL`.
 #' @param API_TOKEN A character string for the API token required to authenticate the request. By default, it uses the value from the environment variable `API_TOKEN`.
 #' @param verbose If FALSE, no processing informations are displayed. By default, TRUE.
 #' @return The function returns DOI of the newly created datasets as a vector of character string.
-#' @examples
-#' a
+#' @seealso [R example in context](https://github.com/super-lou/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R)
+#' @references [Native API documentation](https://guides.dataverse.org/en/5.3/api/native-api.html#create-a-dataset-in-a-dataverse)
 #' @export
 #' @md
 create_datasets = function(dataverse,
-                           metadata_paths,
+                           metadata_path,
                            BASE_URL=Sys.getenv("BASE_URL"),
                            API_TOKEN=Sys.getenv("API_TOKEN"),
                            verbose=TRUE) {
 
-    datasets_DOI = c()
-    N = length(metadata_paths)
+    dataset_DOI = c()
+    nDOI = length(metadata_path)
     
-    if (verbose) {pb = txtProgressBar(min=0, max=N, style=3)}
-    for (i in 1:N) {
-        if (verbose) setTxtProgressBar(pb, i)
+    for (i in 1:nDOI) {
+        mpath = metadata_path[i]
         
-        metadata_path = metadata_paths[i]
-        
-        metadata_json = jsonlite::fromJSON(metadata_path,
-                                           simplifyDataFrame=FALSE,
-                                           simplifyVector=FALSE)
+        mjson = jsonlite::fromJSON(mpath,
+                                   simplifyDataFrame=FALSE,
+                                   simplifyVector=FALSE)
 
         create_url = paste0(BASE_URL, "/api/dataverses/",
                             dataverse, "/datasets")
         response = httr::POST(create_url,
                               httr::add_headers("X-Dataverse-key"=API_TOKEN),
-                              body = metadata_json,
+                              body = mjson,
                               encode = "json") 
 
         if (httr::status_code(response) != 201) {
@@ -345,50 +358,39 @@ create_datasets = function(dataverse,
                         httr::content(response, "text")))
         }
 
-        dataset_info = httr::content(response, "parsed")
-        dataset_DOI = dataset_info$data$persistentId
-        dataset_DOI_URL = gsub("doi[:]",
-                               "https://doi.org/",
-                               dataset_DOI)
-        if (verbose) {
-            message(paste0("Dataset of DOI ", dataset_DOI,
-                           " has been created in ",
-                           BASE_URL, "/dataverse/",
-                           dataverse, " at ", dataset_DOI_URL))
-        }
-        datasets_DOI = c(datasets_DOI, dataset_DOI)
+        dataset = httr::content(response, "parsed")
+        dDOI = dataset$data$persistentId
+        dataset_DOI = c(dataset_DOI, dDOI)
+
+        if (verbose) message(paste0(round(i/nDOI*100, 1), "% : dataset ", convert_DOI_to_URL(dDOI), " created"))
     }
-    if (verbose) close(pb)
-    return (datasets_DOI)
+    return (dataset_DOI)
 }
 
 
 #' @title get_datasets_metadata
 #' @description Retrieves metadata for a selection of dataset. See [convert_metadata()] in order to convert metadata extracted by this function to R parameterisation file.
-#' @param datasets_DOI A vector of character string representing the DOI of datasets that will be process.
+#' @param dataset_DOI A vector of character string representing the DOI of datasets that will be process.
 #' @param BASE_URL A character string for the base URL of the Dataverse API. By default, it uses the value from the environment variable `BASE_URL`.
 #' @param API_TOKEN A character string for the API token required to authenticate the request. By default, it uses the value from the environment variable `API_TOKEN`.
 #' @param verbose If FALSE, no processing informations are displayed. By default, TRUE.
 #' @return A list containing the datasets metadata.
-#' @examples
-#' a
+#' @seealso [R example in context](https://github.com/super-lou/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R)
+#' @references [Native API documentation](https://guides.dataverse.org/en/5.3/api/native-api.html#get-json-representation-of-a-dataset)
 #' @export
 #' @md
-get_datasets_metadata = function(datasets_DOI,
+get_datasets_metadata = function(dataset_DOI,
                                  BASE_URL=Sys.getenv("BASE_URL"),
                                  API_TOKEN=Sys.getenv("API_TOKEN"),
                                  verbose=TRUE) {
 
     metadata_list = list()
-    N = length(datasets_DOI)
+    nDOI = length(dataset_DOI)
     
-    if (verbose) {pb = txtProgressBar(min=0, max=N, style=3)}
-    for (i in 1:N) {
-        if (verbose) setTxtProgressBar(pb, i)
-        
-        dataset_DOI = datasets_DOI[i]
+    for (i in 1:nDOI) {
+        dDOI = dataset_DOI[i]
 
-        api_url = paste0(BASE_URL, "/api/datasets/:persistentId/?persistentId=", dataset_DOI)
+        api_url = paste0(BASE_URL, "/api/datasets/:persistentId/?persistentId=", dDOI)
         response = httr::GET(api_url, httr::add_headers("X-Dataverse-key"=API_TOKEN))
         
         if (httr::status_code(response) != 200) {
@@ -398,19 +400,20 @@ get_datasets_metadata = function(datasets_DOI,
 
         response_content = httr::content(response, as="text",
                                          encoding="UTF-8")
-        dataset_info = jsonlite::fromJSON(response_content,
-                                          simplifyDataFrame=FALSE,
-                                          simplifyVector=TRUE)
-        metadata = dataset_info$data[c("metadataLanguage",
-                                       "latestVersion")]
-        if (N == 1) {
+        dataset = jsonlite::fromJSON(response_content,
+                                     simplifyDataFrame=FALSE,
+                                     simplifyVector=TRUE)
+        metadata = dataset$data[c("metadataLanguage",
+                                  "latestVersion")]
+        if (nDOI == 1) {
             metadata_list = metadata
         } else {
             metadata_list = append(metadata_list, list(metadata))
-            names(metadata_list)[i] = dataset_DOI
+            names(metadata_list)[i] = dDOI
         }
+        
+        if (verbose) message(paste0(round(i/nDOI*100, 1), "% : dataset metadata ", convert_DOI_to_URL(dDOI), " retrieved"))
     }
-    if (verbose) close(pb)
     return (metadata_list)
 }
 
@@ -418,41 +421,38 @@ get_datasets_metadata = function(datasets_DOI,
 #' @title modify_datasets
 #' @description Modify datasets metadata from a selection of metadata json file. See [generate_metadata()] in order to generate efficiently metadata json file.
 #' @param dataverse A character string specifying the name of the dataverse in which to create datasets.
-#' @param datasets_DOI A vector of character string representing the DOI of datasets that will be process.
-#' @param metadata_paths A vector of character string for the paths of json files containing the datasets metadata.
+#' @param dataset_DOI A vector of character string representing the DOI of datasets that will be process.
+#' @param metadata_path A vector of character string for the paths of json files containing the datasets metadata.
 #' @param BASE_URL A character string for the base URL of the Dataverse API. By default, it uses the value from the environment variable `BASE_URL`.
 #' @param API_TOKEN A character string for the API token required to authenticate the request. By default, it uses the value from the environment variable `API_TOKEN`.
 #' @param verbose If FALSE, no processing informations are displayed. By default, TRUE.
-#' @examples
-#' a
+#' @seealso [R example in context](https://github.com/super-lou/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R)
+#' @references [Native API documentation](https://guides.dataverse.org/en/5.3/api/native-api.html#update-metadata-for-a-dataset)
 #' @export
 #' @md
 modify_datasets = function(dataverse,
-                           datasets_DOI,
-                           metadata_paths,
+                           dataset_DOI,
+                           metadata_path,
                            BASE_URL=Sys.getenv("BASE_URL"),
                            API_TOKEN=Sys.getenv("API_TOKEN"),
                            verbose=TRUE) {
 
-    N = length(metadata_paths)
+    nDOI = length(dataset_DOI)
     
-    if (verbose) {pb = txtProgressBar(min=0, max=N, style=3)}
-    for (i in 1:N) {
-        if (verbose) setTxtProgressBar(pb, i)
-
-        dataset_DOI = datasets_DOI[i]
-        metadata_path = metadata_paths[i]
-    
-        metadata_json = jsonlite::fromJSON(metadata_path,
-                                           simplifyDataFrame=FALSE,
-                                           simplifyVector=FALSE)
+    for (i in 1:nDOI) {
+        dDOI = dataset_DOI[i]
+        mpath = metadata_path[i]
+        
+        mjson = jsonlite::fromJSON(mpath,
+                                   simplifyDataFrame=FALSE,
+                                   simplifyVector=FALSE)
         modify_url = paste0(BASE_URL,
                             "/api/datasets/:persistentId/versions/:draft?persistentId=",
-                            dataset_DOI)
+                            dDOI)
 
         response = httr::PUT(modify_url,
                              httr::add_headers("X-Dataverse-key"=API_TOKEN),
-                             body=metadata_json$datasetVersion,
+                             body=mjson$datasetVersion,
                              encode="json")
 
         if (httr::status_code(response) != 200) {
@@ -460,110 +460,106 @@ modify_datasets = function(dataverse,
                         httr::content(response, "text")))
         }
 
-        dataset_info = httr::content(response, "parsed")
-        dataset_DOI_URL = gsub("doi[:]",
-                               "https://doi.org/",
-                               dataset_DOI)
-
-        if (verbose) {
-            message(paste0("Dataset of DOI ", dataset_DOI,
-                           " has been modify in ",
-                           BASE_URL, "/dataverse/",
-                           dataverse, " at ", dataset_DOI_URL))
-        }
+        if (verbose) message(paste0(round(i/nDOI*100, 1), "% : dataset ", convert_DOI_to_URL(dDOI), " modified"))
     }
-    if (verbose) close(pb)
 }
 
 
-#' @title add_dataset_files
+#' @title add_datasets_files
 #' @description This function uploads files to a dataset.
-#' @param dataset_DOI A character string representing the DOI of dataset that will be process
-#' @param paths A vector of character string of paths of the files that needs to be uploaded. If you want to conserve a directory structure, set the name of each file path to the directory name wanted.
+#' @param dataset_DOI A vector of character string representing the DOI of datasets that will be process.
+#' @param file_paths A vector of character string of paths of the files that needs to be uploaded. If you want to conserve a directory structure, set the name of each file path to the directory name wanted. If `dataset_DOI` contains more than one dataset DOI, `file_paths` needs to be a list of vector of character string, each vector of this list will be associated to each dataset identified in `dataset_DOI`.
 #' @param BASE_URL A character string for the base URL of the Dataverse API. By default, it uses the value from the environment variable `BASE_URL`.
 #' @param API_TOKEN A character string for the API token required to authenticate the request. By default, it uses the value from the environment variable `API_TOKEN`.
 #' @param verbose If FALSE, no processing informations are displayed. By default, TRUE.
 #' @return A character vector containing the paths of the files that could not be uploaded, if any.
-#' @examples
-#' a
+#' @seealso [R example in context](https://github.com/super-lou/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R)
+#' @references [Native API documentation](https://guides.dataverse.org/en/5.3/api/native-api.html#add-a-file-to-a-dataset)
 #' @export
 #' @md
-add_dataset_files = function(dataset_DOI, paths,
-                             BASE_URL=Sys.getenv("BASE_URL"),
-                             API_TOKEN=Sys.getenv("API_TOKEN"),
-                             verbose=TRUE) {
-    url = paste0(BASE_URL,
-                 '/api/datasets/:persistentId/add?persistentId=',
-                 dataset_DOI)
-    not_added = c()
+add_datasets_files = function(dataset_DOI, file_paths,
+                              BASE_URL=Sys.getenv("BASE_URL"),
+                              API_TOKEN=Sys.getenv("API_TOKEN"),
+                              verbose=TRUE) {
 
-    N = length(paths)
-    
-    if (verbose) {pb = txtProgressBar(min=0, max=N, style=3)}
-    for (i in 1:N) {
-        if (verbose) setTxtProgressBar(pb, i)
-        
-        path = paths[i]
-        directory_label = names(paths)[i]
-        
-        if (is.null(directory_label)) {
-            directory_label = ""
-        }
-        json_data = list(
-            description = "",
-            directoryLabel = directory_label,
-            restrict = "false",
-            tabIngest = "true"
-        )
-        response =
-            httr::POST(url,
-                       httr::add_headers("X-Dataverse-key" = API_TOKEN),
-                       body=list(
-                           file = httr::upload_file(path),
-                           jsonData=I(jsonlite::toJSON(json_data, auto_unbox=TRUE))
-                       ),
-                       encode="multipart")
-        
-        if (httr::status_code(response) != 200) {
-            not_added = c(not_added, path)
-            names(not_added)[length(not_added)] = i
-            warning(paste0("file ", i, " : ", path, "\n",
-                           httr::status_code(response), " ",
-                           httr::content(response, "text")))
-        }
+    if (!is.list(file_paths)) {
+        file_paths = list(file_paths)
     }
-    if (verbose) close(pb)
+
+    not_added = list()
+    nDOI = length(dataset_DOI)
+    
+    if (i in 1:nDOI) {
+        dDOI = dataset_DOI[i]
+        if (verbose) message(paste0(round(i/nDOI*100, 1), "% : files addition for dataset ", convert_DOI_to_URL(dDOI)))
+        
+        url = paste0(BASE_URL,
+                     '/api/datasets/:persistentId/add?persistentId=',
+                     dDOI)
+
+        not_added_tmp = c()
+        nFiles = length(file_paths)
+        
+        for (j in 1:nFiles) {
+            file_path = file_paths[[i]][j]
+            directory_label = names(file_paths[[i]])[j]
+            
+            if (is.null(directory_label)) {
+                directory_label = ""
+            }
+            json_data = list(
+                description = "",
+                directoryLabel = directory_label,
+                restrict = "false",
+                tabIngest = "true"
+            )
+            response =
+                httr::POST(url,
+                           httr::add_headers("X-Dataverse-key" = API_TOKEN),
+                           body=list(
+                               file = httr::upload_file(file_path),
+                               jsonData=I(jsonlite::toJSON(json_data, auto_unbox=TRUE))
+                           ),
+                           encode="multipart")
+            
+            if (httr::status_code(response) != 200) {
+                not_added_tmp = c(not_added_tmp, file_path)
+                names(not_added_tmp)[length(not_added_tmp)] = j
+                warning(paste0("file ", j, " : ", file_path, "\n",
+                               httr::status_code(response), " ",
+                               httr::content(response, "text")))
+            }
+            if (verbose) message(paste0(" - ", round(j/nFiles*100, 1), "% : file ", file_path, " added"))
+        }
+        not_added = append(not_added, list(not_added_tmp))
+    }
     return (not_added)
 }
 
 
 #' @title list_datasets_files
 #' @description Retrieves files informations of a selection of datasets.
-#' @param datasets_DOI A vector of character string representing the DOI of datasets that will be process.
+#' @param dataset_DOI A vector of character string representing the DOI of datasets that will be process.
 #' @param BASE_URL A character string for the base URL of the Dataverse API. By default, it uses the value from the environment variable `BASE_URL`.
 #' @param API_TOKEN A character string for the API token required to authenticate the request. By default, it uses the value from the environment variable `API_TOKEN`.
 #' @return A [tibble][dplyr::tibble()] containing files information.
-#' @examples
-#' a
+#' @seealso [R example in context](https://github.com/super-lou/dataverseuR_toolbox/blob/main/DRYvER/modify_README.R)
+#' @references [Native API documentation](https://guides.dataverse.org/en/5.3/api/native-api.html#list-files-in-a-dataset)
 #' @export
 #' @md
-list_datasets_files = function(datasets_DOI,
+list_datasets_files = function(dataset_DOI,
                                BASE_URL=Sys.getenv("BASE_URL"),
                                API_TOKEN=Sys.getenv("API_TOKEN")) {
 
-    files_info = dplyr::tibble()
+    files = dplyr::tibble()
+    nDOI = length(dataset_DOI)
     
-    N = length(datasets_DOI)
-    
-    if (verbose) {pb = txtProgressBar(min=0, max=N, style=3)}
-    for (i in 1:N) {
-        if (verbose) setTxtProgressBar(pb, i)
-        
-        dataset_DOI = datasets_DOI[i]
+    for (i in 1:nDOI) {
+        dDOI = dataset_DOI[i]
         
         api_url = paste0(BASE_URL,
                          "/api/datasets/:persistentId/?persistentId=",
-                         dataset_DOI)
+                         dDOI)
         response = httr::GET(api_url,
                              httr::add_headers("X-Dataverse-key"=API_TOKEN))
 
@@ -575,95 +571,81 @@ list_datasets_files = function(datasets_DOI,
         response_content = httr::content(response, as="text",
                                          encoding="UTF-8")
         dataset_info = jsonlite::fromJSON(response_content)
-        files_info_tmp = dataset_info$data$latestVersion$files
-        if ("description" %in% names(files_info_tmp)) {
-            files_info_tmp = dplyr::select(files_info_tmp, -description)
+        files_tmp = dataset_info$data$latestVersion$files
+        if ("description" %in% names(files_tmp)) {
+            files_tmp = dplyr::select(files_tmp, -description)
         }
-        files_info_tmp = tidyr::unnest(files_info_tmp, cols=c(dataFile))
-        files_info_tmp = dplyr::rename(files_info_tmp, file_DOI=persistentId)
-        files_info_tmp$dataset_DOI = dataset_DOI
-        files_info_tmp = dplyr::relocate(files_info_tmp, dataset_DOI,
-                                         .before=dplyr::everything())
+        files_tmp = tidyr::unnest(files_tmp, cols=c(dataFile))
+        files_tmp = dplyr::rename(files_tmp, file_DOI=persistentId)
+        files_tmp$dataset_DOI = dDOI
+        files_tmp = dplyr::relocate(files_tmp, dataset_DOI,
+                                    .before=dplyr::everything())
         
-        files_info = dplyr::bind_rows(files_info, files_info_tmp)
+        files = dplyr::bind_rows(files, files_tmp)
     }
-    if (verbose) close(pb)
-    return (files_info)
+    return (files)
 }
 
 
-#' @title download_files
+#' @title download_datasets_files
 #' @description Download files based on their DOI.
-#' @param files_DOI A vector of character string of the DOI of files to be processed.
+#' @param file_DOI A vector of character string of the DOI of files to be processed.
 #' @param save_paths A vector of character string representing the local path where files should be saved.
 #' @param BASE_URL A character string for the base URL of the Dataverse API. By default, it uses the value from the environment variable `BASE_URL`.
 #' @param API_TOKEN A character string for the API token required to authenticate the request. By default, it uses the value from the environment variable `API_TOKEN`.
 #' @param verbose If FALSE, no processing informations are displayed. By default, TRUE.
-#' @examples
-#' a
+#' @seealso [R example in context](https://github.com/super-lou/dataverseuR_toolbox/blob/main/DRYvER/modify_README.R)
+#' @references [Native API documentation](https://guides.dataverse.org/en/5.3/api/native-api.html#accessing-downloading-files)
 #' @export
 #' @md
-download_files = function(files_DOI,
-                          save_paths,
-                          BASE_URL=Sys.getenv("BASE_URL"),
-                          API_TOKEN=Sys.getenv("API_TOKEN"),
-                          verbose=TRUE) {
+download_datasets_files = function(file_DOI,
+                                   save_paths,
+                                   BASE_URL=Sys.getenv("BASE_URL"),
+                                   API_TOKEN=Sys.getenv("API_TOKEN"),
+                                   verbose=TRUE) {
 
-    N = length(files_DOI)
+    nFiles = length(file_DOI)
     
-    if (verbose) {pb = txtProgressBar(min=0, max=N, style=3)}
-    for (i in 1:N) {
-        if (verbose) setTxtProgressBar(pb, i)
-        
-        file_DOI = files_DOI[i]
+    for (i in 1:nFiles) {
+        fDOI = file_DOI[i]
         save_path = save_paths[i]
         
-        # Construct API URL
-        api_url = paste0(BASE_URL, "/api/access/datafile/:persistentId/?persistentId=", file_DOI)
-        
-        # Make the request
+        api_url = paste0(BASE_URL, "/api/access/datafile/:persistentId/?persistentId=", fDOI)
         response = httr::GET(api_url, 
                              httr::add_headers("X-Dataverse-key"=API_TOKEN),
                              httr::write_disk(save_path, overwrite=TRUE))
         
-        # Check response status
         if (httr::status_code(response) != 200) {
             stop(paste0(httr::status_code(response), " ",
                         httr::content(response, "text")))
         }
-        if (verbose) {
-            message(paste0("File ", file_DOI, " saved to : ", save_path))
-        }
+        if (verbose) message(paste0(round(i/nFiles*100, 1), "% : file ", convert_DOI_to_URL(fDOI), " saved in ", save_path))
     }
-    if (verbose) close(pb)
 }
 
 
 #' @title delete_datasets_files
 #' @description Delete files based on their DOI.
-#' @param files_DOI A vector of character string of the DOI of files to be processed.
+#' @param file_DOI A vector of character string of the DOI of files to be processed.
 #' @param BASE_URL A character string for the base URL of the Dataverse API. By default, it uses the value from the environment variable `BASE_URL`.
 #' @param API_TOKEN A character string for the API token required to authenticate the request. By default, it uses the value from the environment variable `API_TOKEN`.
 #' @param verbose If FALSE, no processing informations are displayed. By default, TRUE.
-#' @examples
-#' .
+#' @seealso [R example in context](https://github.com/super-lou/dataverseuR_toolbox/blob/main/DRYvER/modify_README.R)
+#' @references [Native API documentation](https://guides.dataverse.org/en/5.3/api/native-api.html#files)
 #' @export
 #' @md
-delete_datasets_files = function(files_DOI,
+delete_datasets_files = function(file_DOI,
                                  BASE_URL=Sys.getenv("BASE_URL"),
                                  API_TOKEN=Sys.getenv("API_TOKEN"),
                                  verbose=TRUE) {
 
-    N = length(files_DOI)
+    nFiles = length(file_DOI)
     
-    if (verbose) {pb = txtProgressBar(min=0, max=N, style=3)}
-    for (i in 1:N) {
-        if (verbose) setTxtProgressBar(pb, i)
-        
-        file_DOI = files_DOI[i]
+    for (i in 1:nFiles) {
+        fDOI = file_DOI[i]
         
         delete_url =
-            paste0(BASE_URL, "/api/files/:persistentId/?persistentId=", file_DOI)
+            paste0(BASE_URL, "/api/files/:persistentId/?persistentId=", fDOI)
 
         response = httr::DELETE(delete_url,
                                 httr::add_headers("X-Dataverse-key"=API_TOKEN))
@@ -672,95 +654,87 @@ delete_datasets_files = function(files_DOI,
             stop(paste0(httr::status_code(response), " ",
                         httr::content(response, "text")))
         }
-        if (verbose) {
-            message(paste0("File", file_DOI, " deleted"))
-        }
+        if (verbose) message(paste0(round(i/nFiles*100, 1), "% : file ", convert_DOI_to_URL(fDOI), " deleted"))
     }
-    if (verbose) close(pb)
 }
 
 
 #' @title delete_all_datasets_files
 #' @description Delete all files from a selection of datasets.
-#' @param datasets_DOI A vector of character string representing the DOI of datasets that will be process.
+#' @param dataset_DOI A vector of character string representing the DOI of datasets that will be process.
 #' @param BASE_URL A character string for the base URL of the Dataverse API. By default, it uses the value from the environment variable `BASE_URL`.
 #' @param API_TOKEN A character string for the API token required to authenticate the request. By default, it uses the value from the environment variable `API_TOKEN`.
 #' @param verbose If FALSE, no processing informations are displayed. By default, TRUE.
-#' @examples
-#' a
+#' @seealso [R example in context](https://github.com/super-lou/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R)
+#' @references [Native API documentation](https://guides.dataverse.org/en/5.3/api/native-api.html#files)
 #' @export
 #' @md
-delete_all_datasets_files = function(datasets_DOI,
+delete_all_datasets_files = function(dataset_DOI,
                                      BASE_URL=Sys.getenv("BASE_URL"),
                                      API_TOKEN=Sys.getenv("API_TOKEN"),
                                      verbose=TRUE) {
 
-    N = length(datasets_DOI)
+    nDOI = length(dataset_DOI)
     
-    if (verbose) {pb = txtProgressBar(min=0, max=N, style=3)}
-    for (i in 1:N) {
-        if (verbose) setTxtProgressBar(pb, i)
+    for (i in 1:nDOI) {
+        dDOI = dataset_DOI[i]
+        if (verbose) message(paste0(round(i/nDOI*100, 1), "% : files deletion for dataset ", convert_DOI_to_URL(dDOI)))
         
-        dataset_DOI = datasets_DOI[i]
-        
-        files_info = list_dataset_files(dataset_DOI=dataset_DOI,
-                                        BASE_URL=BASE_URL,
-                                        API_TOKEN=API_TOKEN)
-        nFiles = nrow(files_info)
+        files = list_dataset_files(dataset_DOI=dDOI,
+                                   BASE_URL=BASE_URL,
+                                   API_TOKEN=API_TOKEN)
+        nFiles = nrow(files)
         
         for (j in 1:nFiles) {
-            file_info = files_info[j, ]
-            delete_dataset_file(file_DOI=file_info$file_DOI,
+            file = files[j, ]
+            fDOI = file$file_DOI
+            
+            delete_dataset_file(file_DOI=fDOI,
                                 BASE_URL=BASE_URL,
                                 API_TOKEN=API_TOKEN,
                                 verbose=FALSE)
+
+            if (verbose) message(paste0(" - ", round(j/nFiles*100, 1), "% : file ", convert_DOI_to_URL(fDOI), " deleted"))
             
             # delete_url = paste0(BASE_URL, "/api/files/", file_id)
             # response = httr::DELETE(delete_url,
             # httr::add_headers("X-Dataverse-key"=API_TOKEN))
             
             # if (httr::status_code(response) == 200) {
-            # print(paste0(i, ": ", file_info$id, " -> ok"))
+            # print(paste0(i, ": ", file$id, " -> ok"))
             # } else {
-            # print(paste0(i, ": ", file_info$id, " -> error ",
+            # print(paste0(i, ": ", file$id, " -> error ",
             # httr::status_code(response), " ",
             # httr::content(response, "text")))
             # }
         }
-        if (verbose) {
-            message(paste0("All files deleted in dataset ", dataset_DOI))
-        }
     }
-    if (verbose) close(pb)
 }
 
 
 #' @title publish_datasets
 #' @description Publish a selection of datasets.
-#' @param datasets_DOI A vector of character string representing the DOI of datasets that will be process.
+#' @param dataset_DOI A vector of character string representing the DOI of datasets that will be process.
 #' @param type A character string specifying the type of publication. Use `"major"` if at least a file as been modified of supressed, if only metadata have changed, use `"minor"`.
 #' @param BASE_URL A character string for the base URL of the Dataverse API. By default, it uses the value from the environment variable `BASE_URL`.
 #' @param API_TOKEN A character string for the API token required to authenticate the request. By default, it uses the value from the environment variable `API_TOKEN`.
 #' @param verbose If FALSE, no processing informations are displayed. By default, TRUE.
-#' @examples
-#' a
+#' @seealso [R example in context](https://github.com/super-lou/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R)
+#' @references [Native API documentation](https://guides.dataverse.org/en/5.3/api/native-api.html#publish-a-dataset)
 #' @export
 #' @md
-publish_datasets = function(datasets_DOI, type="major",
+publish_datasets = function(dataset_DOI, type="major",
                             BASE_URL=Sys.getenv("BASE_URL"),
                             API_TOKEN=Sys.getenv("API_TOKEN"),
                             verbose=TRUE) {
 
-    N = length(datasets_DOI)
+    nDOI = length(dataset_DOI)
 
-    if (verbose) {pb = txtProgressBar(min=0, max=N, style=3)}
-    for (i in 1:N) {
-        if (verbose) setTxtProgressBar(pb, i)
-        
-        dataset_DOI = datasets_DOI[i]
+    for (i in 1:nDOI) {
+        dDOI = dataset_DOI[i]
         
         publish_url = paste0(BASE_URL, "/api/datasets/:persistentId/actions/:publish?persistentId=",
-                             dataset_DOI, "&type=", type)
+                             dDOI, "&type=", type)
         response = httr::POST(publish_url,
                               httr::add_headers("X-Dataverse-key"=API_TOKEN))
         
@@ -768,39 +742,32 @@ publish_datasets = function(datasets_DOI, type="major",
             stop(paste0(httr::status_code(response), " ",
                         httr::content(response, "text")))
         }
-
-        if (verbose) {
-            message(paste0("Dataset ", dataset_DOI, " published"))
-        }
+        if (verbose) message(paste0(round(i/nDOI*100, 1), "% : dataset ", convert_DOI_to_URL(dDOI), " published"))
     }
-    if (verbose) close(pb)
 }
 
 
 #' @title delete_datasets
 #' @description Delete a selection of unpublished datasets.
-#' @param datasets_DOI A vector of character string representing the DOI of datasets that will be process.
+#' @param dataset_DOI A vector of character string representing the DOI of datasets that will be process.
 #' @param BASE_URL A character string for the base URL of the Dataverse API. By default, it uses the value from the environment variable `BASE_URL`.
 #' @param API_TOKEN A character string for the API token required to authenticate the request. By default, it uses the value from the environment variable `API_TOKEN`.
 #' @param verbose If FALSE, no processing informations are displayed. By default, TRUE.
-#' @examples
-#' a
+#' @seealso [R example in context](https://github.com/super-lou/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R)
+#' @references [Native API documentation](https://guides.dataverse.org/en/5.3/api/native-api.html#delete-unpublished-dataset)
 #' @export
 #' @md
-delete_datasets = function(datasets_DOI,
+delete_datasets = function(dataset_DOI,
                            BASE_URL=Sys.getenv("BASE_URL"),
                            API_TOKEN=Sys.getenv("API_TOKEN"),
                            verbose=TRUE) {
     
-    N = length(datasets_DOI)
+    nDOI = length(dataset_DOI)
 
-    if (verbose) {pb = txtProgressBar(min=0, max=N, style=3)}
-    for (i in 1:N) {
-        if (verbose) setTxtProgressBar(pb, i)
+    for (i in 1:nDOI) {
+        dDOI = dataset_DOI[i]
         
-        dataset_DOI = datasets_DOI[i]
-
-        delete_url = paste0(BASE_URL, "/api/datasets/:persistentId/?persistentId=", dataset_DOI)
+        delete_url = paste0(BASE_URL, "/api/datasets/:persistentId/?persistentId=", dDOI)
         response = httr::DELETE(delete_url,
                                 httr::add_headers("X-Dataverse-key"=API_TOKEN))
         
@@ -808,9 +775,6 @@ delete_datasets = function(datasets_DOI,
             warning(paste0(httr::status_code(response), " ",
                            httr::content(response, "text")))
         }
-        if (verbose) {
-            message(paste0("Dataset ", dataset_DOI, " deleted"))
-        }
+        if (verbose) message(paste0(round(i/nDOI*100, 1), "% : dataset ", convert_DOI_to_URL(dDOI), " deleted"))
     }
-    if (verbose) close(pb)
 }

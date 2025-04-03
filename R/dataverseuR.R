@@ -16,7 +16,7 @@
 #' For metadata generation :
 #' - [initialise_metadata()] to initialise a R variable metadata environment
 #' - [generate_metadata()] to generate a metadata json file from a R variable metadata environment
-#' - [convert_metadata()] to convert a metadata list from a json file to a R variable parameterization file
+#' - [convert_metadata()] ***Still need some dev*** to convert a metadata list from a json file to a R variable parameterization file
 #' 
 #' For general API actions :
 #' - [search_datasets()] to perform a search on dataverse

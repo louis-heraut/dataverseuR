@@ -5,7 +5,7 @@
 \title{publish_datasets}
 \usage{
 publish_datasets(
-  datasets_DOI,
+  dataset_DOI,
   type = "major",
   BASE_URL = Sys.getenv("BASE_URL"),
   API_TOKEN = Sys.getenv("API_TOKEN"),
@@ -13,7 +13,7 @@ publish_datasets(
 )
 }
 \arguments{
-\item{datasets_DOI}{A vector of character string representing the DOI of datasets that will be process.}
+\item{dataset_DOI}{A vector of character string representing the DOI of datasets that will be process.}
 
 \item{type}{A character string specifying the type of publication. Use \code{"major"} if at least a file as been modified of supressed, if only metadata have changed, use \code{"minor"}.}
 
@@ -26,6 +26,9 @@ publish_datasets(
 \description{
 Publish a selection of datasets.
 }
-\examples{
-a
+\references{
+\href{https://guides.dataverse.org/en/5.3/api/native-api.html#publish-a-dataset}{Native API documentation}
+}
+\seealso{
+\href{https://github.com/super-lou/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R}{R example in context}
 }

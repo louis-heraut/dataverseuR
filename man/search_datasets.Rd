@@ -48,5 +48,26 @@ A tibble of the restult of the search.
 Performs a search query on the Dataverse API.
 }
 \examples{
-a
+\dontrun{
+# A simple example to search all datasets from a dataverse
+datasets = search_datasets(query="*",
+                           publication_status="RELEASED",
+                           type="dataset",
+                           dataverse="riverly",
+                           n_search=1000)
+
+# A more difficult one with a complexe query 
+query = '(title:"Fiches de résultats*" OR title:"Fiches incertitudes*" OR title:"Fiches de diagnostic*" OR title:"Ensemble des fiches") NOT title:"Notice" NOT title:"Accompagnement"'
+datasets = search_datasets(query=query,
+                           publication_status="RELEASED",
+                           type="dataset",
+                           dataverse="explore2",
+                           n_search=1000)
+}
+}
+\references{
+\href{https://guides.dataverse.org/en/5.3/api/search.html}{Search API documentation}
+}
+\seealso{
+\href{https://github.com/super-lou/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R}{R example in context}
 }

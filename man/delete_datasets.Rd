@@ -5,14 +5,14 @@
 \title{delete_datasets}
 \usage{
 delete_datasets(
-  datasets_DOI,
+  dataset_DOI,
   BASE_URL = Sys.getenv("BASE_URL"),
   API_TOKEN = Sys.getenv("API_TOKEN"),
   verbose = TRUE
 )
 }
 \arguments{
-\item{datasets_DOI}{A vector of character string representing the DOI of datasets that will be process.}
+\item{dataset_DOI}{A vector of character string representing the DOI of datasets that will be process.}
 
 \item{BASE_URL}{A character string for the base URL of the Dataverse API. By default, it uses the value from the environment variable \code{BASE_URL}.}
 
@@ -23,6 +23,9 @@ delete_datasets(
 \description{
 Delete a selection of unpublished datasets.
 }
-\examples{
-a
+\references{
+\href{https://guides.dataverse.org/en/5.3/api/native-api.html#delete-unpublished-dataset}{Native API documentation}
+}
+\seealso{
+\href{https://github.com/super-lou/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R}{R example in context}
 }

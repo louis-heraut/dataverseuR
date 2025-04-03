@@ -6,7 +6,7 @@
 \usage{
 create_datasets(
   dataverse,
-  metadata_paths,
+  metadata_path,
   BASE_URL = Sys.getenv("BASE_URL"),
   API_TOKEN = Sys.getenv("API_TOKEN"),
   verbose = TRUE
@@ -15,7 +15,7 @@ create_datasets(
 \arguments{
 \item{dataverse}{A character string specifying the name of the dataverse in which to create datasets.}
 
-\item{metadata_paths}{A vector of character string for the paths of json files containing the datasets metadata.}
+\item{metadata_path}{A vector of character string for the paths of json files containing the datasets metadata.}
 
 \item{BASE_URL}{A character string for the base URL of the Dataverse API. By default, it uses the value from the environment variable \code{BASE_URL}.}
 
@@ -29,6 +29,9 @@ The function returns DOI of the newly created datasets as a vector of character 
 \description{
 Create new datasets in a specified dataverse for a selection of metadata json file. See \code{\link[=generate_metadata]{generate_metadata()}} in order to generate efficiently metadata json file.
 }
-\examples{
-a
+\references{
+\href{https://guides.dataverse.org/en/5.3/api/native-api.html#create-a-dataset-in-a-dataverse}{Native API documentation}
+}
+\seealso{
+\href{https://github.com/super-lou/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R}{R example in context}
 }

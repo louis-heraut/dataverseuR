@@ -5,14 +5,14 @@
 \title{get_datasets_size}
 \usage{
 get_datasets_size(
-  datasets_DOI,
+  dataset_DOI,
   BASE_URL = Sys.getenv("BASE_URL"),
   API_TOKEN = Sys.getenv("API_TOKEN"),
   verbose = TRUE
 )
 }
 \arguments{
-\item{datasets_DOI}{A vector of character string representing the DOI of datasets that will be process.}
+\item{dataset_DOI}{A vector of character string representing the DOI of datasets that will be process.}
 
 \item{BASE_URL}{A character string for the base URL of the Dataverse API. By default, it uses the value from the environment variable \code{BASE_URL}.}
 
@@ -26,6 +26,9 @@ A tibble containing datasets DOI and their corresponding total storage sizes in 
 \description{
 Retrieves the total storage size (in bytes) of a selection of datasets.
 }
-\examples{
-a
+\references{
+\href{https://guides.dataverse.org/en/5.3/api/native-api.html#report-the-data-file-size-of-a-dataverse}{Native API documentation}
+}
+\seealso{
+\href{https://github.com/super-lou/dataverseuR_toolbox/blob/main/RiverLy_HCERES_2025/script.R}{R example in context}
 }

@@ -6,8 +6,8 @@
 \usage{
 modify_datasets(
   dataverse,
-  datasets_DOI,
-  metadata_paths,
+  dataset_DOI,
+  metadata_path,
   BASE_URL = Sys.getenv("BASE_URL"),
   API_TOKEN = Sys.getenv("API_TOKEN"),
   verbose = TRUE
@@ -16,9 +16,9 @@ modify_datasets(
 \arguments{
 \item{dataverse}{A character string specifying the name of the dataverse in which to create datasets.}
 
-\item{datasets_DOI}{A vector of character string representing the DOI of datasets that will be process.}
+\item{dataset_DOI}{A vector of character string representing the DOI of datasets that will be process.}
 
-\item{metadata_paths}{A vector of character string for the paths of json files containing the datasets metadata.}
+\item{metadata_path}{A vector of character string for the paths of json files containing the datasets metadata.}
 
 \item{BASE_URL}{A character string for the base URL of the Dataverse API. By default, it uses the value from the environment variable \code{BASE_URL}.}
 
@@ -29,6 +29,9 @@ modify_datasets(
 \description{
 Modify datasets metadata from a selection of metadata json file. See \code{\link[=generate_metadata]{generate_metadata()}} in order to generate efficiently metadata json file.
 }
-\examples{
-a
+\references{
+\href{https://guides.dataverse.org/en/5.3/api/native-api.html#update-metadata-for-a-dataset}{Native API documentation}
+}
+\seealso{
+\href{https://github.com/super-lou/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R}{R example in context}
 }

@@ -489,7 +489,7 @@ add_datasets_files = function(dataset_DOI, file_paths,
     not_added = list()
     nDOI = length(dataset_DOI)
     
-    if (i in 1:nDOI) {
+    for (i in 1:nDOI) {
         dDOI = dataset_DOI[i]
         if (verbose) message(paste0(round(i/nDOI*100, 1), "% : files addition for dataset ", convert_DOI_to_URL(dDOI)))
         

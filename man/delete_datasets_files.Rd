@@ -5,14 +5,14 @@
 \title{delete_datasets_files}
 \usage{
 delete_datasets_files(
-  files_DOI,
+  file_DOI,
   BASE_URL = Sys.getenv("BASE_URL"),
   API_TOKEN = Sys.getenv("API_TOKEN"),
   verbose = TRUE
 )
 }
 \arguments{
-\item{files_DOI}{A vector of character string of the DOI of files to be processed.}
+\item{file_DOI}{A vector of character string of the DOI of files to be processed.}
 
 \item{BASE_URL}{A character string for the base URL of the Dataverse API. By default, it uses the value from the environment variable \code{BASE_URL}.}
 
@@ -23,6 +23,9 @@ delete_datasets_files(
 \description{
 Delete files based on their DOI.
 }
-\examples{
-.
+\references{
+\href{https://guides.dataverse.org/en/5.3/api/native-api.html#files}{Native API documentation}
+}
+\seealso{
+\href{https://github.com/super-lou/dataverseuR_toolbox/blob/main/DRYvER/modify_README.R}{R example in context}
 }

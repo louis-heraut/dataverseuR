@@ -5,13 +5,13 @@
 \title{list_datasets_files}
 \usage{
 list_datasets_files(
-  datasets_DOI,
+  dataset_DOI,
   BASE_URL = Sys.getenv("BASE_URL"),
   API_TOKEN = Sys.getenv("API_TOKEN")
 )
 }
 \arguments{
-\item{datasets_DOI}{A vector of character string representing the DOI of datasets that will be process.}
+\item{dataset_DOI}{A vector of character string representing the DOI of datasets that will be process.}
 
 \item{BASE_URL}{A character string for the base URL of the Dataverse API. By default, it uses the value from the environment variable \code{BASE_URL}.}
 
@@ -23,6 +23,9 @@ A \link[dplyr:reexports]{tibble} containing files information.
 \description{
 Retrieves files informations of a selection of datasets.
 }
-\examples{
-a
+\references{
+\href{https://guides.dataverse.org/en/5.3/api/native-api.html#list-files-in-a-dataset}{Native API documentation}
+}
+\seealso{
+\href{https://github.com/super-lou/dataverseuR_toolbox/blob/main/DRYvER/modify_README.R}{R example in context}
 }

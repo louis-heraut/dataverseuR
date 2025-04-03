@@ -7,6 +7,7 @@
 rename_datasets_files(
   file_DOI,
   new_name,
+  is_DOI_ID = FALSE,
   BASE_URL = Sys.getenv("BASE_URL"),
   API_TOKEN = Sys.getenv("API_TOKEN"),
   verbose = TRUE
@@ -17,11 +18,13 @@ rename_datasets_files(
 
 \item{new_name}{A vector of character string representing the new filename.}
 
+\item{is_DOI_ID}{If the dataset is not published yet, the DOI of the file does not exist, so \code{file_DOI} needs to be the file id of the database instead of a DOI. So if \code{TRUE}, \code{file_DOI} is \code{id} from the results of \code{\link[=list_datasets_files]{list_datasets_files()}}, elsewhere if \code{FALSE}, \code{file_DOI} is actual file DOI. Default, \code{FALSE}.}
+
 \item{BASE_URL}{A character string for the base URL of the Dataverse API. By default, it uses the value from the environment variable \code{BASE_URL}.}
 
 \item{API_TOKEN}{A character string for the API token required to authenticate the request. By default, it uses the value from the environment variable \code{API_TOKEN}.}
 
-\item{verbose}{If FALSE, no processing informations are displayed. By default, TRUE.}
+\item{verbose}{If \code{FALSE}, no processing informations are displayed. By default, \code{TRUE}.}
 }
 \description{
 Renames a file based on their DOI.

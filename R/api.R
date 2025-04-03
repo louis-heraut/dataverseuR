@@ -592,14 +592,16 @@ list_datasets_files = function(dataset_DOI,
 #' @description Renames a file based on their DOI.
 #' @param file_DOI A vector of character string of the DOI of files to be processed.
 #' @param new_name A vector of character string representing the new filename.
+#' @param is_DOI_ID If the dataset is not published yet, the DOI of the file does not exist, so `file_DOI` needs to be the file id of the database instead of a DOI. So if `TRUE`, `file_DOI` is `id` from the results of [list_datasets_files()], elsewhere if `FALSE`, `file_DOI` is actual file DOI. Default, `FALSE`.
 #' @param BASE_URL A character string for the base URL of the Dataverse API. By default, it uses the value from the environment variable `BASE_URL`.
 #' @param API_TOKEN A character string for the API token required to authenticate the request. By default, it uses the value from the environment variable `API_TOKEN`.
-#' @param verbose If FALSE, no processing informations are displayed. By default, TRUE.
+#' @param verbose If `FALSE`, no processing informations are displayed. By default, `TRUE`.
 #' @seealso [R example in context](https://github.com/super-lou/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R)
 #' @references [Native API documentation](https://guides.dataverse.org/en/5.3/api/native-api.html#updating-file-metadata)
 #' @export
 #' @md
 rename_datasets_files = function(file_DOI, new_name,
+                                 is_DOI_ID=FALSE,
                                  BASE_URL=Sys.getenv("BASE_URL"),
                                  API_TOKEN=Sys.getenv("API_TOKEN"),
                                  verbose=TRUE) {
@@ -609,8 +611,13 @@ rename_datasets_files = function(file_DOI, new_name,
     for (i in 1:nFiles) {
         fDOI = file_DOI[i]
         label = new_name[i]
+
+        if (is_DOI_ID) {
+            api_url = paste0(BASE_URL, "/api/files/", fID, "/metadata")
+        } else {
+            api_url = paste0(BASE_URL, "/api/files/:persistentId/metadata?persistentId=", fDOI)
+        }
         
-        api_url = paste0(BASE_URL, "/api/files/:persistentId/metadata?persistentId=", fDOI)
         json_body = jsonlite::toJSON(list(label=label), auto_unbox=TRUE)
         
         response = httr::POST(url=api_url,

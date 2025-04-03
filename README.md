@@ -1,4 +1,4 @@
-# dataverseuR <img src="https://github.com/super-lou/dataverseuR/blob/8a68f52db2ba0b14f0ecdd2515205b8f2a81eec8/figures/logo_dataverseuR.png" align="right" width=100 height=100 alt=""/>
+# dataverseuR <img src="https://github.com/super-lou/dataverseuR/blob/8a68f52db2ba0b14f0ecdd2515205b8f2a81eec8/figures/logo_dataverseuR.png" align="right" width=160 height=160 alt=""/>
 
 <!-- badges: start -->
 [![Lifecycle: stable](https://img.shields.io/badge/lifecycle-stable-green)](https://lifecycle.r-lib.org/articles/stages.html)

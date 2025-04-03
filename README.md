@@ -1,35 +1,23 @@
 # dataverseuR <img src="https://github.com/super-lou/dataverseuR/blob/8a68f52db2ba0b14f0ecdd2515205b8f2a81eec8/figures/logo_dataverseuR.png" align="right" width=160 height=160 alt=""/>
 
 <!-- badges: start -->
+[![R-CMD-check](https://github.com/super-lou/dataverseuR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/super-lou/dataverseuR/actions/workflows/R-CMD-check.yaml)
 [![Lifecycle: stable](https://img.shields.io/badge/lifecycle-stable-green)](https://lifecycle.r-lib.org/articles/stages.html)
 ![](https://img.shields.io/github/last-commit/super-lou/dataverseuR)
 [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg)](code_of_conduct.md) 
 <!-- badges: end -->
 
-[MAKAHO](https://makaho.sk8.inrae.fr/) stands for MAnn-Kendall Analysis of Hydrological Observations.
+*dataverseuR* is a dataverse API wraper to enhance deposit procedure with only R variables declaration.
 
-It is a [R Shiny](https://shiny.rstudio.com/) website based on [EXstat](https://github.com/super-lou/EXstat) package with [CARD](https://github.com/super-lou/CARD) code bundle. It provides an interactive cartographic solution to analyze the hydrological stationarity of French surface flows based on the data of the hydrometric stations where the flows are little influenced by the human actions.
 
-[<img src="https://github.com/super-lou/MAKAHO/blob/2f1ea7fab7c867041d707cee1bd68d5c3b3bfd04/www/screen.png" width="600">](https://makaho.sk8.inrae.fr/)
-
-Data came from [Hydroportail](https://www.hydro.eaufrance.fr/) and the selection of stations follows the Reference Network for Low Water Monitoring (Réseau de référence pour la surveillance des étiages, [RRSE](https://geo.data.gouv.fr/en/datasets/29819c27c73f29ee1a962450da7c2d49f6e11c15) in french).
-
-A part of the data produced by [MAKAHO](https://makaho.sk8.inrae.fr/) can be downloaded from [Recherche Data Gouv](https://doi.org/10.57745/LNBEGZ).
-
-This project was carried out for National Research Institute for Agriculture, Food and the Environment (Institut National de Recherche pour l’Agriculture, l’Alimentation et l’Environnement, [INRAE](https://agriculture.gouv.fr/inrae-linstitut-national-de-recherche-pour-lagriculture-lalimentation-et-lenvironnement) in french).
+This project was carried out for National Research Institute for Agriculture, Food and the Environment (Institut National de Recherche pour l’Agriculture, l’Alimentation et l’Environnement, [INRAE](https://agriculture.gouv.fr/inrae-linstitut-national-de-recherche-pour-lagriculture-lalimentation-et-lenvironnement)).
 
 
 ## Installation
-If you want to visit the website hosted by the [SK8 project](https://sk8.inrae.fr/), you can go to this URL: [https://makaho.sk8.inrae.fr/](https://makaho.sk8.inrae.fr/).
-
-If you want a local instance, you can download the latest development version using:
+For latest development version
+``` r
+remotes::install_github("super-lou/EXstat")
 ```
-git clone https://github.com/super-lou/MAKAHO.git
-```
-
-The input data needed are not hosted on GitHub but can be found on [Recherche Data Gouv](https://doi.org/10.57745/1BBH2Y). This data is in a long format `dplyr::tibble` with concatenated hydrometric station data gathered from [Hydroportail](https://www.hydro.eaufrance.fr/). There is a file named `script_create.R` that can help you format such a data table using the [ASHE](https://github.com/super-lou/ASHE) package.
-
-The local personalized instance has not been properly tested yet but can be a potential area for future improvement!
 
 
 ## Help

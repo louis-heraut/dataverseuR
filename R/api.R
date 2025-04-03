@@ -588,6 +588,45 @@ list_datasets_files = function(dataset_DOI,
 }
 
 
+#' @title rename_datasets_files
+#' @description Renames a file based on their DOI.
+#' @param file_DOI A vector of character string of the DOI of files to be processed.
+#' @param new_name A vector of character string representing the new filename.
+#' @param BASE_URL A character string for the base URL of the Dataverse API. By default, it uses the value from the environment variable `BASE_URL`.
+#' @param API_TOKEN A character string for the API token required to authenticate the request. By default, it uses the value from the environment variable `API_TOKEN`.
+#' @param verbose If FALSE, no processing informations are displayed. By default, TRUE.
+#' @seealso [R example in context](https://github.com/super-lou/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R)
+#' @references [Native API documentation](https://guides.dataverse.org/en/5.3/api/native-api.html#updating-file-metadata)
+#' @export
+#' @md
+rename_datasets_files = function(file_DOI, new_name,
+                                 BASE_URL=Sys.getenv("BASE_URL"),
+                                 API_TOKEN=Sys.getenv("API_TOKEN"),
+                                 verbose=TRUE) {
+
+    nFiles = length(file_DOI)
+    
+    for (i in 1:nFiles) {
+        fDOI = file_DOI[i]
+        label = new_name[i]
+        
+        api_url = paste0(BASE_URL, "/api/files/:persistentId/metadata?persistentId=", fDOI)
+        json_body = jsonlite::toJSON(list(label=label), auto_unbox=TRUE)
+        
+        response = httr::POST(url=api_url,
+                              httr::add_headers("X-Dataverse-key"=API_TOKEN),
+                              body=list(jsonData=json_body),
+                              encode="multipart")
+        
+        if (httr::status_code(response) != 200) {
+            stop(paste0(httr::status_code(response), " ",
+                        httr::content(response, "text")))
+        }
+        if (verbose) message(paste0(round(i/nFiles*100, 1), "% : file ", convert_DOI_to_URL(fDOI), " renamed"))
+    }
+}
+
+
 #' @title download_datasets_files
 #' @description Download files based on their DOI.
 #' @param file_DOI A vector of character string of the DOI of files to be processed.

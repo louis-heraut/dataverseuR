@@ -21,11 +21,11 @@ remotes::install_github("super-lou/dataverseuR")
 
 ## Documentation
 
-#### Metadata generation
+### Metadata generation
 
 
 
-#### API actions
+### API actions
 
 
 

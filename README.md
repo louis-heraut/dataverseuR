@@ -1,9 +1,8 @@
-# MAKAHO [<img src="https://github.com/super-lou/MAKAHO/blob/cf59042ee48e7ada24d89ae8fa7f7878cff3eb26/www/MAKAHO.png" align="right" width=100 height=100 alt=""/>](https://makaho.sk8.inrae.fr/)
+# dataverseuR <img src="https://github.com/super-lou/dataverseuR/blob/8a68f52db2ba0b14f0ecdd2515205b8f2a81eec8/figures/logo_dataverseuR.png" align="right" width=100 height=100 alt=""/>
 
 <!-- badges: start -->
 [![Lifecycle: stable](https://img.shields.io/badge/lifecycle-stable-green)](https://lifecycle.r-lib.org/articles/stages.html)
-![](https://img.shields.io/github/last-commit/super-lou/MAKAHO)
-[![](https://img.shields.io/badge/Shiny-shinyapps.io-blue?style=flat&labelColor=white&logo=RStudio&logoColor=blue)](https://makaho.sk8.inrae.fr/)
+![](https://img.shields.io/github/last-commit/super-lou/dataverseuR)
 [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg)](code_of_conduct.md) 
 <!-- badges: end -->
 

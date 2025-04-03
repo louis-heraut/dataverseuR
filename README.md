@@ -7,7 +7,7 @@
 [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg)](code_of_conduct.md) 
 <!-- badges: end -->
 
-*dataverseuR* is a dataverse API wraper to enhance deposit procedure with only R variables declaration.
+**dataverseuR** is a dataverse API wraper to enhance deposit procedure with only R variables declaration.
 
 
 This project was carried out for National Research Institute for Agriculture, Food and the Environment (Institut National de Recherche pour l’Agriculture, l’Alimentation et l’Environnement, [INRAE](https://agriculture.gouv.fr/inrae-linstitut-national-de-recherche-pour-lagriculture-lalimentation-et-lenvironnement)).
@@ -16,8 +16,17 @@ This project was carried out for National Research Institute for Agriculture, Fo
 ## Installation
 For latest development version
 ``` r
-remotes::install_github("super-lou/EXstat")
+remotes::install_github("super-lou/dataverseuR")
 ```
+
+## Documentation
+
+#### Metadata generation
+
+
+
+#### API actions
+
 
 
 ## Help

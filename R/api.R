@@ -81,7 +81,9 @@ convert_datasets_search_to_tibble = function (datasets_search) {
         results_tmp = convert_datasets_to_tibble_hide(dataset)
         results = dplyr::bind_rows(results, results_tmp)
     }
-    results = dplyr::rename(results, dataset_DOI=global_id)
+    if (nrow(results) > 0) {
+        results = dplyr::rename(results, dataset_DOI=global_id)
+    }
     return (results)
 }
 
@@ -181,10 +183,7 @@ search_datasets = function(query="*", publication_status="*",
                     httr::content(response, "text")))
     }
     datasets = httr::content(response, "parsed")$data
-
-    if (nrow(datasets) > 0) {
-        datasets = convert_datasets_search_to_tibble(datasets)
-    }
+    datasets = convert_datasets_search_to_tibble(datasets)
     return (datasets)
 }
 

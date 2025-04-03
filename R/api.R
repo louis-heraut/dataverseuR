@@ -181,8 +181,10 @@ search_datasets = function(query="*", publication_status="*",
                     httr::content(response, "text")))
     }
     datasets = httr::content(response, "parsed")$data
-    datasets = convert_datasets_search_to_tibble(datasets)
-    
+
+    if (nrow(datasets) > 0) {
+        datasets = convert_datasets_search_to_tibble(datasets)
+    }
     return (datasets)
 }
 

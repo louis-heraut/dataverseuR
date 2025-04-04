@@ -616,7 +616,7 @@ rename_datasets_files = function(file_DOI, new_name,
         label = new_name[i]
 
         if (is_DOI_ID) {
-            api_url = paste0(BASE_URL, "/api/files/", fID, "/metadata")
+            api_url = paste0(BASE_URL, "/api/files/", fDOI, "/metadata")
         } else {
             api_url = paste0(BASE_URL, "/api/files/:persistentId/metadata?persistentId=", fDOI)
         }
@@ -641,6 +641,7 @@ rename_datasets_files = function(file_DOI, new_name,
 #' @description Download files based on their DOI.
 #' @param file_DOI A vector of character string of the DOI of files to be processed.
 #' @param save_paths A vector of character string representing the local path where files should be saved.
+#' @param is_DOI_ID If the dataset is not published yet, the DOI of the file does not exist, so `file_DOI` needs to be the file id of the database instead of a DOI. So if `TRUE`, `file_DOI` is `id` from the results of [list_datasets_files()], elsewhere if `FALSE`, `file_DOI` is actual file DOI. Default, `FALSE`.
 #' @param BASE_URL A character string for the base URL of the Dataverse API. By default, it uses the value from the environment variable `BASE_URL`.
 #' @param API_TOKEN A character string for the API token required to authenticate the request. By default, it uses the value from the environment variable `API_TOKEN`.
 #' @param verbose If FALSE, no processing informations are displayed. By default, TRUE.
@@ -650,6 +651,7 @@ rename_datasets_files = function(file_DOI, new_name,
 #' @md
 download_datasets_files = function(file_DOI,
                                    save_paths,
+                                   is_DOI_ID=FALSE,
                                    BASE_URL=Sys.getenv("BASE_URL"),
                                    API_TOKEN=Sys.getenv("API_TOKEN"),
                                    verbose=TRUE) {
@@ -659,8 +661,13 @@ download_datasets_files = function(file_DOI,
     for (i in 1:nFiles) {
         fDOI = file_DOI[i]
         save_path = save_paths[i]
+
+        if (is_DOI_ID) {
+            api_url = paste0(BASE_URL, "/api/access/datafile/", fDOI)
+        } else {
+            api_url = paste0(BASE_URL, "/api/access/datafile/:persistentId/?persistentId=", fDOI)
+        }
         
-        api_url = paste0(BASE_URL, "/api/access/datafile/:persistentId/?persistentId=", fDOI)
         response = httr::GET(api_url, 
                              httr::add_headers("X-Dataverse-key"=API_TOKEN),
                              httr::write_disk(save_path, overwrite=TRUE))
@@ -677,6 +684,7 @@ download_datasets_files = function(file_DOI,
 #' @title delete_datasets_files
 #' @description Delete files based on their DOI.
 #' @param file_DOI A vector of character string of the DOI of files to be processed.
+#' @param is_DOI_ID If the dataset is not published yet, the DOI of the file does not exist, so `file_DOI` needs to be the file id of the database instead of a DOI. So if `TRUE`, `file_DOI` is `id` from the results of [list_datasets_files()], elsewhere if `FALSE`, `file_DOI` is actual file DOI. Default, `FALSE`.
 #' @param BASE_URL A character string for the base URL of the Dataverse API. By default, it uses the value from the environment variable `BASE_URL`.
 #' @param API_TOKEN A character string for the API token required to authenticate the request. By default, it uses the value from the environment variable `API_TOKEN`.
 #' @param verbose If FALSE, no processing informations are displayed. By default, TRUE.
@@ -685,6 +693,7 @@ download_datasets_files = function(file_DOI,
 #' @export
 #' @md
 delete_datasets_files = function(file_DOI,
+                                 is_DOI_ID=FALSE,
                                  BASE_URL=Sys.getenv("BASE_URL"),
                                  API_TOKEN=Sys.getenv("API_TOKEN"),
                                  verbose=TRUE) {
@@ -693,10 +702,13 @@ delete_datasets_files = function(file_DOI,
     
     for (i in 1:nFiles) {
         fDOI = file_DOI[i]
-        
-        delete_url =
-            paste0(BASE_URL, "/api/files/:persistentId/?persistentId=", fDOI)
 
+        if (is_DOI_ID) {
+            delete_url = paste0(BASE_URL, "/api/files/", fDOI)
+        } else {
+            delete_url = paste0(BASE_URL, "/api/files/:persistentId/?persistentId=", fDOI)
+        }
+        
         response = httr::DELETE(delete_url,
                                 httr::add_headers("X-Dataverse-key"=API_TOKEN))
         

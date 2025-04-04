@@ -7,6 +7,7 @@
 download_datasets_files(
   file_DOI,
   save_paths,
+  is_DOI_ID = FALSE,
   BASE_URL = Sys.getenv("BASE_URL"),
   API_TOKEN = Sys.getenv("API_TOKEN"),
   verbose = TRUE
@@ -16,6 +17,8 @@ download_datasets_files(
 \item{file_DOI}{A vector of character string of the DOI of files to be processed.}
 
 \item{save_paths}{A vector of character string representing the local path where files should be saved.}
+
+\item{is_DOI_ID}{If the dataset is not published yet, the DOI of the file does not exist, so \code{file_DOI} needs to be the file id of the database instead of a DOI. So if \code{TRUE}, \code{file_DOI} is \code{id} from the results of \code{\link[=list_datasets_files]{list_datasets_files()}}, elsewhere if \code{FALSE}, \code{file_DOI} is actual file DOI. Default, \code{FALSE}.}
 
 \item{BASE_URL}{A character string for the base URL of the Dataverse API. By default, it uses the value from the environment variable \code{BASE_URL}.}
 

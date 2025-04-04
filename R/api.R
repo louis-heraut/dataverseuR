@@ -578,7 +578,7 @@ list_datasets_files = function(dataset_DOI,
         }
         files_tmp = tidyr::unnest(files_tmp, cols=c(dataFile),
                                   names_sep="_")
-        files_tmp = dplyr::rename(files_tmp, file_DOI=persistentId)
+        files_tmp = dplyr::rename(files_tmp, file_DOI=dataFile_persistentId)
         files_tmp$dataset_DOI = dDOI
         files_tmp = dplyr::relocate(files_tmp, dataset_DOI,
                                     .before=dplyr::everything())

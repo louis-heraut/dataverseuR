@@ -64,7 +64,7 @@ datasets = search_datasets(query="title:'climate'",
                            dataverse="",
                            n_search=1000)
 ```
-that return
+that returns
 ``` R
 > datasets
 # A tibble: 73 × 28
@@ -91,7 +91,7 @@ that return
 ```
 
 - `create_datasets` to create datasets
-```R
+``` R
 initialise_metadata()
 source(metadata_path)
 res = generate_metadata()
@@ -110,8 +110,39 @@ See the documentation of each function for more explaination but they are quite 
 
 #### For information about datasets
 - `list_datasets_files` to list files of datasets
+``` R
+dataset_DOI = "doi:10.57745/LNBEGZ"
+files = list_datasets_files(dataset_DOI)
+```
+that returns
+``` R
+> files
+# A tibble: 69 × 24
+   dataset_DOI        label restricted directoryLabel version datasetVersionId
+   <chr>              <chr> <lgl>      <chr>            <int>            <int>
+ 1 doi:10.57745/LNBE… cent… FALSE      trendEX              1           276347
+ 2 doi:10.57745/LNBE… cent… FALSE      dataEX               1           276347
+ 3 doi:10.57745/LNBE… data… FALSE      NA                   1           276347
+ 4 doi:10.57745/LNBE… dtLF… FALSE      dataEX               1           276347
+ 5 doi:10.57745/LNBE… dtLF… FALSE      trendEX              1           276347
+ 6 doi:10.57745/LNBE… EGU2… FALSE      NA                   1           276347
+ 7 doi:10.57745/LNBE… endL… FALSE      dataEX               1           276347
+ 8 doi:10.57745/LNBE… endL… FALSE      trendEX              1           276347
+ 9 doi:10.57745/LNBE… ETAL… FALSE      NA                   1           276347
+10 doi:10.57745/LNBE… meta… FALSE      NA                   1           276347
+# ℹ 59 more rows
+# ℹ 18 more variables: categories <list>, id <int>, file_DOI <chr>,
+#   pidURL <chr>, filename <chr>, contentType <chr>, filesize <int>,
+#   storageIdentifier <chr>, originalFileFormat <chr>,
+#   originalFormatLabel <chr>, originalFileSize <int>,
+#   originalFileName <chr>, UNF <chr>, rootDataFileId <int>, md5 <chr>,
+#   checksum <df[,2]>, creationDate <chr>, description <chr>
+# ℹ Use `print(n = ...)` to see more rows
+```
 
-- `get_datasets_metadata` to get the metadata list of datasets
+- `get_datasets_metadata` to get the metadata list of datasets<br>
+Once you get the metadata as a `list` of `list`, it's kind of a difficult object to modify. To know how you can handle it using R formating variable go to the [following section](#metadata-generation) about metadata generation. 
+
 - `download_datasets_files` to download files of datasets
 - `get_datasets_size` to get the size of datasets
 - `get_datasets_metrics` to get the metrics about datasets

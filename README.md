@@ -56,14 +56,16 @@ Below is a list of all the possible API actions.<br>
 
 #### For general API actions
 - `search_datasets` to perform a search on dataverse
-```R
+``` R
 # Find all the published dataset that contain the word climate in their title 
 datasets = search_datasets(query="title:'climate'",
                            publication_status="RELEASED",
                            type="dataset",
                            dataverse="",
                            n_search=1000)
-# that return
+```
+that return
+``` R
 > datasets
 # A tibble: 73 × 28
    name             type  url   dataset_DOI description published_at publisher

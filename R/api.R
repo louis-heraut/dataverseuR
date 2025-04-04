@@ -499,7 +499,7 @@ add_datasets_files = function(dataset_DOI, file_paths,
                      dDOI)
 
         not_added_tmp = c()
-        nFiles = length(file_paths)
+        nFiles = length(file_paths[[i]])
         
         for (j in 1:nFiles) {
             file_path = file_paths[[i]][j]

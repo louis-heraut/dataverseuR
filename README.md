@@ -55,7 +55,7 @@ You can find the entire API documentation [here](https://guides.dataverse.org/en
 Below is a list of all the possible API actions.<br>
 
 #### For general API actions
-- `search_datasets` to perform a search on dataverse
+- `search_datasets` to perform a search on dataverse like
 ``` R
 # Find all the published dataset that contain the word climate in their title 
 datasets = search_datasets(query="title:'climate'",
@@ -109,7 +109,7 @@ See the documentation of each function for more explaination but they are quite 
 - `delete_datasets` to delete datasets
 
 #### For information about datasets
-- `list_datasets_files` to list files of datasets
+- `list_datasets_files` to list files of datasets like
 ``` R
 dataset_DOI = "doi:10.57745/LNBEGZ"
 files = list_datasets_files(dataset_DOI)

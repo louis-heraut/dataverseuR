@@ -576,7 +576,8 @@ list_datasets_files = function(dataset_DOI,
         if ("description" %in% names(files_tmp)) {
             files_tmp = dplyr::select(files_tmp, -description)
         }
-        files_tmp = tidyr::unnest(files_tmp, cols=c(dataFile))
+        files_tmp = tidyr::unnest(files_tmp, cols=c(dataFile),
+                                  names_sep="_")
         files_tmp = dplyr::rename(files_tmp, file_DOI=persistentId)
         files_tmp$dataset_DOI = dDOI
         files_tmp = dplyr::relocate(files_tmp, dataset_DOI,

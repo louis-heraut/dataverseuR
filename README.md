@@ -109,8 +109,9 @@ See the documentation of each function for more explaination but they are quite 
 - `delete_datasets` to delete datasets
 
 #### For information about datasets
-- `get_datasets_metadata` to get the metadata list of datasets
 - `list_datasets_files` to list files of datasets
+
+- `get_datasets_metadata` to get the metadata list of datasets
 - `download_datasets_files` to download files of datasets
 - `get_datasets_size` to get the size of datasets
 - `get_datasets_metrics` to get the metrics about datasets
@@ -121,6 +122,7 @@ See the documentation of each function for more explaination but they are quite 
 
 ### Metadata generation
 
+This function is quite important and still under development.
 
 
 ### Workflow examples

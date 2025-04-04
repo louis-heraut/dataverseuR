@@ -32,16 +32,16 @@ DataverseuR has a built in function for that step, just run
 ``` R
 create_dotenv()
 ```
-and a `dist.env` file will be created in your working directory. The following step is to fill in your credential.\\
+and a `dist.env` file will be created in your working directory. The following step is to fill in your credential.<br>
 For that, go to your dataverse instance and create a token. For example, for the demo Recherche Data Gouv instance of `BASE_URL` : [https://demo.recherche.data.gouv.fr](https://demo.recherche.data.gouv.fr) click on your account name, find the [API token tab](https://demo.recherche.data.gouv.fr/dataverseuser.xhtml?selectTab=apiTokenTab) and copy your token to the `API_TOKEN` variable in the `dist.env` file like
-``` R
+``` bash
 # .env
 
 API_TOKEN=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
 BASE_URL=https://demo.recherche.data.gouv.fr
 
 ```
-Then, rename the file `.env` and if you are in a git project, add `.env` to your `.gitignore` file.\\
+Then, rename the file `.env` and if you are in a git project, add `.env` to your `.gitignore` file.<br>
 
 Now you should be able to use the API without issue by running this line in your working directory :
 ``` R
@@ -50,9 +50,9 @@ dotenv::load_dot_env()
 
 
 ### API actions
-You can find the entire API documentation [here](https://guides.dataverse.org/en/latest/api/index.html). Obviously not all API actions have been convert to R function, only a small subset are in order to simplify global use of the package. If you need an other function, take to time to create it and open a pull request or create an issue.\\
+You can find the entire API documentation [here](https://guides.dataverse.org/en/latest/api/index.html). Obviously not all API actions have been convert to R function, only a small subset are in order to simplify global use of the package. If you need an other function, take to time to create it and open a pull request or create an issue.<br>
 
-Below is a list of all the possible API actions.\\
+Below is a list of all the possible API actions.<br>
 
 #### For general API actions
 - `search_datasets` to perform a search on dataverse
@@ -96,8 +96,8 @@ res = generate_metadata()
 dataset_DOI = create_datasets(dataverse="",
                               metadata_path=res$metadata_path)
 ```
-See more information about the metadata creation in (this section)[#metadata-generation].\\
-See the documentation of each function for more explaination but they are quite self explanatory.\\
+See more information about the metadata creation in [this section](#metadata-generation).<br>
+See the documentation of each function for more explaination but they are quite self explanatory.<br>
 
 - `modify_datasets` to modify datasets metadata
 - `add_datasets_files` to add files to datasets 
@@ -121,8 +121,8 @@ See the documentation of each function for more explaination but they are quite 
 
 
 
-### Workflow exmaples
-An entire repository is dedicating to use case in [dataverseuR_toolbox](https://github.com/super-lou/dataverseuR_toolbox).\\
+### Workflow examples
+An entire repository is dedicating to use case in [dataverseuR_toolbox](https://github.com/super-lou/dataverseuR_toolbox).<br>
 If you need help to create a personal workflow and you don't find what you need in those examples, [open an issue](https://github.com/super-lou/dataverseuR_toolbox/issues).
 
 

@@ -24,6 +24,8 @@
 #' @param dotenv_path A character string for the path of the .env file that will be created. By default, it create a file named `dist.env` in the working directory. This file should be rename `.env`.
 #' @param verbose If FALSE, no processing informations are displayed. By default, TRUE.
 #' @return The function returns the path to the created .env file.
+#' @seealso
+#' - [dataverseuR GitHub documentation](https://github.com/super-lou/dataverseuR) <https://github.com/super-lou/dataverseuR>
 #' @examples
 #' # Create the .env file to the working directory
 #' create_dotenv()
@@ -94,6 +96,8 @@ convert_datasets_search_to_tibble = function (datasets_search) {
 #' @return A character string for the associated URL.
 #' @examples
 #' convert_DOI_to_URL("doi:10.57745/LNBEGZ")
+#' @seealso
+#' - [dataverseuR GitHub documentation](https://github.com/super-lou/dataverseuR) <https://github.com/super-lou/dataverseuR>
 #' @export
 #' @md
 convert_DOI_to_URL = function (DOI) {
@@ -137,15 +141,17 @@ convert_DOI_to_URL = function (DOI) {
 #'                            n_search=1000)
 #'
 #' # A more difficult one with a complexe query 
-#' query = '(title:"Fiches de résultats*" OR title:"Fiches incertitudes*" OR title:"Fiches de diagnostic*" OR title:"Ensemble des fiches") NOT title:"Notice" NOT title:"Accompagnement"'
+#' query = '(title:"Fiches de résultats*" OR title:"Fiches incertitudes*") NOT kindOfDataOther:"Notice"'
 #' datasets = search_datasets(query=query,
 #'                            publication_status="RELEASED",
 #'                            type="dataset",
 #'                            dataverse="explore2",
 #'                            n_search=1000)
 #' }
-#' @seealso [R example in context](https://github.com/super-lou/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R)
-#' @references [Search API documentation](https://guides.dataverse.org/en/5.3/api/search.html)
+#' @seealso
+#' - [dataverseuR GitHub documentation](https://github.com/super-lou/dataverseuR) <https://github.com/super-lou/dataverseuR>
+#' - [R example in context](https://github.com/super-lou/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R) <https://github.com/super-lou/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R>
+#' - [Search API documentation](https://guides.dataverse.org/en/5.3/api/search.html) <https://guides.dataverse.org/en/5.3/api/search.html>
 #' @export
 #' @md
 search_datasets = function(query="*", publication_status="*",
@@ -214,8 +220,10 @@ search_datasets = function(query="*", publication_status="*",
 #' @param verbose If FALSE, no processing informations are displayed. By default, TRUE.
 #' @return A tibble containing datasets DOI and their corresponding total storage sizes in bytes.
 #' @export
-#' @seealso [R example in context](https://github.com/super-lou/dataverseuR_toolbox/blob/main/RiverLy_HCERES_2025/script.R)
-#' @references [Native API documentation](https://guides.dataverse.org/en/5.3/api/native-api.html#report-the-data-file-size-of-a-dataverse)
+#' @seealso
+#' - [dataverseuR GitHub documentation](https://github.com/super-lou/dataverseuR) <https://github.com/super-lou/dataverseuR>
+#' - [R example in context](https://github.com/super-lou/dataverseuR_toolbox/blob/main/RiverLy_HCERES_2025/script.R) <https://github.com/super-lou/dataverseuR_toolbox/blob/main/RiverLy_HCERES_2025/script.R>
+#' - [Native API documentation](https://guides.dataverse.org/en/5.3/api/native-api.html#report-the-data-file-size-of-a-dataverse) <https://guides.dataverse.org/en/5.3/api/native-api.html#report-the-data-file-size-of-a-dataverse>
 #' @md
 get_datasets_size = function(dataset_DOI,
                              BASE_URL=Sys.getenv("BASE_URL"),
@@ -266,8 +274,10 @@ get_datasets_size = function(dataset_DOI,
 #' @param API_TOKEN A character string for the API token required to authenticate the request. By default, it uses the value from the environment variable `API_TOKEN`.
 #' @param verbose If FALSE, no processing informations are displayed. By default, TRUE.
 #' @return A named list containing total views, unique views, total downloads, unique downloads, and citations.
-#' @seealso [R example in context](https://github.com/super-lou/dataverseuR_toolbox/blob/main/RiverLy_HCERES_2025/script.R)
-#' @references [Native API documentation](https://guides.dataverse.org/en/5.3/api/native-api.html#dataset-metrics)
+#' @seealso
+#' - [dataverseuR GitHub documentation](https://github.com/super-lou/dataverseuR) <https://github.com/super-lou/dataverseuR>
+#' - [R example in context](https://github.com/super-lou/dataverseuR_toolbox/blob/main/RiverLy_HCERES_2025/script.R) <https://github.com/super-lou/dataverseuR_toolbox/blob/main/RiverLy_HCERES_2025/script.R>
+#' - [Native API documentation](https://guides.dataverse.org/en/5.3/api/native-api.html#dataset-metrics) <https://guides.dataverse.org/en/5.3/api/native-api.html#dataset-metrics>
 #' @export
 #' @md
 get_datasets_metrics = function(dataset_DOI,
@@ -327,8 +337,10 @@ get_datasets_metrics = function(dataset_DOI,
 #' @param API_TOKEN A character string for the API token required to authenticate the request. By default, it uses the value from the environment variable `API_TOKEN`.
 #' @param verbose If FALSE, no processing informations are displayed. By default, TRUE.
 #' @return The function returns DOI of the newly created datasets as a vector of character string.
-#' @seealso [R example in context](https://github.com/super-lou/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R)
-#' @references [Native API documentation](https://guides.dataverse.org/en/5.3/api/native-api.html#create-a-dataset-in-a-dataverse)
+#' @seealso
+#' - [dataverseuR GitHub documentation](https://github.com/super-lou/dataverseuR) <https://github.com/super-lou/dataverseuR>
+#' - [R example in context](https://github.com/super-lou/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R) <https://github.com/super-lou/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R>
+#' - [Native API documentation](https://guides.dataverse.org/en/5.3/api/native-api.html#create-a-dataset-in-a-dataverse) <https://guides.dataverse.org/en/5.3/api/native-api.html#create-a-dataset-in-a-dataverse>
 #' @export
 #' @md
 create_datasets = function(dataverse,
@@ -376,8 +388,10 @@ create_datasets = function(dataverse,
 #' @param API_TOKEN A character string for the API token required to authenticate the request. By default, it uses the value from the environment variable `API_TOKEN`.
 #' @param verbose If FALSE, no processing informations are displayed. By default, TRUE.
 #' @return A list containing the datasets metadata.
-#' @seealso [R example in context](https://github.com/super-lou/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R)
-#' @references [Native API documentation](https://guides.dataverse.org/en/5.3/api/native-api.html#get-json-representation-of-a-dataset)
+#' @seealso
+#' - [dataverseuR GitHub documentation](https://github.com/super-lou/dataverseuR) <https://github.com/super-lou/dataverseuR>
+#' - [R example in context](https://github.com/super-lou/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R) <https://github.com/super-lou/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R>
+#' - [Native API documentation](https://guides.dataverse.org/en/5.3/api/native-api.html#get-json-representation-of-a-dataset) <https://guides.dataverse.org/en/5.3/api/native-api.html#get-json-representation-of-a-dataset>
 #' @export
 #' @md
 get_datasets_metadata = function(dataset_DOI,
@@ -427,8 +441,10 @@ get_datasets_metadata = function(dataset_DOI,
 #' @param BASE_URL A character string for the base URL of the Dataverse API. By default, it uses the value from the environment variable `BASE_URL`.
 #' @param API_TOKEN A character string for the API token required to authenticate the request. By default, it uses the value from the environment variable `API_TOKEN`.
 #' @param verbose If FALSE, no processing informations are displayed. By default, TRUE.
-#' @seealso [R example in context](https://github.com/super-lou/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R)
-#' @references [Native API documentation](https://guides.dataverse.org/en/5.3/api/native-api.html#update-metadata-for-a-dataset)
+#' @seealso
+#' - [dataverseuR GitHub documentation](https://github.com/super-lou/dataverseuR) <https://github.com/super-lou/dataverseuR>
+#' - [R example in context](https://github.com/super-lou/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R) <https://github.com/super-lou/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R>
+#' - [Native API documentation](https://guides.dataverse.org/en/5.3/api/native-api.html#update-metadata-for-a-dataset) <https://guides.dataverse.org/en/5.3/api/native-api.html#update-metadata-for-a-dataset>
 #' @export
 #' @md
 modify_datasets = function(dataverse,
@@ -474,8 +490,10 @@ modify_datasets = function(dataverse,
 #' @param API_TOKEN A character string for the API token required to authenticate the request. By default, it uses the value from the environment variable `API_TOKEN`.
 #' @param verbose If FALSE, no processing informations are displayed. By default, TRUE.
 #' @return A character vector containing the paths of the files that could not be uploaded, if any.
-#' @seealso [R example in context](https://github.com/super-lou/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R)
-#' @references [Native API documentation](https://guides.dataverse.org/en/5.3/api/native-api.html#add-a-file-to-a-dataset)
+#' @seealso
+#' - [dataverseuR GitHub documentation](https://github.com/super-lou/dataverseuR) <https://github.com/super-lou/dataverseuR>
+#' - [R example in context](https://github.com/super-lou/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R) <https://github.com/super-lou/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R>
+#' - [Native API documentation](https://guides.dataverse.org/en/5.3/api/native-api.html#add-a-file-to-a-dataset) <https://guides.dataverse.org/en/5.3/api/native-api.html#add-a-file-to-a-dataset>
 #' @export
 #' @md
 add_datasets_files = function(dataset_DOI, file_paths,
@@ -544,8 +562,10 @@ add_datasets_files = function(dataset_DOI, file_paths,
 #' @param BASE_URL A character string for the base URL of the Dataverse API. By default, it uses the value from the environment variable `BASE_URL`.
 #' @param API_TOKEN A character string for the API token required to authenticate the request. By default, it uses the value from the environment variable `API_TOKEN`.
 #' @return A [tibble][dplyr::tibble()] containing files information.
-#' @seealso [R example in context](https://github.com/super-lou/dataverseuR_toolbox/blob/main/DRYvER/modify_README.R)
-#' @references [Native API documentation](https://guides.dataverse.org/en/5.3/api/native-api.html#list-files-in-a-dataset)
+#' @seealso
+#' - [dataverseuR GitHub documentation](https://github.com/super-lou/dataverseuR) <https://github.com/super-lou/dataverseuR>
+#' - [R example in context](https://github.com/super-lou/dataverseuR_toolbox/blob/main/DRYvER/modify_README.R) <https://github.com/super-lou/dataverseuR_toolbox/blob/main/DRYvER/modify_README.R>
+#' -  [Native API documentation](https://guides.dataverse.org/en/5.3/api/native-api.html#list-files-in-a-dataset) <https://guides.dataverse.org/en/5.3/api/native-api.html#list-files-in-a-dataset>
 #' @export
 #' @md
 list_datasets_files = function(dataset_DOI,
@@ -599,8 +619,10 @@ list_datasets_files = function(dataset_DOI,
 #' @param BASE_URL A character string for the base URL of the Dataverse API. By default, it uses the value from the environment variable `BASE_URL`.
 #' @param API_TOKEN A character string for the API token required to authenticate the request. By default, it uses the value from the environment variable `API_TOKEN`.
 #' @param verbose If `FALSE`, no processing informations are displayed. By default, `TRUE`.
-#' @seealso [R example in context](https://github.com/super-lou/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R)
-#' @references [Native API documentation](https://guides.dataverse.org/en/5.3/api/native-api.html#updating-file-metadata)
+#' @seealso
+#' - [dataverseuR GitHub documentation](https://github.com/super-lou/dataverseuR) <https://github.com/super-lou/dataverseuR>
+#' - [R example in context](https://github.com/super-lou/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R) <https://github.com/super-lou/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R>
+#' - [Native API documentation](https://guides.dataverse.org/en/5.3/api/native-api.html#updating-file-metadata) <https://guides.dataverse.org/en/5.3/api/native-api.html#updating-file-metadata>
 #' @export
 #' @md
 rename_datasets_files = function(file_DOI, new_name,
@@ -645,8 +667,10 @@ rename_datasets_files = function(file_DOI, new_name,
 #' @param BASE_URL A character string for the base URL of the Dataverse API. By default, it uses the value from the environment variable `BASE_URL`.
 #' @param API_TOKEN A character string for the API token required to authenticate the request. By default, it uses the value from the environment variable `API_TOKEN`.
 #' @param verbose If FALSE, no processing informations are displayed. By default, TRUE.
-#' @seealso [R example in context](https://github.com/super-lou/dataverseuR_toolbox/blob/main/DRYvER/modify_README.R)
-#' @references [Native API documentation](https://guides.dataverse.org/en/5.3/api/native-api.html#accessing-downloading-files)
+#' @seealso
+#' - [dataverseuR GitHub documentation](https://github.com/super-lou/dataverseuR) <https://github.com/super-lou/dataverseuR>
+#' - [R example in context](https://github.com/super-lou/dataverseuR_toolbox/blob/main/DRYvER/modify_README.R) <https://github.com/super-lou/dataverseuR_toolbox/blob/main/DRYvER/modify_README.R>
+#' - [Native API documentation](https://guides.dataverse.org/en/5.3/api/native-api.html#accessing-downloading-files) <https://guides.dataverse.org/en/5.3/api/native-api.html#accessing-downloading-files>
 #' @export
 #' @md
 download_datasets_files = function(file_DOI,
@@ -688,8 +712,10 @@ download_datasets_files = function(file_DOI,
 #' @param BASE_URL A character string for the base URL of the Dataverse API. By default, it uses the value from the environment variable `BASE_URL`.
 #' @param API_TOKEN A character string for the API token required to authenticate the request. By default, it uses the value from the environment variable `API_TOKEN`.
 #' @param verbose If FALSE, no processing informations are displayed. By default, TRUE.
-#' @seealso [R example in context](https://github.com/super-lou/dataverseuR_toolbox/blob/main/DRYvER/modify_README.R)
-#' @references [Native API documentation](https://guides.dataverse.org/en/5.3/api/native-api.html#files)
+#' @seealso
+#' - [dataverseuR GitHub documentation](https://github.com/super-lou/dataverseuR) <https://github.com/super-lou/dataverseuR>
+#' - [R example in context](https://github.com/super-lou/dataverseuR_toolbox/blob/main/DRYvER/modify_README.R) <https://github.com/super-lou/dataverseuR_toolbox/blob/main/DRYvER/modify_README.R>
+#' - [Native API documentation](https://guides.dataverse.org/en/5.3/api/native-api.html#files) <https://guides.dataverse.org/en/5.3/api/native-api.html#files>
 #' @export
 #' @md
 delete_datasets_files = function(file_DOI,
@@ -727,8 +753,10 @@ delete_datasets_files = function(file_DOI,
 #' @param BASE_URL A character string for the base URL of the Dataverse API. By default, it uses the value from the environment variable `BASE_URL`.
 #' @param API_TOKEN A character string for the API token required to authenticate the request. By default, it uses the value from the environment variable `API_TOKEN`.
 #' @param verbose If FALSE, no processing informations are displayed. By default, TRUE.
-#' @seealso [R example in context](https://github.com/super-lou/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R)
-#' @references [Native API documentation](https://guides.dataverse.org/en/5.3/api/native-api.html#files)
+#' @seealso
+#' - [dataverseuR GitHub documentation](https://github.com/super-lou/dataverseuR) <https://github.com/super-lou/dataverseuR>
+#' - [R example in context](https://github.com/super-lou/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R) <https://github.com/super-lou/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R>
+#' - [Native API documentation](https://guides.dataverse.org/en/5.3/api/native-api.html#files) <https://guides.dataverse.org/en/5.3/api/native-api.html#files>
 #' @export
 #' @md
 delete_all_datasets_files = function(dataset_DOI,
@@ -781,8 +809,10 @@ delete_all_datasets_files = function(dataset_DOI,
 #' @param BASE_URL A character string for the base URL of the Dataverse API. By default, it uses the value from the environment variable `BASE_URL`.
 #' @param API_TOKEN A character string for the API token required to authenticate the request. By default, it uses the value from the environment variable `API_TOKEN`.
 #' @param verbose If FALSE, no processing informations are displayed. By default, TRUE.
-#' @seealso [R example in context](https://github.com/super-lou/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R)
-#' @references [Native API documentation](https://guides.dataverse.org/en/5.3/api/native-api.html#publish-a-dataset)
+#' @seealso
+#' - [dataverseuR GitHub documentation](https://github.com/super-lou/dataverseuR) <https://github.com/super-lou/dataverseuR>
+#' - [R example in context](https://github.com/super-lou/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R) <https://github.com/super-lou/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R>
+#' - [Native API documentation](https://guides.dataverse.org/en/5.3/api/native-api.html#publish-a-dataset) <https://guides.dataverse.org/en/5.3/api/native-api.html#publish-a-dataset>
 #' @export
 #' @md
 publish_datasets = function(dataset_DOI, type="major",
@@ -815,8 +845,10 @@ publish_datasets = function(dataset_DOI, type="major",
 #' @param BASE_URL A character string for the base URL of the Dataverse API. By default, it uses the value from the environment variable `BASE_URL`.
 #' @param API_TOKEN A character string for the API token required to authenticate the request. By default, it uses the value from the environment variable `API_TOKEN`.
 #' @param verbose If FALSE, no processing informations are displayed. By default, TRUE.
-#' @seealso [R example in context](https://github.com/super-lou/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R)
-#' @references [Native API documentation](https://guides.dataverse.org/en/5.3/api/native-api.html#delete-unpublished-dataset)
+#' @seealso
+#' - [dataverseuR GitHub documentation](https://github.com/super-lou/dataverseuR) <https://github.com/super-lou/dataverseuR>
+#' - [R example in context](https://github.com/super-lou/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R) <https://github.com/super-lou/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R>
+#' - [Native API documentation](https://guides.dataverse.org/en/5.3/api/native-api.html#delete-unpublished-dataset) <https://guides.dataverse.org/en/5.3/api/native-api.html#delete-unpublished-dataset>
 #' @export
 #' @md
 delete_datasets = function(dataset_DOI,

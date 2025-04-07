@@ -26,9 +26,10 @@ A tibble containing datasets DOI and their corresponding total storage sizes in 
 \description{
 Retrieves the total storage size (in bytes) of a selection of datasets.
 }
-\references{
-\href{https://guides.dataverse.org/en/5.3/api/native-api.html#report-the-data-file-size-of-a-dataverse}{Native API documentation}
-}
 \seealso{
-\href{https://github.com/super-lou/dataverseuR_toolbox/blob/main/RiverLy_HCERES_2025/script.R}{R example in context}
+\itemize{
+\item \href{https://github.com/super-lou/dataverseuR}{dataverseuR GitHub documentation} \url{https://github.com/super-lou/dataverseuR}
+\item \href{https://github.com/super-lou/dataverseuR_toolbox/blob/main/RiverLy_HCERES_2025/script.R}{R example in context} \url{https://github.com/super-lou/dataverseuR_toolbox/blob/main/RiverLy_HCERES_2025/script.R}
+\item \href{https://guides.dataverse.org/en/5.3/api/native-api.html#report-the-data-file-size-of-a-dataverse}{Native API documentation} \url{https://guides.dataverse.org/en/5.3/api/native-api.html#report-the-data-file-size-of-a-dataverse}
+}
 }

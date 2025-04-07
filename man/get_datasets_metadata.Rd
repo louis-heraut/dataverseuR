@@ -26,9 +26,10 @@ A list containing the datasets metadata.
 \description{
 Retrieves metadata for a selection of dataset. See \code{\link[=convert_metadata]{convert_metadata()}} in order to convert metadata extracted by this function to R parameterisation file.
 }
-\references{
-\href{https://guides.dataverse.org/en/5.3/api/native-api.html#get-json-representation-of-a-dataset}{Native API documentation}
-}
 \seealso{
-\href{https://github.com/super-lou/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R}{R example in context}
+\itemize{
+\item \href{https://github.com/super-lou/dataverseuR}{dataverseuR GitHub documentation} \url{https://github.com/super-lou/dataverseuR}
+\item \href{https://github.com/super-lou/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R}{R example in context} \url{https://github.com/super-lou/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R}
+\item \href{https://guides.dataverse.org/en/5.3/api/native-api.html#get-json-representation-of-a-dataset}{Native API documentation} \url{https://guides.dataverse.org/en/5.3/api/native-api.html#get-json-representation-of-a-dataset}
+}
 }

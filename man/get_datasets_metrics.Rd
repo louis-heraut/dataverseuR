@@ -26,9 +26,10 @@ A named list containing total views, unique views, total downloads, unique downl
 \description{
 Retrieves dataset metrics of views and downloads from a selection of datasets.
 }
-\references{
-\href{https://guides.dataverse.org/en/5.3/api/native-api.html#dataset-metrics}{Native API documentation}
-}
 \seealso{
-\href{https://github.com/super-lou/dataverseuR_toolbox/blob/main/RiverLy_HCERES_2025/script.R}{R example in context}
+\itemize{
+\item \href{https://github.com/super-lou/dataverseuR}{dataverseuR GitHub documentation} \url{https://github.com/super-lou/dataverseuR}
+\item \href{https://github.com/super-lou/dataverseuR_toolbox/blob/main/RiverLy_HCERES_2025/script.R}{R example in context} \url{https://github.com/super-lou/dataverseuR_toolbox/blob/main/RiverLy_HCERES_2025/script.R}
+\item \href{https://guides.dataverse.org/en/5.3/api/native-api.html#dataset-metrics}{Native API documentation} \url{https://guides.dataverse.org/en/5.3/api/native-api.html#dataset-metrics}
+}
 }

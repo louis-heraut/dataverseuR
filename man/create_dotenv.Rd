@@ -24,3 +24,8 @@ create_dotenv()
 # Create the .env file in a remote location with no informations displayed
 create_dotenv("/path/to/dir/.env-demo", verbose=FALSE)
 }
+\seealso{
+\itemize{
+\item \href{https://github.com/super-lou/dataverseuR}{dataverseuR GitHub documentation} \url{https://github.com/super-lou/dataverseuR}
+}
+}

@@ -29,9 +29,10 @@ modify_datasets(
 \description{
 Modify datasets metadata from a selection of metadata json file. See \code{\link[=generate_metadata]{generate_metadata()}} in order to generate efficiently metadata json file.
 }
-\references{
-\href{https://guides.dataverse.org/en/5.3/api/native-api.html#update-metadata-for-a-dataset}{Native API documentation}
-}
 \seealso{
-\href{https://github.com/super-lou/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R}{R example in context}
+\itemize{
+\item \href{https://github.com/super-lou/dataverseuR}{dataverseuR GitHub documentation} \url{https://github.com/super-lou/dataverseuR}
+\item \href{https://github.com/super-lou/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R}{R example in context} \url{https://github.com/super-lou/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R}
+\item \href{https://guides.dataverse.org/en/5.3/api/native-api.html#update-metadata-for-a-dataset}{Native API documentation} \url{https://guides.dataverse.org/en/5.3/api/native-api.html#update-metadata-for-a-dataset}
+}
 }

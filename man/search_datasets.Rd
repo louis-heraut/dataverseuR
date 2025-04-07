@@ -57,7 +57,7 @@ datasets = search_datasets(query="*",
                            n_search=1000)
 
 # A more difficult one with a complexe query 
-query = '(title:"Fiches de résultats*" OR title:"Fiches incertitudes*" OR title:"Fiches de diagnostic*" OR title:"Ensemble des fiches") NOT title:"Notice" NOT title:"Accompagnement"'
+query = '(title:"Fiches de résultats*" OR title:"Fiches incertitudes*") NOT kindOfDataOther:"Notice"'
 datasets = search_datasets(query=query,
                            publication_status="RELEASED",
                            type="dataset",
@@ -65,9 +65,10 @@ datasets = search_datasets(query=query,
                            n_search=1000)
 }
 }
-\references{
-\href{https://guides.dataverse.org/en/5.3/api/search.html}{Search API documentation}
-}
 \seealso{
-\href{https://github.com/super-lou/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R}{R example in context}
+\itemize{
+\item \href{https://github.com/super-lou/dataverseuR}{dataverseuR GitHub documentation} \url{https://github.com/super-lou/dataverseuR}
+\item \href{https://github.com/super-lou/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R}{R example in context} \url{https://github.com/super-lou/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R}
+\item \href{https://guides.dataverse.org/en/5.3/api/search.html}{Search API documentation} \url{https://guides.dataverse.org/en/5.3/api/search.html}
+}
 }

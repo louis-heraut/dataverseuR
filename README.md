@@ -55,7 +55,7 @@ You can find the entire API documentation [here](https://guides.dataverse.org/en
 Below is a list of all the possible API actions.<br>
 
 #### For general API actions
-- `search_datasets` to perform a search on dataverse like
+- `search_datasets()` to perform a search on dataverse like
 ``` R
 # Find all the published dataset that contain the word climate in their title 
 datasets = search_datasets(query="title:'climate'",
@@ -90,7 +90,7 @@ that returns
 # ℹ Use `print(n = ...)` to see more rows
 ```
 
-- `create_datasets` to create datasets
+- `create_datasets()` to create datasets
 ``` R
 initialise_metadata()
 source(metadata_path)
@@ -101,15 +101,15 @@ dataset_DOI = create_datasets(dataverse="",
 See more information about the metadata creation in [this section](#metadata-generation).<br>
 See the documentation of each function for more explaination but they are quite self explanatory.<br>
 
-- `modify_datasets` to modify datasets metadata
-- `add_datasets_files` to add files to datasets 
-- `delete_datasets_files` to delete files from datasets
-- `delete_all_datasets_files` to delete all files from datasets
-- `publish_datasets` to publish datasets
-- `delete_datasets` to delete datasets
+- `modify_datasets()` to modify datasets metadata
+- `add_datasets_files()` to add files to datasets 
+- `delete_datasets_files()` to delete files from datasets
+- `delete_all_datasets_files()` to delete all files from datasets
+- `publish_datasets()` to publish datasets
+- `delete_datasets()` to delete datasets
 
 #### For information about datasets
-- `list_datasets_files` to list files of datasets like
+- `list_datasets_files()` to list files of datasets like
 ``` R
 dataset_DOI = "doi:10.57745/LNBEGZ"
 files = list_datasets_files(dataset_DOI)
@@ -140,15 +140,15 @@ that returns
 # ℹ Use `print(n = ...)` to see more rows
 ```
 
-- `get_datasets_metadata` to get the metadata list of datasets<br>
+- `get_datasets_metadata()` to get the metadata list of datasets<br>
 Once you get the metadata as a `list` of `list`, it's kind of a difficult object to modify. To know how you can handle it using R formating variable go to the [following section](#metadata-generation) about metadata generation. 
 
-- `download_datasets_files` to download files of datasets
-- `get_datasets_size` to get the size of datasets
-- `get_datasets_metrics` to get the metrics about datasets
+- `download_datasets_files()` to download files of datasets
+- `get_datasets_size()` to get the size of datasets
+- `get_datasets_metrics()` to get the metrics about datasets
 
 #### Others
-- `convert_DOI_to_URL` to convert a DOI to an URL
+- `convert_DOI_to_URL()` to convert a DOI to an URL
 
 
 ### Metadata generation
@@ -161,7 +161,7 @@ META$title = "Hydrologicals projections of discharge for the model {MODEL}"
 ```
 
 In the above example, their is several point to understand. Every metadata variables needs to be clearly identifed as this. So :
-- the name of the variable is precise and not negociable (you need to take an [example](https://github.com/super-lou/dataverseuR_toolbox) to start from it or download a metadata from dataverse with the function `get_datasets_metadata()` to find a metadata name)
+- the name of the variable is precise and not negociable (you need to take an [example](https://github.com/super-lou/dataverseuR_toolbox) to start from it or download a metadata from dataverse with the function `get_datasets_metadata()` to find a metadata name, see [metadata importation](#metadata-importation))
 - the variable needs to be stored in a variable environment clearly identify here : `META`
 
 So this way, you can create a R file that gather all that R metadata variables like that :
@@ -272,13 +272,14 @@ res = generate_metadata()
 And you will now be able to import to a dataverse instance this metadata json file with the [previously seen](#for-general-api-actions) `create_datasets()` function.
 
 
-
-
-
-
-
-
-This function is quite important and still under development.
+#### Metadata importation
+It is possible to get metadata from an existing dataset on the dataverse with `get_datasets_metadata()`. This will import the json equivalent of the metadata. From this point, you can convert this json formating to a R file that contain all the R metadata variable formalism with the function `convert_metadata()` like 
+``` R
+dataset_DOI = "doi:10.57745/LNBEGZ"
+metadata = get_datasets_metadata(dataset_DOI=dataset_DOI)
+convert_metadata(metadata)
+```
+> ⚠️ Warning : Idealy this R metadata variables file should be directly reusable to create a new dataset but the numeric information for ordering duplicable metadata are not manage for now and still under developement. You can just add manualy this ordering numerical information for now.
 
 
 ### Workflow examples

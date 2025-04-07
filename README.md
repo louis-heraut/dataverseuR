@@ -269,7 +269,7 @@ source("/path/to/metadata/Rfile.R")
 res = generate_metadata()
 ```
 
-You can now import this metadata JSON file to a dataverse instance using the [`create_datasets()`](#general-api-actions) function mentioned earlier.
+You can now import this metadata JSON file to a dataverse instance using the `create_datasets()` function mentioned earlier in the [General API Actions](#general-api-actions) section.
 
 #### Metadata Importation
 You can retrieve metadata from an existing dataset on dataverse using `get_datasets_metadata()`. This imports the JSON equivalent of the metadata. From here, you can convert this JSON formatting to a R file containing all the R metadata variable using the `convert_metadata()` function:

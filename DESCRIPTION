@@ -15,9 +15,9 @@ License: GPL-3 + file LICENSE
 Imports: 
     dplyr,
     tidyr,
+    stringr,
     purrr,
     httr,
-    jsonlite,
-    dotenv
+    jsonlite
 RoxygenNote: 7.3.2
 Roxygen: list(markdown = TRUE)

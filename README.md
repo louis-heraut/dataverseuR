@@ -1,4 +1,4 @@
-# dataverseuR <img src="https://github.com/super-lou/dataverseuR/blob/17d88f3108a7370ab2bfe60c24e3487ab483ae9d/figures/logo_dataverseuR.png" align="right" width=160 height=160 alt=""/>
+# dataverseuR <img src="man/figures/logo_dataverseuR.png" align="right" width=160 height=160 alt=""/>
 
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/super-lou/dataverseuR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/super-lou/dataverseuR/actions/workflows/R-CMD-check.yaml)

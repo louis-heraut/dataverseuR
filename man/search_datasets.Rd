@@ -57,7 +57,7 @@ datasets = search_datasets(query="*",
                            n_search=1000)
 
 # A more difficult one with a complexe query 
-query = '(title:"Fiches de résultats*" OR title:"Fiches incertitudes*") NOT kindOfDataOther:"Notice"'
+query = '(title:"résultats*" OR title:"incertitudes*") NOT kindOfDataOther:"notice"'
 datasets = search_datasets(query=query,
                            publication_status="RELEASED",
                            type="dataset",

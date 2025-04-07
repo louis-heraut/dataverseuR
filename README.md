@@ -7,33 +7,33 @@
 [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg)](code_of_conduct.md) 
 <!-- badges: end -->
 
-**dataverseuR** is a dataverse API wraper to enhance deposit procedure with only R variables declaration.
+**dataverseuR** is a dataverse API wrapper to enhance the deposit procedure using only R variable declarations.
 
-
-This project was carried out for National Research Institute for Agriculture, Food and the Environment (Institut National de Recherche pour l’Agriculture, l’Alimentation et l’Environnement, [INRAE](https://agriculture.gouv.fr/inrae-linstitut-national-de-recherche-pour-lagriculture-lalimentation-et-lenvironnement)).
+This project was carried out for the National Research Institute for Agriculture, Food and the Environment (Institut National de Recherche pour l’Agriculture, l’Alimentation et l’Environnement, [INRAE](https://agriculture.gouv.fr/inrae-linstitut-national-de-recherche-pour-lagriculture-lalimentation-et-lenvironnement)).
 
 
 ## Installation
-For latest development version
+For the latest development version:
 ``` r
 remotes::install_github("super-lou/dataverseuR")
 ```
 
+
 ## Documentation
-DataverseuR as two separate sides, one for simpliying dataverse API actions with simples R functions that use `dplyr::tibble` formating and a second one for simplify metadata generation that can be complexe with json files.
+dataverseuR has two separate components: one simplifies dataverse API actions using simple R functions with `dplyr::tibble` formatting, and the other simplifies metadata generation, which can be complex with JSON files.
 
 
-### Authentification
-First step is to allow the dataverse instance to authentificate you. For that the easiest way is to use a `.env` file in your working directory.
+### Authentication
+The first step is to authenticate with the dataverse instance. The easiest way is to use a `.env` file in your working directory.
 
-> ⚠️ Warning : NEVER GIVE YOUR CREDENTIAL (for example throught a git repository)
+> ⚠️ Warning: NEVER SHARE YOUR CREDENTIALS (for example, through a Git repository).
 
-DataverseuR has a built in function for that step, just run 
+dataverseuR has a built-in function for this step. Simply run:
 ``` R
 create_dotenv()
 ```
-and a `dist.env` file will be created in your working directory. The following step is to fill in your credential.<br>
-For that, go to your dataverse instance and create a token. For example, for the demo Recherche Data Gouv instance of `BASE_URL` : [https://demo.recherche.data.gouv.fr](https://demo.recherche.data.gouv.fr) click on your account name, find the [API token tab](https://demo.recherche.data.gouv.fr/dataverseuser.xhtml?selectTab=apiTokenTab) and copy your token to the `API_TOKEN` variable in the `dist.env` file like
+A `dist.env` file will be created in your working directory. The next step is to fill in your credentials.  
+To do this, go to your dataverse instance and create a token. For example, for the demo Recherche Data Gouv instance with `BASE_URL`: [https://demo.recherche.data.gouv.fr](https://demo.recherche.data.gouv.fr), click on your account name, find the [API token tab](https://demo.recherche.data.gouv.fr/dataverseuser.xhtml?selectTab=apiTokenTab), and copy your token to the `API_TOKEN` variable in the `dist.env` file, like this:
 ``` bash
 # .env
 
@@ -41,30 +41,30 @@ API_TOKEN=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
 BASE_URL=https://demo.recherche.data.gouv.fr
 
 ```
-Then, rename the file `.env` and if you are in a git project, add `.env` to your `.gitignore` file.<br>
+Then, rename the file to `.env`, and if you are in a Git project, add `.env` to your `.gitignore` file.  
 
-Now you should be able to use the API without issue by running this line in your working directory :
+Now you should be able to use the API without issues by running this line in your working directory:
 ``` R
 dotenv::load_dot_env()
 ```
 
 
-### API actions
-You can find the entire API documentation [here](https://guides.dataverse.org/en/latest/api/index.html). Obviously not all API actions have been convert to R function, only a small subset are in order to simplify global use of the package. If you need an other function, take to time to create it and open a pull request or create an issue.<br>
+### API Actions
+You can find the full API documentation [here](https://guides.dataverse.org/en/latest/api/index.html). Not all API actions have been converted to R functions; only a subset has been included to simplify general use of the package. If you need another function, feel free to create it and open a pull request or create an issue.  
 
-Below is a list of all the possible API actions.<br>
+Below is a list of all available API actions.  
 
-#### For general API actions
-- `search_datasets()` to perform a search on dataverse like
+#### General API Actions
+- `search_datasets()`: Performs a search on dataverse, like:
 ``` R
-# Find all the published dataset that contain the word climate in their title 
-datasets = search_datasets(query="title:'climate'",
+# Find all published datasets that contain the word "climate" in their title 
+datasets = search_datasets(query='title:"climate"',
                            publication_status="RELEASED",
                            type="dataset",
                            dataverse="",
                            n_search=1000)
 ```
-that returns
+This returns:
 ``` R
 > datasets
 # A tibble: 73 × 28
@@ -90,7 +90,7 @@ that returns
 # ℹ Use `print(n = ...)` to see more rows
 ```
 
-- `create_datasets()` to create datasets
+- `create_datasets()`: Creates datasets.
 ``` R
 initialise_metadata()
 source(metadata_path)
@@ -98,23 +98,23 @@ res = generate_metadata()
 dataset_DOI = create_datasets(dataverse="",
                               metadata_path=res$metadata_path)
 ```
-See more information about the metadata creation in [this section](#metadata-generation).<br>
-See the documentation of each function for more explaination but they are quite self explanatory.<br>
+For more information about metadata creation, see the [Metadata Generation](#metadata-generation) section.  
+The documentation for each function is self-explanatory.  
 
-- `modify_datasets()` to modify datasets metadata
-- `add_datasets_files()` to add files to datasets 
-- `delete_datasets_files()` to delete files from datasets
-- `delete_all_datasets_files()` to delete all files from datasets
-- `publish_datasets()` to publish datasets
-- `delete_datasets()` to delete datasets
+- `modify_datasets()`: Modifies dataset metadata.
+- `add_datasets_files()`: Adds files to datasets.
+- `delete_datasets_files()`: Deletes files from datasets.
+- `delete_all_datasets_files()`: Deletes all files from datasets.
+- `publish_datasets()`: Publishes datasets.
+- `delete_datasets()`: Deletes datasets.
 
-#### For information about datasets
-- `list_datasets_files()` to list files of datasets like
+#### Dataset Information
+- `list_datasets_files()`: Lists files in datasets, like:
 ``` R
 dataset_DOI = "doi:10.57745/LNBEGZ"
 files = list_datasets_files(dataset_DOI)
 ```
-that returns
+This returns:
 ``` R
 > files
 # A tibble: 69 × 24
@@ -140,31 +140,31 @@ that returns
 # ℹ Use `print(n = ...)` to see more rows
 ```
 
-- `get_datasets_metadata()` to get the metadata list of datasets<br>
-Once you get the metadata as a `list` of `list`, it's kind of a difficult object to modify. To know how you can handle it using R formating variable go to the [following section](#metadata-generation) about metadata generation. 
+- `get_datasets_metadata()`: Retrieves the metadata list of datasets.  
+Once you have the metadata as a `list` of `list`, it can be challenging to modify. To learn how to handle it using R variable formatting, refer to the [following section](#metadata-generation) about metadata generation. 
 
-- `download_datasets_files()` to download files of datasets
-- `get_datasets_size()` to get the size of datasets
-- `get_datasets_metrics()` to get the metrics about datasets
+- `download_datasets_files()`: Downloads files from datasets.
+- `get_datasets_size()`: Retrieves the size of datasets.
+- `get_datasets_metrics()`: Retrieves metrics about datasets.
 
 #### Others
-- `convert_DOI_to_URL()` to convert a DOI to an URL
+- `convert_DOI_to_URL()`: Converts a DOI to a URL.
 
 
-### Metadata generation
-#### Metadata management
-The idea of this formalism is to be able to create dataverse metadata directly inside a R code with only R variables.<br>
-The metadata base file from dataverse is a json file which is represented by a complexe list nested structure in R. So, in order to simplify this, every value entry in this json file (or so every metadata in dataverse) is linked to a R variable.
+### Metadata Generation
+#### Metadata Management
+The idea behind this formalism is to create dataverse metadata directly in R code using only R variables.  
+The metadata base file from dataverse is a JSON file, which is represented by a complex nested list structure in R. To simplify this, every value entry in this JSON file (i.e., every metadata field in dataverse) is linked to an R variable.
 ``` R
-# Create a metadata for the title of the futur dataset in dataverse
-META$title = "Hydrologicals projections of discharge for the model {MODEL}"
+# Create metadata for the title of the future dataset in dataverse
+META$title = "Hydrological projections of discharge for the model {MODEL}"
 ```
 
-In the above example, their is several point to understand. Every metadata variables needs to be clearly identifed as this. So :
-- the name of the variable is precise and not negociable (you need to take an [example](https://github.com/super-lou/dataverseuR_toolbox) to start from it or download a metadata from dataverse with the function `get_datasets_metadata()` to find a metadata name, see [metadata importation](#metadata-importation))
-- the variable needs to be stored in a variable environment clearly identify here : `META`
+In the example above, there are several key points to understand. Every metadata variable must be clearly identified as such. Therefore:
+- The variable name is precise and non-negotiable (you need to start from an [example](https://github.com/super-lou/dataverseuR_toolbox) or download metadata from dataverse using the function `get_datasets_metadata()` to find a metadata name; see [Metadata Importation](#metadata-importation)).
+- The variable must be stored in an environment variable clearly identified here as `META`.
 
-So this way, you can create a R file that gather all that R metadata variables like that :
+This way, you can create an R file that gathers all these R metadata variables, like this:
 
 ``` R
 META$title = "Hydrological projections of discharge for the model {MODEL}"
@@ -190,7 +190,7 @@ META$producerName = "Producer"
 META$producerURL = "https://producer.org"
 META$producerLogoURL = "https://producer.org/logo.png"
 
-META$distributorName = "Dataverse instance"
+META$distributorName = "dataverse instance"
 META$distributorURL = "https://dataverse.org"
 META$distributorLogoURL = "https://dataverse.org/logo.png"
 
@@ -241,50 +241,49 @@ META$country = "France"
 META$depositor = "DOE, DANY"
 ```
 
-And this way insert a new author with 
+This allows you to add a new author with:
 ``` R
 META$authorName2 = "Michelle, Boy"
 META$authorAffiliation2 = "Laboratory, An other Institut, Country"
 ```
-(notice the numeral incrementation), or modify a metadata variable in a for loop with placeholder like `{MODEL}` with
+(Note the numerical incrementation.)<br>
+You can also modify a metadata variable in a for loop with placeholders like `{MODEL}`:
 ``` R
 for (model in Models) {
     META$title = gsub("[{]MODEL[}]", model, META$title)
 }
 ```
 
-#### Metadata generation workflow
-All this R formating metadata variables needs to be action by R function.
-The workflow is by consequence :
-1. Initialise a metadata variable environment
+#### Metadata Generation Workflow
+All these R-formatted metadata variables need to be processed by R functions. The workflow is as follows:
+1. Initialize a metadata variable environment:
 ```R
 initialise_metadata()
 ```
-2. Assign R metadata variables like previously seen in your current script or source an external R script 
+2. Assign in your current script R metadata variables as shown earlier or source an external R script:
 ```R
 source("/path/to/metadata/Rfile.R")
 ```
-3. Generate the json file
+3. Generate the JSON file:
 ```R
 res = generate_metadata()
 ```
 
-And you will now be able to import to a dataverse instance this metadata json file with the [previously seen](#for-general-api-actions) `create_datasets()` function.
+You can now import this metadata JSON file to a dataverse instance using the [`create_datasets()`](#general-api-actions) function mentioned earlier.
 
-
-#### Metadata importation
-It is possible to get metadata from an existing dataset on the dataverse with `get_datasets_metadata()`. This will import the json equivalent of the metadata. From this point, you can convert this json formating to a R file that contain all the R metadata variable formalism with the function `convert_metadata()` like 
+#### Metadata Importation
+You can retrieve metadata from an existing dataset on dataverse using `get_datasets_metadata()`. This imports the JSON equivalent of the metadata. From here, you can convert this JSON formatting to a R file containing all the R metadata variable using the `convert_metadata()` function:
 ``` R
 dataset_DOI = "doi:10.57745/LNBEGZ"
 metadata = get_datasets_metadata(dataset_DOI=dataset_DOI)
 convert_metadata(metadata)
 ```
-> ⚠️ Warning : Idealy this R metadata variables file should be directly reusable to create a new dataset but the numeric information for ordering duplicable metadata are not manage for now and still under developement. You can just add manualy this ordering numerical information for now.
+> ℹ️ Note: Ideally, this R metadata variables file should be directly reusable to create a new dataset, but the numerical information for ordering duplicable metadata is not yet managed. It is still under development. For now, you can manually add this ordering numerical information.
 
 
-### Workflow examples
-An entire repository is dedicating to use case in [dataverseuR_toolbox](https://github.com/super-lou/dataverseuR_toolbox).<br>
-If you need help to create a personal workflow and you don't find what you need in those examples, [open an issue](https://github.com/super-lou/dataverseuR_toolbox/issues).
+### Workflow Examples
+A dedicated repository provides use cases in [dataverseuR_toolbox](https://github.com/super-lou/dataverseuR_toolbox).  
+If you need help creating a personal workflow and cannot find what you need in these examples, [open an issue](https://github.com/super-lou/dataverseuR_toolbox/issues).
 
 
 ## FAQ

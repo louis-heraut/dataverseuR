@@ -1,8 +1,8 @@
 Package: dataverseuR
 Version: 0.0.1
 Date: 2025-01-28
-Title: dataverseur
-Description: A Dataverse API wrapper to streamline the deposit process using only R variable declarations.
+Title: dataverseuR
+Description: A dataverse API R wrapper to enhance the deposit procedure using only R variable declarations.
 Authors@R: c(
     person(given = "Louis",
            family = "Héraut",
@@ -21,3 +21,4 @@ Imports:
     jsonlite
 RoxygenNote: 7.3.2
 Roxygen: list(markdown = TRUE)
+URL: https://github.com/super-lou/dataverseuR

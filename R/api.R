@@ -2,20 +2,20 @@
 #
 # *1   INRAE, France
 #
-# This file is part of dataverseur R package.
+# This file is part of dataverseuR R package.
 #
-# dataverseur R package is free software: you can redistribute it
+# dataverseuR R package is free software: you can redistribute it
 # and/or modify it under the terms of the GNU General Public License
 # as published by the Free Software Foundation, either version 3 of
 # the License, or (at your option) any later version.
 #
-# dataverseur R package is distributed in the hope that it will be
+# dataverseuR R package is distributed in the hope that it will be
 # useful, but WITHOUT ANY WARRANTY; without even the implied warranty
 # of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 # See the GNU xGeneral Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with dataverseur R package.
+# along with dataverseuR R package.
 # If not, see <https://www.gnu.org/licenses/>.
 
 
@@ -32,13 +32,13 @@
 #'
 #' # Create the .env file in a remote location with no informations displayed
 #' create_dotenv("/path/to/dir/.env-demo", verbose=FALSE)
-#' @export
 #' @md
+#' @export
 create_dotenv = function(dotenv_path=file.path(getwd(), "dist.env"),
                          verbose=TRUE) {
     
     dotenv_from_path = system.file("extdata", "dist.env",
-                                   package="dataverseur")
+                                   package="dataverseuR")
     file.copy(dotenv_from_path, dotenv_path, overwrite=TRUE)
 
     if (verbose) {
@@ -98,8 +98,8 @@ convert_datasets_search_to_tibble = function (datasets_search) {
 #' convert_DOI_to_URL("doi:10.57745/LNBEGZ")
 #' @seealso
 #' - [dataverseuR GitHub documentation](https://github.com/super-lou/dataverseuR) <https://github.com/super-lou/dataverseuR>
-#' @export
 #' @md
+#' @export
 convert_DOI_to_URL = function (DOI) {
     URL = gsub("doi[:]",
                "https://doi.org/",
@@ -152,8 +152,8 @@ convert_DOI_to_URL = function (DOI) {
 #' - [dataverseuR GitHub documentation](https://github.com/super-lou/dataverseuR) <https://github.com/super-lou/dataverseuR>
 #' - [R example in context](https://github.com/super-lou/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R) <https://github.com/super-lou/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R>
 #' - [Search API documentation](https://guides.dataverse.org/en/5.3/api/search.html) <https://guides.dataverse.org/en/5.3/api/search.html>
-#' @export
 #' @md
+#' @export
 search_datasets = function(query="*", publication_status="*",
                            type="dataset", dataverse="",
                            n_search=10,
@@ -194,24 +194,6 @@ search_datasets = function(query="*", publication_status="*",
 }
 
 
-# #' @title get_DOI_from_datasets_search
-# #' @description This function extracts the DOIs (Digital Object Identifiers) from a dataset object. It takes a list of datasets and returns a named vector where the names correspond to the dataset names and the values correspond to their respective DOIs.
-# #' @param datasets_search A dataset object, typically a list or data frame, containing items with `name` and `global_id` attributes, where `global_id` represents the DOI.
-# #' @return A named vector where each name is the dataset name and each value is the corresponding DOI.
-# #' @examples
-# #' # Example dataset with items containing names and global_ids
-# #' datasets <- list(items = list(list(name = "Dataset 1", global_id = "10.1234/abc"), 
-# #'                               list(name = "Dataset 2", global_id = "10.5678/def")))
-# #' get_DOI_from_datasets_search(datasets)
-# #' @md
-# get_DOI_from_datasets_search = function (datasets_search) {
-#     name = sapply(datasets_search$items, function (x) x$name)
-#     DOI = sapply(datasets_search$items, function (x) x$global_id)
-#     names(DOI) = name
-#     return (DOI)
-# }
-
-
 #' @title get_datasets_size
 #' @description Retrieves the total storage size (in bytes) of a selection of datasets.
 #' @param dataset_DOI A vector of character string representing the DOI of datasets that will be process.
@@ -219,12 +201,12 @@ search_datasets = function(query="*", publication_status="*",
 #' @param API_TOKEN A character string for the API token required to authenticate the request. By default, it uses the value from the environment variable `API_TOKEN`.
 #' @param verbose If FALSE, no processing informations are displayed. By default, TRUE.
 #' @return A tibble containing datasets DOI and their corresponding total storage sizes in bytes.
-#' @export
 #' @seealso
 #' - [dataverseuR GitHub documentation](https://github.com/super-lou/dataverseuR) <https://github.com/super-lou/dataverseuR>
 #' - [R example in context](https://github.com/super-lou/dataverseuR_toolbox/blob/main/RiverLy_HCERES_2025/script.R) <https://github.com/super-lou/dataverseuR_toolbox/blob/main/RiverLy_HCERES_2025/script.R>
 #' - [Native API documentation](https://guides.dataverse.org/en/5.3/api/native-api.html#report-the-data-file-size-of-a-dataverse) <https://guides.dataverse.org/en/5.3/api/native-api.html#report-the-data-file-size-of-a-dataverse>
 #' @md
+#' @export
 get_datasets_size = function(dataset_DOI,
                              BASE_URL=Sys.getenv("BASE_URL"),
                              API_TOKEN=Sys.getenv("API_TOKEN"),
@@ -278,8 +260,8 @@ get_datasets_size = function(dataset_DOI,
 #' - [dataverseuR GitHub documentation](https://github.com/super-lou/dataverseuR) <https://github.com/super-lou/dataverseuR>
 #' - [R example in context](https://github.com/super-lou/dataverseuR_toolbox/blob/main/RiverLy_HCERES_2025/script.R) <https://github.com/super-lou/dataverseuR_toolbox/blob/main/RiverLy_HCERES_2025/script.R>
 #' - [Native API documentation](https://guides.dataverse.org/en/5.3/api/native-api.html#dataset-metrics) <https://guides.dataverse.org/en/5.3/api/native-api.html#dataset-metrics>
-#' @export
 #' @md
+#' @export
 get_datasets_metrics = function(dataset_DOI,
                                 BASE_URL=Sys.getenv("BASE_URL"),
                                 API_TOKEN=Sys.getenv("API_TOKEN"),
@@ -341,8 +323,8 @@ get_datasets_metrics = function(dataset_DOI,
 #' - [dataverseuR GitHub documentation](https://github.com/super-lou/dataverseuR) <https://github.com/super-lou/dataverseuR>
 #' - [R example in context](https://github.com/super-lou/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R) <https://github.com/super-lou/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R>
 #' - [Native API documentation](https://guides.dataverse.org/en/5.3/api/native-api.html#create-a-dataset-in-a-dataverse) <https://guides.dataverse.org/en/5.3/api/native-api.html#create-a-dataset-in-a-dataverse>
-#' @export
 #' @md
+#' @export
 create_datasets = function(dataverse,
                            metadata_path,
                            BASE_URL=Sys.getenv("BASE_URL"),
@@ -392,8 +374,8 @@ create_datasets = function(dataverse,
 #' - [dataverseuR GitHub documentation](https://github.com/super-lou/dataverseuR) <https://github.com/super-lou/dataverseuR>
 #' - [R example in context](https://github.com/super-lou/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R) <https://github.com/super-lou/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R>
 #' - [Native API documentation](https://guides.dataverse.org/en/5.3/api/native-api.html#get-json-representation-of-a-dataset) <https://guides.dataverse.org/en/5.3/api/native-api.html#get-json-representation-of-a-dataset>
-#' @export
 #' @md
+#' @export
 get_datasets_metadata = function(dataset_DOI,
                                  BASE_URL=Sys.getenv("BASE_URL"),
                                  API_TOKEN=Sys.getenv("API_TOKEN"),
@@ -445,8 +427,8 @@ get_datasets_metadata = function(dataset_DOI,
 #' - [dataverseuR GitHub documentation](https://github.com/super-lou/dataverseuR) <https://github.com/super-lou/dataverseuR>
 #' - [R example in context](https://github.com/super-lou/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R) <https://github.com/super-lou/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R>
 #' - [Native API documentation](https://guides.dataverse.org/en/5.3/api/native-api.html#update-metadata-for-a-dataset) <https://guides.dataverse.org/en/5.3/api/native-api.html#update-metadata-for-a-dataset>
-#' @export
 #' @md
+#' @export
 modify_datasets = function(dataverse,
                            dataset_DOI,
                            metadata_path,
@@ -494,8 +476,8 @@ modify_datasets = function(dataverse,
 #' - [dataverseuR GitHub documentation](https://github.com/super-lou/dataverseuR) <https://github.com/super-lou/dataverseuR>
 #' - [R example in context](https://github.com/super-lou/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R) <https://github.com/super-lou/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R>
 #' - [Native API documentation](https://guides.dataverse.org/en/5.3/api/native-api.html#add-a-file-to-a-dataset) <https://guides.dataverse.org/en/5.3/api/native-api.html#add-a-file-to-a-dataset>
-#' @export
 #' @md
+#' @export
 add_datasets_files = function(dataset_DOI, file_paths,
                               BASE_URL=Sys.getenv("BASE_URL"),
                               API_TOKEN=Sys.getenv("API_TOKEN"),
@@ -566,8 +548,8 @@ add_datasets_files = function(dataset_DOI, file_paths,
 #' - [dataverseuR GitHub documentation](https://github.com/super-lou/dataverseuR) <https://github.com/super-lou/dataverseuR>
 #' - [R example in context](https://github.com/super-lou/dataverseuR_toolbox/blob/main/DRYvER/modify_README.R) <https://github.com/super-lou/dataverseuR_toolbox/blob/main/DRYvER/modify_README.R>
 #' -  [Native API documentation](https://guides.dataverse.org/en/5.3/api/native-api.html#list-files-in-a-dataset) <https://guides.dataverse.org/en/5.3/api/native-api.html#list-files-in-a-dataset>
-#' @export
 #' @md
+#' @export
 list_datasets_files = function(dataset_DOI,
                                BASE_URL=Sys.getenv("BASE_URL"),
                                API_TOKEN=Sys.getenv("API_TOKEN")) {
@@ -623,8 +605,8 @@ list_datasets_files = function(dataset_DOI,
 #' - [dataverseuR GitHub documentation](https://github.com/super-lou/dataverseuR) <https://github.com/super-lou/dataverseuR>
 #' - [R example in context](https://github.com/super-lou/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R) <https://github.com/super-lou/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R>
 #' - [Native API documentation](https://guides.dataverse.org/en/5.3/api/native-api.html#updating-file-metadata) <https://guides.dataverse.org/en/5.3/api/native-api.html#updating-file-metadata>
-#' @export
 #' @md
+#' @export
 rename_datasets_files = function(file_DOI, new_name,
                                  is_DOI_ID=FALSE,
                                  BASE_URL=Sys.getenv("BASE_URL"),
@@ -671,8 +653,8 @@ rename_datasets_files = function(file_DOI, new_name,
 #' - [dataverseuR GitHub documentation](https://github.com/super-lou/dataverseuR) <https://github.com/super-lou/dataverseuR>
 #' - [R example in context](https://github.com/super-lou/dataverseuR_toolbox/blob/main/DRYvER/modify_README.R) <https://github.com/super-lou/dataverseuR_toolbox/blob/main/DRYvER/modify_README.R>
 #' - [Native API documentation](https://guides.dataverse.org/en/5.3/api/native-api.html#accessing-downloading-files) <https://guides.dataverse.org/en/5.3/api/native-api.html#accessing-downloading-files>
-#' @export
 #' @md
+#' @export
 download_datasets_files = function(file_DOI,
                                    save_paths,
                                    is_DOI_ID=FALSE,
@@ -716,8 +698,8 @@ download_datasets_files = function(file_DOI,
 #' - [dataverseuR GitHub documentation](https://github.com/super-lou/dataverseuR) <https://github.com/super-lou/dataverseuR>
 #' - [R example in context](https://github.com/super-lou/dataverseuR_toolbox/blob/main/DRYvER/modify_README.R) <https://github.com/super-lou/dataverseuR_toolbox/blob/main/DRYvER/modify_README.R>
 #' - [Native API documentation](https://guides.dataverse.org/en/5.3/api/native-api.html#files) <https://guides.dataverse.org/en/5.3/api/native-api.html#files>
-#' @export
 #' @md
+#' @export
 delete_datasets_files = function(file_DOI,
                                  is_DOI_ID=FALSE,
                                  BASE_URL=Sys.getenv("BASE_URL"),
@@ -757,8 +739,8 @@ delete_datasets_files = function(file_DOI,
 #' - [dataverseuR GitHub documentation](https://github.com/super-lou/dataverseuR) <https://github.com/super-lou/dataverseuR>
 #' - [R example in context](https://github.com/super-lou/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R) <https://github.com/super-lou/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R>
 #' - [Native API documentation](https://guides.dataverse.org/en/5.3/api/native-api.html#files) <https://guides.dataverse.org/en/5.3/api/native-api.html#files>
-#' @export
 #' @md
+#' @export
 delete_all_datasets_files = function(dataset_DOI,
                                      BASE_URL=Sys.getenv("BASE_URL"),
                                      API_TOKEN=Sys.getenv("API_TOKEN"),
@@ -813,8 +795,8 @@ delete_all_datasets_files = function(dataset_DOI,
 #' - [dataverseuR GitHub documentation](https://github.com/super-lou/dataverseuR) <https://github.com/super-lou/dataverseuR>
 #' - [R example in context](https://github.com/super-lou/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R) <https://github.com/super-lou/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R>
 #' - [Native API documentation](https://guides.dataverse.org/en/5.3/api/native-api.html#publish-a-dataset) <https://guides.dataverse.org/en/5.3/api/native-api.html#publish-a-dataset>
-#' @export
 #' @md
+#' @export
 publish_datasets = function(dataset_DOI, type="major",
                             BASE_URL=Sys.getenv("BASE_URL"),
                             API_TOKEN=Sys.getenv("API_TOKEN"),
@@ -849,8 +831,8 @@ publish_datasets = function(dataset_DOI, type="major",
 #' - [dataverseuR GitHub documentation](https://github.com/super-lou/dataverseuR) <https://github.com/super-lou/dataverseuR>
 #' - [R example in context](https://github.com/super-lou/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R) <https://github.com/super-lou/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R>
 #' - [Native API documentation](https://guides.dataverse.org/en/5.3/api/native-api.html#delete-unpublished-dataset) <https://guides.dataverse.org/en/5.3/api/native-api.html#delete-unpublished-dataset>
-#' @export
 #' @md
+#' @export
 delete_datasets = function(dataset_DOI,
                            BASE_URL=Sys.getenv("BASE_URL"),
                            API_TOKEN=Sys.getenv("API_TOKEN"),

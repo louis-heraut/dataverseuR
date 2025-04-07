@@ -7,5 +7,4 @@
 *.nc
 tmp
 results
-figures
 *.Rdata

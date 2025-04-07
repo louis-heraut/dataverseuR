@@ -152,6 +152,131 @@ Once you get the metadata as a `list` of `list`, it's kind of a difficult object
 
 
 ### Metadata generation
+#### Metadata management
+The idea of this formalism is to be able to create dataverse metadata directly inside a R code with only R variables.<br>
+The metadata base file from dataverse is a json file which is represented by a complexe list nested structure in R. So, in order to simplify this, every value entry in this json file (or so every metadata in dataverse) is linked to a R variable.
+``` R
+# Create a metadata for the title of the futur dataset in dataverse
+META$title = "Hydrologicals projections of discharge for the model {MODEL}"
+```
+
+In the above example, their is several point to understand. Every metadata variables needs to be clearly identifed as this. So :
+- the name of the variable is precise and not negociable (you need to take an [example](https://github.com/super-lou/dataverseuR_toolbox) to start from it or download a metadata from dataverse with the function `get_datasets_metadata()` to find a metadata name)
+- the variable needs to be stored in a variable environment clearly identify here : `META`
+
+So this way, you can create a R file that gather all that R metadata variables like that :
+
+``` R
+META$title = "Hydrological projections of discharge for the model {MODEL}"
+
+META$alternativeURL = "https://other-datarepository.org"
+
+META$datasetContactName = "Dany, Doe"
+META$datasetContactAffiliation = "Laboratory, Institut, Country"
+META$datasetContactEmail = "dany.doe@institut.org"
+
+META$authorName1 = "Dany, Doe"
+META$authorAffiliation1 = "Laboratory, Institut, Country"
+META$authorIdentifierScheme1 = "ORCID"
+META$authorIdentifier1 = "xxxx-xxxx-xxxx-xxxx"
+
+META$contributorType = "Data Curator"
+META$contributorName = "Jack, "
+META$contributorAffiliation = "INRAE, UR RiverLy, Villeurbanne, France"
+META$contributorIdentifierScheme = "ORCID"
+META$contributorIdentifier = "0009-0006-4372-0923"
+
+META$producerName = "Producer"
+META$producerURL = "https://producer.org"
+META$producerLogoURL = "https://producer.org/logo.png"
+
+META$distributorName = "Dataverse instance"
+META$distributorURL = "https://dataverse.org"
+META$distributorLogoURL = "https://dataverse.org/logo.png"
+
+META$dsDescriptionValue = "description"
+
+META$dsDescriptionLanguage = "English"
+META$language = "English"
+META$subject = "Earth and Environmental Sciences"
+
+META$keywordValue1 = "hydrology"
+META$keywordTermURL1 = "http://opendata.inrae.fr/thesaurusINRAE/c_11593"
+META$keywordVocabulary1 = "INRAETHES"
+META$keywordVocabularyURI1 = "http://opendata.inrae.fr/thesaurusINRAE/thesaurusINRAE"
+
+META$keywordValue2 = "hydrological model"
+META$keywordTermURL2 = "http://opendata.inrae.fr/thesaurusINRAE/c_1352"
+META$keywordVocabulary2 = "INRAETHES"
+META$keywordVocabularyURI2 = "http://opendata.inrae.fr/thesaurusINRAE/thesaurusINRAE"
+
+META$keywordValue3 = "hydrological projection"
+
+META$keywordValue4 = "climate change impacts"
+META$keywordTermURL4 = "http://aims.fao.org/aos/agrovoc/c_13fb5a08"
+META$keywordVocabulary4 = "AGROVOC"
+META$keywordVocabularyURI4 = "http://aims.fao.org/aos/agrovoc/"
+
+META$kindOfData = "Dataset"
+META$kindOfDataOther = "Hydrological projections (discharge)"
+META$dataOrigin = "simulation data"
+
+META$softwareName = "{MODEL}"
+META$softwareVersion = "x"
+
+META$publicationCitation = "futur publication"
+META$publicationIDType = "doi"
+META$publicationIDNumber = "doi"
+META$publicationURL = "https://doi.org"
+
+META$projectAcronym = "Project"
+META$projectTitle = "Project : long title"
+META$projectURL = "https://project.org"
+
+META$timePeriodCoveredStart = "1976-01-01"
+META$timePeriodCoveredEnd = "2100-12-31"
+
+META$country = "France"
+
+META$depositor = "DOE, DANY"
+```
+
+And this way insert a new author with 
+``` R
+META$authorName2 = "Michelle, Boy"
+META$authorAffiliation2 = "Laboratory, An other Institut, Country"
+```
+(notice the numeral incrementation), or modify a metadata variable in a for loop with placeholder like `{MODEL}` with
+``` R
+for (model in Models) {
+    META$title = gsub("[{]MODEL[}]", model, META$title)
+}
+```
+
+#### Metadata generation workflow
+All this R formating metadata variables needs to be action by R function.
+The workflow is by consequence :
+1. Initialise a metadata variable environment
+```R
+initialise_metadata()
+```
+2. Assign R metadata variables like previously seen in your current script or source an external R script 
+```R
+source("/path/to/metadata/Rfile.R")
+```
+3. Generate the json file
+```R
+res = generate_metadata()
+```
+
+And you will now be able to import to a dataverse instance this metadata json file with the [previously seen](#for-general-api-actions) `create_datasets()` function.
+
+
+
+
+
+
+
 
 This function is quite important and still under development.
 
@@ -159,10 +284,6 @@ This function is quite important and still under development.
 ### Workflow examples
 An entire repository is dedicating to use case in [dataverseuR_toolbox](https://github.com/super-lou/dataverseuR_toolbox).<br>
 If you need help to create a personal workflow and you don't find what you need in those examples, [open an issue](https://github.com/super-lou/dataverseuR_toolbox/issues).
-
-
-## Help
-You can find an interactive help on the website if you press the bottom right interrogation button.
 
 
 ## FAQ

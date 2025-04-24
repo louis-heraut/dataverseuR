@@ -167,24 +167,24 @@ In the example above, there are several key points to understand. Every metadata
 This way, you can create an R file that gathers all these R metadata variables, like this:
 
 ``` R
-META$title = "Hydrological projections of discharge for the model {MODEL}"
+META$title = "Plane simulation trajectory for the model {MODEL}"
 
 META$alternativeURL = "https://other-datarepository.org"
 
-META$datasetContactName = "Dany, Doe"
-META$datasetContactAffiliation = "Laboratory, Institut, Country"
+META$datasetContactName = "John, Locke"
+META$datasetContactAffiliation = "Laboratory, Institut, Island"
 META$datasetContactEmail = "dany.doe@institut.org"
 
-META$authorName1 = "Dany, Doe"
-META$authorAffiliation1 = "Laboratory, Institut, Country"
+META$authorName1 = "John, Locke"
+META$authorAffiliation1 = "Laboratory, Institut, Island"
 META$authorIdentifierScheme1 = "ORCID"
 META$authorIdentifier1 = "xxxx-xxxx-xxxx-xxxx"
 
 META$contributorType = "Data Curator"
-META$contributorName = "Jack, "
-META$contributorAffiliation = "INRAE, UR RiverLy, Villeurbanne, France"
+META$contributorName = "Hugo, Reyes"
+META$contributorAffiliation = "Laboratory, Same Institut, Island"
 META$contributorIdentifierScheme = "ORCID"
-META$contributorIdentifier = "0009-0006-4372-0923"
+META$contributorIdentifier = "4815-1623-4248-1516"
 
 META$producerName = "Producer"
 META$producerURL = "https://producer.org"
@@ -194,31 +194,26 @@ META$distributorName = "dataverse instance"
 META$distributorURL = "https://dataverse.org"
 META$distributorLogoURL = "https://dataverse.org/logo.png"
 
-META$dsDescriptionValue = "description"
+META$dsDescriptionValue = "A collection of 815 simulated plane trajectories designed for testing flight behavior under unusual navigational conditions. Includes data on course deviations, atmospheric anomalies, and long-range displacement events."
 
 META$dsDescriptionLanguage = "English"
 META$language = "English"
 META$subject = "Earth and Environmental Sciences"
 
-META$keywordValue1 = "hydrology"
-META$keywordTermURL1 = "http://opendata.inrae.fr/thesaurusINRAE/c_11593"
+META$keywordValue1 = "atmospheric boundary layer"
+META$keywordTermURL1 = "http://opendata.inrae.fr/thesaurusINRAE/c_823"
 META$keywordVocabulary1 = "INRAETHES"
 META$keywordVocabularyURI1 = "http://opendata.inrae.fr/thesaurusINRAE/thesaurusINRAE"
 
-META$keywordValue2 = "hydrological model"
-META$keywordTermURL2 = "http://opendata.inrae.fr/thesaurusINRAE/c_1352"
+META$keywordValue2 = "magnetic characteristic"
+META$keywordTermURL2 = "http://opendata.inrae.fr/thesaurusINRAE/c_13144"
 META$keywordVocabulary2 = "INRAETHES"
 META$keywordVocabularyURI2 = "http://opendata.inrae.fr/thesaurusINRAE/thesaurusINRAE"
 
-META$keywordValue3 = "hydrological projection"
-
-META$keywordValue4 = "climate change impacts"
-META$keywordTermURL4 = "http://aims.fao.org/aos/agrovoc/c_13fb5a08"
-META$keywordVocabulary4 = "AGROVOC"
-META$keywordVocabularyURI4 = "http://aims.fao.org/aos/agrovoc/"
+META$keywordValue3 = "plane"
 
 META$kindOfData = "Dataset"
-META$kindOfDataOther = "Hydrological projections (discharge)"
+META$kindOfDataOther = "Flying simulation"
 META$dataOrigin = "simulation data"
 
 META$softwareName = "{MODEL}"
@@ -229,22 +224,22 @@ META$publicationIDType = "doi"
 META$publicationIDNumber = "doi"
 META$publicationURL = "https://doi.org"
 
-META$projectAcronym = "Project"
-META$projectTitle = "Project : long title"
+META$projectAcronym = "Others Project"
+META$projectTitle = "Others Project : long title"
 META$projectURL = "https://project.org"
 
-META$timePeriodCoveredStart = "1976-01-01"
-META$timePeriodCoveredEnd = "2100-12-31"
+META$timePeriodCoveredStart = "2004-09-22"
+META$timePeriodCoveredEnd = "2010-05-23"
 
-META$country = "France"
+META$country = "Hawaii"
 
-META$depositor = "DOE, DANY"
+META$depositor = "Kate, Austen"
 ```
 
 This allows you to add a new author with:
 ``` R
-META$authorName2 = "Michelle, Boy"
-META$authorAffiliation2 = "Laboratory, An other Institut, Country"
+META$authorName2 = "Jack, Shephard"
+META$authorAffiliation2 = "Laboratory, An other Institut, Island"
 ```
 (Note the numerical incrementation.)<br>
 You can also modify a metadata variable in a for loop with placeholders like `{MODEL}`:
@@ -287,15 +282,28 @@ If you need help creating a personal workflow and cannot find what you need in t
 
 
 ## FAQ
-*I have a question.*
+📬 — **I would like an upgrade / I have a question / Need to reach me**  
+Feel free to [open an issue](https://github.com/super-lou/dataverseuR/issues) ! I’m actively maintaining this project, so I’ll do my best to respond quickly.  
+I’m also reachable on my institutional INRAE [email](mailto:louis.heraut@inrae.fr?subject=%5BdataverseuR%5D) for more in-depth discussions.
 
--   **Solution**: Search existing issue list and if no one has a similar question create a new issue.
+🛠️ — **I found a bug**  
+- *Good Solution* : Search the existing issue list, and if no one has reported it, create a new issue !  
+- *Better Solution* : Along with the issue submission, provide a minimal reproducible code sample.  
+- *Best Solution* : Fix the issue and submit a pull request. This is the fastest way to get a bug fixed.
 
-*I found a bug.*
+🚀 — **Want to contribute ?**  
+If you don't know where to start, [open an issue](https://github.com/super-lou/dataverseuR/issues).
 
--   **Good Solution**: Search existing issue list and if no one has reported it create a new issue.
--   **Better Solution**: Along with issue submission provide a minimal reproducible example of the bug.
--   **Best Solution**: Fix the issue and submit a pull request. This is the fastest way to get a bug fixed.
+If you want to try by yourself, why not start by also [opening an issue](https://github.com/super-lou/dataverseuR/issues) to let me know you're working on something ? Then:
+
+- Fork this repository  
+- Clone your fork locally and make changes (or even better, create a new branch for your modifications)
+- Push to your fork and verify everything works as expected
+- Open a Pull Request on GitHub and describe what you did and why
+- Wait for review
+- For future development, keep your fork updated using the GitHub “Sync fork” functionality or by pulling changes from the original repo (or even via remote upstream if you're comfortable with Git). Otherwise, feel free to delete your fork to keep things tidy ! 
+
+If we’re connected through work, why not reach out via email to see if we can collaborate more closely on this repo by adding you as a collaborator !
 
 
 ## Code of Conduct

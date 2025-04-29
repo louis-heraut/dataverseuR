@@ -1,9 +1,9 @@
-# dataverseuR <img src="https://github.com/super-lou/dataverseuR/blob/e50a7ce8e819978059d891105334d19b61d813d4/man/figures/logo_dataverseuR_small.png" align="right" width=160 height=160 alt=""/>
+# dataverseuR <img src="https://github.com/louis-heraut/dataverseuR/blob/e50a7ce8e819978059d891105334d19b61d813d4/man/figures/logo_dataverseuR_small.png" align="right" width=160 height=160 alt=""/>
 
 <!-- badges: start -->
-[![R-CMD-check](https://github.com/super-lou/dataverseuR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/super-lou/dataverseuR/actions/workflows/R-CMD-check.yaml)
+[![R-CMD-check](https://github.com/louis-heraut/dataverseuR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/louis-heraut/dataverseuR/actions/workflows/R-CMD-check.yaml)
 [![Lifecycle: stable](https://img.shields.io/badge/lifecycle-stable-green)](https://lifecycle.r-lib.org/articles/stages.html)
-![](https://img.shields.io/github/last-commit/super-lou/dataverseuR)
+![](https://img.shields.io/github/last-commit/louis-heraut/dataverseuR)
 [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg)](code_of_conduct.md) 
 <!-- badges: end -->
 
@@ -15,7 +15,7 @@ This project was carried out for the National Research Institute for Agriculture
 ## Installation
 For the latest development version:
 ``` r
-remotes::install_github("super-lou/dataverseuR")
+remotes::install_github("louis-heraut/dataverseuR")
 ```
 
 
@@ -161,7 +161,7 @@ META$title = "Hydrological projections of discharge for the model {MODEL}"
 ```
 
 In the example above, there are several key points to understand. Every metadata variable must be clearly identified as such. Therefore:
-- The variable name is precise and non-negotiable (you need to start from an [example](https://github.com/super-lou/dataverseuR_toolbox) or download metadata from dataverse using the function `get_datasets_metadata()` to find a metadata name; see [Metadata Importation](#metadata-importation)).
+- The variable name is precise and non-negotiable (you need to start from an [example](https://github.com/louis-heraut/dataverseuR_toolbox) or download metadata from dataverse using the function `get_datasets_metadata()` to find a metadata name; see [Metadata Importation](#metadata-importation)).
 - The variable must be stored in an environment variable clearly identified here as `META`.
 
 This way, you can create an R file that gathers all these R metadata variables, like this:
@@ -277,13 +277,13 @@ convert_metadata(metadata)
 
 
 ### Workflow Examples
-A dedicated repository provides use cases in [dataverseuR_toolbox](https://github.com/super-lou/dataverseuR_toolbox).  
-If you need help creating a personal workflow and cannot find what you need in these examples, [open an issue](https://github.com/super-lou/dataverseuR_toolbox/issues).
+A dedicated repository provides use cases in [dataverseuR_toolbox](https://github.com/louis-heraut/dataverseuR_toolbox).  
+If you need help creating a personal workflow and cannot find what you need in these examples, [open an issue](https://github.com/louis-heraut/dataverseuR_toolbox/issues).
 
 
 ## FAQ
 📬 — **I would like an upgrade / I have a question / Need to reach me**  
-Feel free to [open an issue](https://github.com/super-lou/dataverseuR/issues) ! I’m actively maintaining this project, so I’ll do my best to respond quickly.  
+Feel free to [open an issue](https://github.com/louis-heraut/dataverseuR/issues) ! I’m actively maintaining this project, so I’ll do my best to respond quickly.  
 I’m also reachable on my institutional INRAE [email](mailto:louis.heraut@inrae.fr?subject=%5BdataverseuR%5D) for more in-depth discussions.
 
 🛠️ — **I found a bug**  
@@ -292,9 +292,9 @@ I’m also reachable on my institutional INRAE [email](mailto:louis.heraut@inrae
 - *Best Solution* : Fix the issue and submit a pull request. This is the fastest way to get a bug fixed.
 
 🚀 — **Want to contribute ?**  
-If you don't know where to start, [open an issue](https://github.com/super-lou/dataverseuR/issues).
+If you don't know where to start, [open an issue](https://github.com/louis-heraut/dataverseuR/issues).
 
-If you want to try by yourself, why not start by also [opening an issue](https://github.com/super-lou/dataverseuR/issues) to let me know you're working on something ? Then:
+If you want to try by yourself, why not start by also [opening an issue](https://github.com/louis-heraut/dataverseuR/issues) to let me know you're working on something ? Then:
 
 - Fork this repository  
 - Clone your fork locally and make changes (or even better, create a new branch for your modifications)

@@ -508,12 +508,21 @@ add_datasets_files = function(dataset_DOI, file_paths,
             if (is.null(directory_label)) {
                 directory_label = ""
             }
+
+            # tabIngest = grepl("\\.tab$|\\.csv$|\\.tsv$", file_path, ignore.case=TRUE)
+            # json_data = list(
+            #     description = "",
+            #     directoryLabel = directory_label,
+            #     restrict = "false",
+            #     tabIngest = tolower(as.character(tabIngest))
+            # )
             json_data = list(
                 description = "",
                 directoryLabel = directory_label,
                 restrict = "false",
                 tabIngest = "true"
             )
+            start_time = Sys.time()
             response =
                 httr::POST(url,
                            httr::add_headers("X-Dataverse-key" = API_TOKEN),
@@ -523,6 +532,13 @@ add_datasets_files = function(dataset_DOI, file_paths,
                            ),
                            encode="multipart")
             
+            end_time = Sys.time()
+            elapsed_time = as.numeric(difftime(end_time, start_time, units = "secs"))
+            file_size = file.info(file_path)$size / (1024^2) # in MB
+            upload_speed = file_size / elapsed_time
+
+            paste0("Uploaded ", round(file_size, 2), " MB in ", round(elapsed_time, 2), " seconds (", round(upload_speed, 2), " MB/s)")
+            
             if (httr::status_code(response) != 200) {
                 not_added_tmp = c(not_added_tmp, file_path)
                 names(not_added_tmp)[length(not_added_tmp)] = j
@@ -530,7 +546,11 @@ add_datasets_files = function(dataset_DOI, file_paths,
                                httr::status_code(response), " ",
                                httr::content(response, "text")))
             }
-            if (verbose) message(paste0(" - ", round(j/nFiles*100, 1), "% : file ", file_path, " added"))
+            if (verbose) message(paste0(" - ", round(j/nFiles*100, 1),
+                                        "% : file ", file_path, " of ",
+                                        round(file_size, 2), " MB added in ",
+                                        round(elapsed_time, 2), " seconds (",
+                                        round(upload_speed, 2), " MB/s)"))
         }
         not_added = append(not_added, list(not_added_tmp))
     }

@@ -296,6 +296,11 @@ get_datasets_metrics = function(dataset_DOI,
             results_tmp = c(results_tmp, metric_value)
         }
         # results_tmp = as.numeric(results_tmp)
+        if ("message" %in% names(results_tmp)) {
+            results_tmp = c(viewsTotal=NA, viewsUnique=NA,
+                            downloadsTotal=NA, downloadsUnique=NA)
+            
+        }
         results_tmp = c(dataset_DOI=dDOI, results_tmp)
         results_tmp = dplyr::tibble(!!!results_tmp)
         results = dplyr::bind_rows(results, results_tmp)

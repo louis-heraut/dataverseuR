@@ -15,6 +15,7 @@ License: GPL-3 + file LICENSE
 Imports: 
     dplyr,
     tidyr,
+    dotenv,
     stringr,
     purrr,
     httr,

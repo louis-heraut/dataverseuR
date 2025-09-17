@@ -1,4 +1,3 @@
 ^\.github$
 \.env*
-template
 test\.R

@@ -261,9 +261,8 @@ generate_metadata = function (metadata_dir=".",
     metadata = jsonlite::fromJSON(full_template_path,
                                   simplifyVector=FALSE,
                                   simplifyDataFrame=FALSE)
-    
     META = get(environment_name, envir=.GlobalEnv)
-    
+
     if (!is.null(META$filename)) {
         metadata_filename = paste0(META$filename, ".json")
         rm (filename, envir=META)

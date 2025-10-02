@@ -477,6 +477,7 @@ modify_datasets = function(dataverse,
 #' @param file_paths A vector of character string of paths of the files that needs to be uploaded. If you want to conserve a directory structure, set the name of each file path to the directory name wanted. If `dataset_DOI` contains more than one dataset DOI, `file_paths` needs to be a list of vector of character string, each vector of this list will be associated to each dataset identified in `dataset_DOI`.
 #' @param BASE_URL A character string for the base URL of the Dataverse API. By default, it uses the value from the environment variable `BASE_URL`.
 #' @param API_TOKEN A character string for the API token required to authenticate the request. By default, it uses the value from the environment variable `API_TOKEN`.
+#' @param timeout An integer to set the number of second before timeout of the request. By default, 600.
 #' @param verbose If FALSE, no processing informations are displayed. By default, TRUE.
 #' @return A character vector containing the paths of the files that could not be uploaded, if any.
 #' @seealso
@@ -488,6 +489,7 @@ modify_datasets = function(dataverse,
 add_datasets_files = function(dataset_DOI, file_paths,
                               BASE_URL=Sys.getenv("BASE_URL"),
                               API_TOKEN=Sys.getenv("API_TOKEN"),
+                              timeout=600,
                               verbose=TRUE) {
 
     if (!is.list(file_paths)) {
@@ -537,7 +539,8 @@ add_datasets_files = function(dataset_DOI, file_paths,
                                file = httr::upload_file(file_path),
                                jsonData=I(jsonlite::toJSON(json_data, auto_unbox=TRUE))
                            ),
-                           encode="multipart")
+                           encode="multipart",
+                           httr::timeout(timeout))
             
             end_time = Sys.time()
             elapsed_time = as.numeric(difftime(end_time, start_time, units = "secs"))

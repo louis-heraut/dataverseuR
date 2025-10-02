@@ -437,6 +437,7 @@ get_datasets_metadata = function(dataset_DOI,
 modify_datasets = function(dataverse,
                            dataset_DOI,
                            metadata_path,
+                           wait_time=10,
                            BASE_URL=Sys.getenv("BASE_URL"),
                            API_TOKEN=Sys.getenv("API_TOKEN"),
                            verbose=TRUE) {
@@ -465,6 +466,7 @@ modify_datasets = function(dataverse,
         }
 
         if (verbose) message(paste0(round(i/nDOI*100, 1), "% : dataset ", convert_DOI_to_URL(dDOI), " modified"))
+        Sys.sleep(wait_time)
     }
 }
 

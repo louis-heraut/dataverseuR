@@ -405,6 +405,7 @@ get_datasets_metadata = function(dataset_DOI,
         dataset = jsonlite::fromJSON(response_content,
                                      simplifyDataFrame=FALSE,
                                      simplifyVector=TRUE)
+        print(names(dataset$data))
         metadata = dataset$data[c("metadataLanguage",
                                   "latestVersion")]
         if (nDOI == 1) {
@@ -454,14 +455,9 @@ modify_datasets = function(dataverse,
         modify_url = paste0(BASE_URL,
                             "/api/datasets/:persistentId/versions/:draft?persistentId=",
                             dDOI)
-
-        # response = httr::PUT(modify_url,
-                             # httr::add_headers("X-Dataverse-key"=API_TOKEN),
-                             # body=mjson$datasetVersion,
-                             # encode="json")
         response = httr::PUT(modify_url,
                              httr::add_headers("X-Dataverse-key"=API_TOKEN),
-                             body=mjson,
+                             body=mjson$datasetVersion,
                              encode="json")
 
         if (httr::status_code(response) != 200) {

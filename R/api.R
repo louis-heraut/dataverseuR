@@ -426,7 +426,7 @@ get_datasets_metadata = function(dataset_DOI,
 #' @param dataset_DOI A vector of character string representing the DOI of datasets that will be process.
 #' @param metadata_path A vector of character string for the paths of json files containing the datasets metadata.
 #' @param wait_time An integer for the time in seconds to wait between requests. By default, 2 seconds.
-#' @param n_tries An integer for the maximum number of tries to reach dataverse server. By default, 3 tries.
+#' @param n_retries An integer for the maximum number of retries to reach dataverse server. By default, 3 retries.
 #' @param BASE_URL A character string for the base URL of the Dataverse API. By default, it uses the value from the environment variable `BASE_URL`.
 #' @param API_TOKEN A character string for the API token required to authenticate the request. By default, it uses the value from the environment variable `API_TOKEN`.
 #' @param verbose If FALSE, no processing informations are displayed. By default, TRUE.
@@ -440,7 +440,7 @@ modify_datasets = function(dataverse,
                            dataset_DOI,
                            metadata_path,
                            wait_time=2,
-                           n_tries=3,
+                           n_retries=3,
                            BASE_URL=Sys.getenv("BASE_URL"),
                            API_TOKEN=Sys.getenv("API_TOKEN"),
                            verbose=TRUE) {
@@ -462,10 +462,10 @@ modify_datasets = function(dataverse,
                              body=mjson$datasetVersion,
                              encode="json")
 
-        attempt = 1
+        attempt = 0
         while (httr::status_code(response) == 500 &
                httr::content(response, "text") == "{}" &
-               attempt < n_tries) {
+               attempt < n_retries) {
                    response = httr::PUT(modify_url,
                                         httr::add_headers("X-Dataverse-key"=API_TOKEN),
                                         body=mjson$datasetVersion,
@@ -473,9 +473,9 @@ modify_datasets = function(dataverse,
                    attempt = attempt + 1
                    Sys.sleep(wait_time)
                }
-        if (attempt >= n_tries) {
+        if (attempt >= n_retries) {
             stop("Dataverse server returned empty response after ",
-                 n_tries, " attempts.")
+                 n_retries, " attempts.")
         }
         if (httr::status_code(response) != 200) {
             stop(paste0(httr::status_code(response), " ",

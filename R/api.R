@@ -455,9 +455,13 @@ modify_datasets = function(dataverse,
                             "/api/datasets/:persistentId/versions/:draft?persistentId=",
                             dDOI)
 
+        # response = httr::PUT(modify_url,
+                             # httr::add_headers("X-Dataverse-key"=API_TOKEN),
+                             # body=mjson$datasetVersion,
+                             # encode="json")
         response = httr::PUT(modify_url,
                              httr::add_headers("X-Dataverse-key"=API_TOKEN),
-                             body=mjson$datasetVersion,
+                             body=mjson,
                              encode="json")
 
         if (httr::status_code(response) != 200) {

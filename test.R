@@ -19,9 +19,11 @@
 # If not, see <https://www.gnu.org/licenses/>.
 
 
-# devtools::load_all(".")
-source("R/api.R")
-source("R/dataverseur.R")
+devtools::load_all(".")
+# source("R/api.R")
+# source("R/dataverseuR.R")
+# source("R/metadata.R")
+# source("dev/old/metadata.R")
 
 dotenv::load_dot_env(file=".env-entrepot")
 # dotenv::load_dot_env(file=".env-demo")
@@ -29,7 +31,8 @@ dotenv::load_dot_env(file=".env-entrepot")
 
 
 to_do = c(
-    "search_datasets"
+    "get_metadata"
+    # "search_datasets"
     # "create_dataset"
     # "modify_dataset"
     # "add_files"
@@ -38,6 +41,13 @@ to_do = c(
     # "publish_dataset"
     # "get_metrics"
 )
+
+
+if ("get_metadata" %in% to_do) {
+    dataset_DOI = "doi:10.57745/TLUTKF"
+    metadata = get_datasets_metadata(dataset_DOI=dataset_DOI)
+    res = convert_metadata(metadata, "metadata.yml")
+}
 
 
 if ("search_datasets" %in% to_do) {
@@ -73,12 +83,14 @@ if ("search_datasets" %in% to_do) {
 
 
 if ("create_dataset" %in% to_do) {
-    initialise_metadata()
-    source("template/projection_hydrologique.R")
-    res = generate_metadata()
-    dataset_DOI = create_dataset(dataverse="explore2",
-                                 metadata_path=res$file_path)
+    # initialise_metadata_old()
+    # source("dev/old/metadata_template.R")
+    # res = generate_metadata_old(dev=TRUE)
+    res = generate_metadata("metadata.yml")
+    dataset_DOI = create_datasets(dataverse="explore2",
+                                  metadata_path=res$metadata_path)
 }
+
 
 if ("modify_dataset" %in% to_do) {
     initialise_metadata()
@@ -87,7 +99,7 @@ if ("modify_dataset" %in% to_do) {
     res = generate_metadata()
     dataset_DOI = modify_dataset_metadata(dataverse="explore2",
                                           dataset_DOI=dataset_DOI,
-                                          metadata_path=res$file_path)
+                                          metadata_path=res$metadata_path)
 }
 
 if ("add_files" %in% to_do) {

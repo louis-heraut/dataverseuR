@@ -37,7 +37,7 @@
 create_dotenv = function(dotenv_path=file.path(getwd(), "dist.env"),
                          verbose=TRUE) {
     
-    dotenv_from_path = system.file("extdata", "dist.env",
+    dotenv_from_path = system.file("templates", "dist.env",
                                    package="dataverseuR")
     file.copy(dotenv_from_path, dotenv_path, overwrite=TRUE)
 

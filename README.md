@@ -166,79 +166,107 @@ In the example above, there are several key points to understand. Every metadata
 
 This way, you can create an R file that gathers all these R metadata variables, like this:
 
-``` R
-META$title = "Plane simulation trajectory for the model {MODEL}"
+``` yml
+# ░█▀▄░█▀▀▄░▀█▀░█▀▀▄░▄░░░▄░█▀▀░█▀▀▄░█▀▀░█▀▀░█░▒█░▒█▀▀▄
+# ░█░█░█▄▄█░░█░░█▄▄█░░█▄█░░█▀▀░█▄▄▀░▀▀▄░█▀▀░█░▒█░▒█▄▄▀
+# ░▀▀░░▀░░▀░░▀░░▀░░▀░░░▀░░░▀▀▀░▀░▀▀░▀▀▀░▀▀▀░░▀▀▀░▒█░▒█ _______________
+# GitHub : https://github.com/louis-heraut/dataverseuR
+# Author : Héraut, Louis
+# Affiliation : INRAE, UR RiverLy, Villeurbanne, France
+# ORCID : 0009-0006-4372-0923
+#
+# This file is a parameterization file used by the dataverseuR R
+# package to generate a metadata JSON file needed by the Dataverse API
+# to create or modify a dataset.
 
-META$alternativeURL = "https://other-datarepository.org"
+title: Plane simulation trajectory for the model {MODEL}
 
-META$datasetContactName = "John, Locke"
-META$datasetContactAffiliation = "Laboratory, Institut, Island"
-META$datasetContactEmail = "dany.doe@institut.org"
+alternativeURL: https://other-datarepository.org
 
-META$authorName1 = "John, Locke"
-META$authorAffiliation1 = "Laboratory, Institut, Island"
-META$authorIdentifierScheme1 = "ORCID"
-META$authorIdentifier1 = "xxxx-xxxx-xxxx-xxxx"
+datasetContact:
+- datasetContactName: Locke, John
+  datasetContactAffiliation: Laboratory, Institut, Island
+  datasetContactEmail: dany.doe@institut.org
 
-META$contributorType = "Data Curator"
-META$contributorName = "Hugo, Reyes"
-META$contributorAffiliation = "Laboratory, Same Institut, Island"
-META$contributorIdentifierScheme = "ORCID"
-META$contributorIdentifier = "4815-1623-4248-1516"
+author:
+- authorName: Locke, John
+  authorAffiliation: Laboratory, Institut, Island
+  authorIdentifierScheme: ORCID
+  authorIdentifier: xxxx-xxxx-xxxx-xxxx
 
-META$producerName = "Producer"
-META$producerURL = "https://producer.org"
-META$producerLogoURL = "https://producer.org/logo.png"
+contributor:
+- contributorType: Data Curator
+  contributorName: Reyes, Hugo
+  contributorAffiliation: Laboratory, Same Institut, Island
+  contributorIdentifierScheme: ORCID
+  contributorIdentifier: 4815-1623-4248-1516
 
-META$distributorName = "dataverse instance"
-META$distributorURL = "https://dataverse.org"
-META$distributorLogoURL = "https://dataverse.org/logo.png"
+producer:
+- producerName: Producer
+  producerURL: https://producer.org
+  producerLogoURL: https://producer.org/logo.png
 
-META$dsDescriptionValue = "A collection of 815 simulated plane trajectories designed for testing flight behavior under unusual navigational conditions. Includes data on course deviations, atmospheric anomalies, and long-range displacement events."
+distributor:
+- distributorName: dataverse instance
+  distributorURL: https://dataverse.org
+  distributorLogoURL: https://dataverse.org/logo.png
 
-META$dsDescriptionLanguage = "English"
-META$language = "English"
-META$subject = "Earth and Environmental Sciences"
+dsDescription:
+- dsDescriptionValue: A collection of 815 simulated plane trajectories designed for
+    testing flight behavior under unusual navigational conditions. Includes data on
+    course deviations, atmospheric anomalies, and long-range displacement events.
+  dsDescriptionLanguage: English
 
-META$keywordValue1 = "atmospheric boundary layer"
-META$keywordTermURL1 = "http://opendata.inrae.fr/thesaurusINRAE/c_823"
-META$keywordVocabulary1 = "INRAETHES"
-META$keywordVocabularyURI1 = "http://opendata.inrae.fr/thesaurusINRAE/thesaurusINRAE"
+language: English
 
-META$keywordValue2 = "magnetic characteristic"
-META$keywordTermURL2 = "http://opendata.inrae.fr/thesaurusINRAE/c_13144"
-META$keywordVocabulary2 = "INRAETHES"
-META$keywordVocabularyURI2 = "http://opendata.inrae.fr/thesaurusINRAE/thesaurusINRAE"
+subject: Earth and Environmental Sciences
 
-META$keywordValue3 = "plane"
+keyword:
+- keywordValue: atmospheric boundary layer
+  keywordTermURL: http://opendata.inrae.fr/thesaurusINRAE/c_823
+  keywordVocabulary: INRAETHES
+  keywordVocabularyURI: http://opendata.inrae.fr/thesaurusINRAE/thesaurusINRAE
+- keywordValue: magnetic characteristic
+  keywordTermURL: http://opendata.inrae.fr/thesaurusINRAE/c_13144
+  keywordVocabulary: INRAETHES
+  keywordVocabularyURI: http://opendata.inrae.fr/thesaurusINRAE/thesaurusINRAE
+- keywordValue: plane
 
-META$kindOfData = "Dataset"
-META$kindOfDataOther = "Flying simulation"
-META$dataOrigin = "simulation data"
+kindOfData: Dataset
+kindOfDataOther: Flying simulation
 
-META$softwareName = "{MODEL}"
-META$softwareVersion = "x"
+dataOrigin: simulation data
 
-META$publicationCitation = "futur publication"
-META$publicationIDType = "doi"
-META$publicationIDNumber = "doi"
-META$publicationURL = "https://doi.org"
+software:
+- softwareName: '{MODEL}'
+  softwareVersion: x
 
-META$projectAcronym = "Others Project"
-META$projectTitle = "Others Project : long title"
-META$projectURL = "https://project.org"
+publication:
+- publicationRelationType: IsSupplementTo
+  publicationCitation: futur publication
+  publicationIDType: doi
+  publicationIDNumber: doi
+  publicationURL: https://doi.org
 
-META$timePeriodCoveredStart = "2004-09-22"
-META$timePeriodCoveredEnd = "2010-05-23"
+project:
+- projectAcronym: Others Project
+  projectTitle: 'Others Project : long title'
+  projectURL: https://project.org
 
-META$country = "Hawaii"
+timePeriodCovered:
+- timePeriodCoveredStart: '2004-09-22'
+  timePeriodCoveredEnd: '2010-05-23'
 
-META$depositor = "Kate, Austen"
+depositor: Austen, Kate
+
+country: Fiji
+
+dateOfDeposit: '2020-03-19'
 ```
 
 This allows you to add a new author with:
 ``` R
-META$authorName2 = "Jack, Shephard"
+META$authorName2 = "Shephard, Jack"
 META$authorAffiliation2 = "Laboratory, An other Institut, Island"
 ```
 (Note the numerical incrementation.)<br>

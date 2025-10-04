@@ -446,6 +446,12 @@
             "typeClass": "compound",
             "value": [
               {
+		"publicationRelationType": {
+                  "typeName": "publicationRelationType",
+                  "multiple": false,
+                  "typeClass": "controlledVocabulary",
+                  "value": ""
+                },
                 "publicationCitation": {
                   "typeName": "publicationCitation",
                   "multiple": false,

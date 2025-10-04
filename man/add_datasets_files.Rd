@@ -9,6 +9,7 @@ add_datasets_files(
   file_paths,
   BASE_URL = Sys.getenv("BASE_URL"),
   API_TOKEN = Sys.getenv("API_TOKEN"),
+  timeout = 600,
   verbose = TRUE
 )
 }
@@ -20,6 +21,8 @@ add_datasets_files(
 \item{BASE_URL}{A character string for the base URL of the Dataverse API. By default, it uses the value from the environment variable \code{BASE_URL}.}
 
 \item{API_TOKEN}{A character string for the API token required to authenticate the request. By default, it uses the value from the environment variable \code{API_TOKEN}.}
+
+\item{timeout}{An integer to set the number of second before timeout of the request. By default, 600.}
 
 \item{verbose}{If FALSE, no processing informations are displayed. By default, TRUE.}
 }

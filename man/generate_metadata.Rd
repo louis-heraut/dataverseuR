@@ -4,27 +4,10 @@
 \alias{generate_metadata}
 \title{generate_metadata}
 \usage{
-generate_metadata(
-  metadata_dir = ".",
-  metadata_filename = "metadata",
-  environment_name = "META",
-  overwrite_metadata = TRUE,
-  dev = FALSE,
-  verbose = FALSE
-)
+generate_metadata(metadata_yml_path, overwrite_metadata = TRUE)
 }
 \arguments{
-\item{metadata_dir}{A character string specifying the directory where the generated metadata json file will be saved. Defaults to the current directory (".").}
-
-\item{metadata_filename}{A character string specifying filename for the generated metadata. If their is a \code{filename} variable in the R metadata environment, the default filename is taken from this variable. Default to \code{"metadata"}.}
-
-\item{environment_name}{The name of the R variable metadata environment variable containing the metadata values. Defaults to "META".}
-
 \item{overwrite_metadata}{A logical value indicating whether to overwrite an existing metadata file. Defaults to TRUE.}
-
-\item{dev}{A logical value indicating whether to use the development template for metadata. Default to FALSE.}
-
-\item{verbose}{A logical value for whether to print additional information. Default to FALSE.}
 }
 \value{
 A list containing two elements :

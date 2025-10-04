@@ -68,35 +68,11 @@ format_full_metadata = function (file="rechercheDataGouv-full-metadata.json",
 }
 
 
-#' @title initialise_metadata
-#' @description Create an empty R variable metadata environment in which all assigned R variables will represent a dataverse metadata for a unique dataset. See [generate_metadata()] to create the associated json metadata file.
-#' @param environment_name A character string representing the name of the R variable metadata environment to be created. The default value is `"META"`.
-#' @seealso
-#' - [dataverseuR GitHub documentation](https://github.com/super-lou/dataverseuR) <https://github.com/super-lou/dataverseuR>
-#' @md
-#' @export
-initialise_metadata = function (environment_name="META") {
-    assign(environment_name, new.env(), envir=as.environment(1))
-}
-
-
 replicate_typeName = function (metadata, typeName, n) {
     if (is.list(metadata)) {
         return (lapply(metadata, function(x) {
 
             if ("value" %in% names(x) && is.list(x$value)) {
-                # if (typeName %in% names(x$value)) {
-                #     tmp = x$value
-                #     tmp_all = list()
-                #     for (i in 1:n) {
-                #         for (tp in names(x$value)) {
-                #             tmp[[tp]]$typeName =
-                #                 paste0(x$value[[tp]]$typeName, i)
-                #         }
-                #         tmp_all = append(tmp_all, list(tmp))
-                #     }
-                #     x$value = tmp_all
-                # }
                 ok = FALSE
                 if (typeName %in% names(x$value)) {
                     ok = TRUE
@@ -225,14 +201,49 @@ clean_metadata = function (metadata) {
 }
 
 
+
+
+generate_metadata_hide = function(metadata_yml,
+                                  res=list(group=c(),
+                                           meta=dplyr::tibble())) {
+    if (is.list(metadata_yml)) {
+        for (i in 1:length(metadata_yml)) {
+            typeName = names(metadata_yml)[i]
+            value = metadata_yml[[i]]
+            if (is.character(value)) {
+                line = dplyr::tibble(typeName=typeName,
+                                     value=value)
+                res$meta = dplyr::bind_rows(res$meta,
+                                            line)
+            } else if (is.list(value)) {
+                res$group = c(res$group, typeName)
+            }
+            res = generate_metadata_hide(value, res)
+        }
+    }
+    return (res)
+}
+
+format_metadata_res = function (res) {
+    res$meta$group = NA
+    for (group in res$group) {
+        res$meta$group[grepl(group, res$meta$typeName)] = group 
+    }
+    res$meta =
+        dplyr::mutate(dplyr::group_by(res$meta, typeName),
+                      group_index=ifelse(
+                          !is.na(typeName) &
+                          dplyr::n() > 1,
+                          dplyr::row_number(),
+                          NA))
+    res$meta = dplyr::ungroup(res$meta)
+    return (res)
+}
+
+
 #' @title generate_metadata
 #' @description Write a metadata json file and return the associated metadata list based on the R variables contained in the previously initialised R variable metadata environment. See [initialise_metadata()] to create a new R variable environment.
-#' @param metadata_dir A character string specifying the directory where the generated metadata json file will be saved. Defaults to the current directory (".").
-#' @param metadata_filename A character string specifying filename for the generated metadata. If their is a `filename` variable in the R metadata environment, the default filename is taken from this variable. Default to `"metadata"`.
-#' @param environment_name The name of the R variable metadata environment variable containing the metadata values. Defaults to "META".
 #' @param overwrite_metadata A logical value indicating whether to overwrite an existing metadata file. Defaults to TRUE.
-#' @param dev A logical value indicating whether to use the development template for metadata. Default to FALSE.
-#' @param verbose A logical value for whether to print additional information. Default to FALSE.
 #' @return A list containing two elements :
 #' - `metadata_path` the path to the generated metadata file and
 #' - `json` the json list equivalent content of the metadata
@@ -240,38 +251,29 @@ clean_metadata = function (metadata) {
 #' - [dataverseuR GitHub documentation](https://github.com/super-lou/dataverseuR) <https://github.com/super-lou/dataverseuR>
 #' @md
 #' @export
-generate_metadata = function (metadata_dir=".",
-                              metadata_filename="metadata",
-                              environment_name="META",
-                              overwrite_metadata=TRUE,
-                              dev=FALSE,
-                              verbose=FALSE) {
+generate_metadata = function (metadata_yml_path,
+                              overwrite_metadata=TRUE) {
 
-    if (dev) {
-        full_template_path =
-            file.path("inst", "extdata",
-                      "RDG_full_metadata_template.json")
-    } else {
-        full_template_path =
-            system.file("extdata",
-                        "RDG_full_metadata_template.json",
-                        package="dataverseuR")
-    }
+    full_template_path =
+        system.file("extdata",
+                    "RDG_full_metadata_template.json",
+                    package="dataverseuR")
     
     metadata = jsonlite::fromJSON(full_template_path,
                                   simplifyVector=FALSE,
                                   simplifyDataFrame=FALSE)
-    META = get(environment_name, envir=.GlobalEnv)
 
-    if (!is.null(META$filename)) {
-        metadata_filename = paste0(META$filename, ".json")
-        rm (filename, envir=META)
-    } else {
-        metadata_filename = paste0(metadata_filename, ".json")
-    }
-    metadata_path = file.path(metadata_dir, metadata_filename)
+    metadata_path = gsub(".yml", ".json", metadata_yml_path)
+    metadata_yml = yaml::read_yaml(metadata_yml_path)
+
+    res = generate_metadata_hide(metadata_yml)
+    res = format_metadata_res(res)
+
+    Ok = !is.na(res$meta$group_index)
+    res$meta$typeName[Ok] = paste0(res$meta$typeName[Ok],
+           res$meta$group_index[Ok])
     
-    TypeNames = ls(envir=META)
+    TypeNames = res$meta$typeName
     TypeNames_Num = TypeNames[grepl("[[:digit:]]+$", TypeNames)]
     TypeNames_Num_noNum = unique(gsub("[[:digit:]]+$", "",
                                       TypeNames_Num))
@@ -295,12 +297,10 @@ generate_metadata = function (metadata_dir=".",
     }
 
     for (typeName in TypeNames) {
-        value = get(typeName, envir=META)
+        value = res$meta$value[res$meta$typeName == typeName]
         metadata = add_typeName(metadata, typeName, value)
     }
     metadata = clean_metadata(metadata)
-
-    rm (list=ls(envir=META), envir=META)
 
     json = jsonlite::toJSON(metadata,
                             pretty=TRUE,
@@ -319,106 +319,109 @@ generate_metadata = function (metadata_dir=".",
 
 
 
-insert_spaces = function(to_space, with_order) {
-    spaced = c(to_space[1])
-    for (i in 2:length(with_order)) {
-        if (with_order[i] != with_order[i - 1]) {
-            spaced = c(spaced, "")
-        }
-        spaced = c(spaced, to_space[i])
-    }
-    return (spaced)
-}
 
-
-insert_spaces = function(vec2, vec1) {
-    vec2_spaced <- c(vec2[1])
-    for (i in 2:length(vec1)) {
-        if (vec1[i] != vec1[i - 1]) {
-            vec2_spaced <- c(vec2_spaced, "")  # Insert a space
-        }
-        vec2_spaced <- c(vec2_spaced, vec2[i])  # Add the current element
-    }
-    
-    return(vec2_spaced)
-}
-
-
-
-convert_metadata_hide = function(metadata, environment_name,
-                                 Lines, previous) {
+convert_metadata_hide = function(metadata,
+                                 res=list(group=c(),
+                                          meta=dplyr::tibble()),
+                                 previous="") {
     if (is.list(metadata)) {
         for (x in metadata) {
 
-            if ("typeName" %in% names(x) & "value" %in% names(x)) {
+            if ("typeName" %in% names(x) &
+                "value" %in% names(x)) {
                 if (is.character(x$value)) {
-                    following = gsub("[[:upper:]].*", "", x$typeName)
+                    following = gsub("[[:upper:]].*", "",
+                                     x$typeName)
                     following = following[!is.na(following)]
 
-                    # TypeNames = gsub(".*[$]", "", Lines_tmp)
-                    # TypeNames = gsub(" [=].*", "", TypeNames)
-                    # TypeNames_noNum = gsub("[[:digit:]]+", "",
-                    #                        TypeNames)
-                    # TypeNames_Num = stringr::str_extract("[[:digit:]]+",
-                    #                                      TypeNames)
-
-                    # typeName = gsub(".*[$]", "", line)
-                    # typeName = gsub(" [=].*", "", typeName)
-
-                    # Ok = TypeNames_noNum %in% typeName[1] &
-                    #     TypeNames_noNum != ""
-
-                    # print(typeName)
-                    # print(TypeNames)
-                    # print(TypeNames_noNum)
-                    # print(TypeNames_Num)
-                    # print("")
-                    
-                    # if (any(Ok)) {
-                    #     if (all(is.na(TypeNames_Num[Ok]))) {
-                    #         typeName = paste0(typeName, "1")
-                    #     } else {
-                    #         typeName = paste0(typeName,
-                    #                           max(TypeNames_Num[Ok],
-                    #                               na.rm=TRUE)+1)
-                    #     }
-                    #     LinestypeName
-                    # }
-
-                    line = paste0(environment_name, "$",
-                                  x$typeName, " = \"",
-                                  x$value, "\"")
-
-                    if (previous[1] == following[1]) {
-                        Lines = c(Lines, line)
-                    } else {
-                        Lines = c(Lines, "", line)
+                    line = dplyr::tibble(typeName=x$typeName,
+                                         value=x$value)
+                    if (previous[1] != following[1]) {
+                        empty = dplyr::tibble(typeName="newline",
+                                              value="")
+                        res$meta =
+                            dplyr::bind_rows(res$meta,
+                                             empty)
                     }
+                    res$meta = dplyr::bind_rows(res$meta,
+                                                line)
                     previous = following
+
+
+                } else if (is.list(x$value)) {
+                    res$group = c(res$group, x$typeName)
                 }
             }
-            Lines = convert_metadata_hide(x, environment_name,
-                                          Lines, previous)
+            res = convert_metadata_hide(x, res, previous)
         }
     }
-    return (Lines)
+    return (res)
 }
+
 
 
 
 #' @title convert_metadata
-#' @param metadata metadata  
-#' @param environment_name The name of the R variable metadata environment variable containing the metadata values. Defaults to "META".
+#' @param metadata metadata
+#' @param metadata_yml_path A character string for the name of the metadata R file to write. By default, "metadata_tmp". 
 #' @seealso
 #' - [dataverseuR GitHub documentation](https://github.com/super-lou/dataverseuR) <https://github.com/super-lou/dataverseuR>
 #' @md
 #' @export
 convert_metadata = function (metadata,
-                             environment_name="META") {
-    Lines = c()
-    Lines = convert_metadata_hide(metadata=metadata,
-                                  environment_name=environment_name,
-                                  Lines=Lines,
-                                  previous="")
-    writeLines(Lines, "tmp.R")
+                             metadata_yml_path) {
+    res = convert_metadata_hide(metadata=metadata)
+    res = format_metadata_res(res)
+
+    typeName = res$meta$typeName
+    Ok = typeName == "newline"
+    res$meta$typeName[Ok] = paste0(typeName[Ok],
+                                   res$meta$group_index[Ok])
+    
+    group_order = res$meta$group
+    Ok = is.na(group_order)
+    group_order[Ok] = res$meta$typeName[Ok]
+    group_order = unique(group_order)
+    
+    meta_list = as.list(dplyr::group_split(res$meta, group))
+    names(meta_list) = unique(unlist(sapply(meta_list, "[[", "group")))
+    meta = list()
+    nItem = length(meta_list)
+    
+    for (i in 1:nItem) {
+
+        item = meta_list[[i]]
+        name = names(meta_list)[i]
+        
+        if (is.na(name)) {
+            item_list = as.list(tibble::deframe(dplyr::select(item,
+                                                              typeName,
+                                                              value)))
+            meta = append(meta, item_list)
+                          
+        } else {
+            item_list = 
+                dplyr::summarise(dplyr::group_by(item,
+                                                 group_index),
+                                 value=list(tibble::deframe(pick(typeName,
+                                                                 value))),
+                                 .groups="drop")
+            item_list = lapply(item_list$value, as.list)
+            meta = append(meta, list(item_list))
+            names(meta)[length(meta)] = name
+        }
+    }
+
+    meta = meta[group_order]
+    yaml_text = yaml::as.yaml(meta)
+    Lines = strsplit(yaml_text, "\n")[[1]]
+    # yaml::write_yaml(meta, metadata_yml_path)
+    # Lines = readLines(metadata_yml_path)
+    Ok = grepl("^newline[[:digit:]]+[:]", Lines)
+    Lines[Ok] = ""
+    Lines = Lines[c(TRUE, Lines[-1] != Lines[-length(Lines)])]    
+    header_path = system.file("header.txt", package="dataverseuR")
+    header = readLines(header_path)
+    Lines = c(header, Lines)
+    writeLines(Lines, metadata_yml_path)
 }

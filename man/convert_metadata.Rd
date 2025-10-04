@@ -4,12 +4,12 @@
 \alias{convert_metadata}
 \title{convert_metadata}
 \usage{
-convert_metadata(metadata, environment_name = "META")
+convert_metadata(metadata, metadata_yml_path)
 }
 \arguments{
 \item{metadata}{metadata}
 
-\item{environment_name}{The name of the R variable metadata environment variable containing the metadata values. Defaults to "META".}
+\item{metadata_yml_path}{A character string for the name of the metadata R file to write. By default, "metadata_tmp".}
 }
 \description{
 convert_metadata

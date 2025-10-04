@@ -8,6 +8,8 @@ modify_datasets(
   dataverse,
   dataset_DOI,
   metadata_path,
+  wait_time = 2,
+  n_retries = 3,
   BASE_URL = Sys.getenv("BASE_URL"),
   API_TOKEN = Sys.getenv("API_TOKEN"),
   verbose = TRUE
@@ -19,6 +21,10 @@ modify_datasets(
 \item{dataset_DOI}{A vector of character string representing the DOI of datasets that will be process.}
 
 \item{metadata_path}{A vector of character string for the paths of json files containing the datasets metadata.}
+
+\item{wait_time}{An integer for the time in seconds to wait between requests. By default, 2 seconds.}
+
+\item{n_retries}{An integer for the maximum number of retries to reach dataverse server. By default, 3 retries.}
 
 \item{BASE_URL}{A character string for the base URL of the Dataverse API. By default, it uses the value from the environment variable \code{BASE_URL}.}
 

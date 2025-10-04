@@ -1,0 +1,95 @@
+# ░█▀▄░█▀▀▄░▀█▀░█▀▀▄░▄░░░▄░█▀▀░█▀▀▄░█▀▀░█▀▀░█░▒█░▒█▀▀▄
+# ░█░█░█▄▄█░░█░░█▄▄█░░█▄█░░█▀▀░█▄▄▀░▀▀▄░█▀▀░█░▒█░▒█▄▄▀
+# ░▀▀░░▀░░▀░░▀░░▀░░▀░░░▀░░░▀▀▀░▀░▀▀░▀▀▀░▀▀▀░░▀▀▀░▒█░▒█ _______________
+# GitHub : https://github.com/louis-heraut/dataverseuR
+# Author : Héraut, Louis
+# Affiliation : INRAE, UR RiverLy, Villeurbanne, France
+# ORCID : 0009-0006-4372-0923
+#
+# This file is a parameterization file used by the dataverseuR R
+# package to generate a metadata JSON file needed by the Dataverse API
+# to create or modify a dataset.
+
+title: Plane simulation trajectory for the model {MODEL}
+
+alternativeURL: https://other-datarepository.org
+
+datasetContact:
+- datasetContactName: Locke, John
+  datasetContactAffiliation: Laboratory, Institut, Island
+  datasetContactEmail: dany.doe@institut.org
+
+author:
+- authorName: Locke, John
+  authorAffiliation: Laboratory, Institut, Island
+  authorIdentifierScheme: ORCID
+  authorIdentifier: xxxx-xxxx-xxxx-xxxx
+
+contributor:
+- contributorType: Data Curator
+  contributorName: Reyes, Hugo
+  contributorAffiliation: Laboratory, Same Institut, Island
+  contributorIdentifierScheme: ORCID
+  contributorIdentifier: 4815-1623-4248-1516
+
+producer:
+- producerName: Producer
+  producerURL: https://producer.org
+  producerLogoURL: https://producer.org/logo.png
+
+distributor:
+- distributorName: dataverse instance
+  distributorURL: https://dataverse.org
+  distributorLogoURL: https://dataverse.org/logo.png
+
+dsDescription:
+- dsDescriptionValue: A collection of 815 simulated plane trajectories designed for
+    testing flight behavior under unusual navigational conditions. Includes data on
+    course deviations, atmospheric anomalies, and long-range displacement events.
+  dsDescriptionLanguage: English
+
+language: English
+
+subject: Earth and Environmental Sciences
+
+keyword:
+- keywordValue: atmospheric boundary layer
+  keywordTermURL: http://opendata.inrae.fr/thesaurusINRAE/c_823
+  keywordVocabulary: INRAETHES
+  keywordVocabularyURI: http://opendata.inrae.fr/thesaurusINRAE/thesaurusINRAE
+- keywordValue: magnetic characteristic
+  keywordTermURL: http://opendata.inrae.fr/thesaurusINRAE/c_13144
+  keywordVocabulary: INRAETHES
+  keywordVocabularyURI: http://opendata.inrae.fr/thesaurusINRAE/thesaurusINRAE
+- keywordValue: plane
+
+kindOfData: Dataset
+kindOfDataOther: Flying simulation
+
+dataOrigin: simulation data
+
+software:
+- softwareName: '{MODEL}'
+  softwareVersion: x
+
+publication:
+- publicationRelationType: IsSupplementTo
+  publicationCitation: futur publication
+  publicationIDType: doi
+  publicationIDNumber: doi
+  publicationURL: https://doi.org
+
+project:
+- projectAcronym: Others Project
+  projectTitle: 'Others Project : long title'
+  projectURL: https://project.org
+
+timePeriodCovered:
+- timePeriodCoveredStart: '2004-09-22'
+  timePeriodCoveredEnd: '2010-05-23'
+
+depositor: Austen, Kate
+
+country: Fiji
+
+dateOfDeposit: '2020-03-19'

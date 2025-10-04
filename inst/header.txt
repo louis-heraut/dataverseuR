@@ -1,0 +1,11 @@
+# ░█▀▄░█▀▀▄░▀█▀░█▀▀▄░▄░░░▄░█▀▀░█▀▀▄░█▀▀░█▀▀░█░▒█░▒█▀▀▄
+# ░█░█░█▄▄█░░█░░█▄▄█░░█▄█░░█▀▀░█▄▄▀░▀▀▄░█▀▀░█░▒█░▒█▄▄▀
+# ░▀▀░░▀░░▀░░▀░░▀░░▀░░░▀░░░▀▀▀░▀░▀▀░▀▀▀░▀▀▀░░▀▀▀░▒█░▒█ _______________
+# GitHub : https://github.com/louis-heraut/dataverseuR
+# Author : Héraut, Louis
+# Affiliation : INRAE, UR RiverLy, Villeurbanne, France
+# ORCID : 0009-0006-4372-0923
+#
+# This file is a parameterization file used by the dataverseuR R
+# package to generate a metadata JSON file needed by the Dataverse API
+# to create or modify a dataset.

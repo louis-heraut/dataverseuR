@@ -49,7 +49,8 @@ format_full_metadata = function (file="rechercheDataGouv-full-metadata.json",
     } else {
         path = system.file("extdata", file, package="dataverseuR")
     }
-    metadata = jsonlite::fromJSON(path, simplifyDataFrame=FALSE)
+    metadata = jsonlite::fromJSON(path,
+                                  simplifyDataFrame=FALSE)
     
     metadata = format_full_metadata_hide(metadata)
 
@@ -203,7 +204,7 @@ clean_metadata = function (metadata) {
 
 
 
-generate_metadata_hide = function(metadata_yml,
+generate_metadata_json_hide = function(metadata_yml,
                                   res=list(group=c(),
                                            meta=dplyr::tibble())) {
     if (is.list(metadata_yml)) {
@@ -218,7 +219,7 @@ generate_metadata_hide = function(metadata_yml,
             } else if (is.list(value)) {
                 res$group = c(res$group, typeName)
             }
-            res = generate_metadata_hide(value, res)
+            res = generate_metadata_json_hide(value, res)
         }
     }
     return (res)
@@ -241,91 +242,108 @@ format_metadata_res = function (res) {
 }
 
 
-#' @title generate_metadata
-#' @description Write a metadata json file and return the associated metadata list based on the R variables contained in the previously initialised R variable metadata environment. See [initialise_metadata()] to create a new R variable environment.
-#' @param overwrite_metadata A logical value indicating whether to overwrite an existing metadata file. Defaults to TRUE.
-#' @return A list containing two elements :
-#' - `metadata_path` the path to the generated metadata file and
-#' - `json` the json list equivalent content of the metadata
+#' @title generate_metadata_json
+#' @description Generate from a YAML metadata file a JSON metadata file used by dataverse to create or modify a dataset. See [initialise_metadata()] or [get_datasets_metadata()] and [convert_metadata()] to get a metadata YAML file.
+#' @param metadata_yml_path A vector of character strings of the YAML metadata paths.
+#' @param overwrite A logical value indicating whether to overwrite an existing metadata file. Defaults to TRUE.
+#' @return A vector of character strings containing the JSON metadata paths.
+#' @examples
+#' \dontrun{
+#' # First option 
+#' # Get a YAML file from a template
+#' initialise_metadata("metadata.yml")
+#' # Customize the YAML file, then generate the JSON equivalent
+#' metadata_json_path = generate_metadata_json("metadata.yml")
+#'
+#' # Second option
+#' # Get a YAML file from a dataverse deposit
+#' dataset_DOI = "doi:10.57745/LNBEGZ"
+#' get_datasets_metadata(dataset_DOI, "metadata.json")
+#' convert_metadata_to_yml("metadata.json")
+#' # Customize the YAML file, then generate the JSON equivalent
+#' metadata_json_path = generate_metadata_json("metadata.yml")
+#' }
 #' @seealso
-#' - [dataverseuR GitHub documentation](https://github.com/super-lou/dataverseuR) <https://github.com/super-lou/dataverseuR>
+#' - [dataverseuR GitHub documentation](https://github.com/louis-heraut/dataverseuR) <https://github.com/louis-heraut/dataverseuR>
 #' @md
 #' @export
-generate_metadata = function (metadata_yml_path,
-                              overwrite_metadata=TRUE) {
+generate_metadata_json = function (metadata_yml_path,
+                                   overwrite=TRUE) {
 
-    full_template_path =
-        system.file("extdata",
-                    "RDG_full_metadata_template.json",
-                    package="dataverseuR")
-    
-    metadata = jsonlite::fromJSON(full_template_path,
-                                  simplifyVector=FALSE,
-                                  simplifyDataFrame=FALSE)
+    metadata_json_path = c()
+    for (mpath_yml in metadata_yml_path) {
+        
+        full_template_path =
+            system.file("extdata",
+                        "RDG_full_metadata_template.json",
+                        package="dataverseuR")
+        
+        metadata_json = jsonlite::fromJSON(full_template_path,
+                                      simplifyVector=FALSE,
+                                      simplifyDataFrame=FALSE)
 
-    metadata_path = gsub(".yml", ".json", metadata_yml_path)
-    metadata_yml = yaml::read_yaml(metadata_yml_path)
+        mpath_json = gsub(".yml", ".json", mpath_yml)
+        metadata_yml = yaml::read_yaml(mpath_yml)
 
-    res = generate_metadata_hide(metadata_yml)
-    res = format_metadata_res(res)
+        res = generate_metadata_json_hide(metadata_yml)
+        res = format_metadata_res(res)
+        
+        Ok = !is.na(res$meta$group_index)
+        res$meta$typeName[Ok] = paste0(res$meta$typeName[Ok],
+                                       res$meta$group_index[Ok])
+        
+        TypeNames = res$meta$typeName
+        TypeNames_Num = TypeNames[grepl("[[:digit:]]+$", TypeNames)]
+        TypeNames_Num_noNum = unique(gsub("[[:digit:]]+$", "",
+                                          TypeNames_Num))
 
-    Ok = !is.na(res$meta$group_index)
-    res$meta$typeName[Ok] = paste0(res$meta$typeName[Ok],
-           res$meta$group_index[Ok])
-    
-    TypeNames = res$meta$typeName
-    TypeNames_Num = TypeNames[grepl("[[:digit:]]+$", TypeNames)]
-    TypeNames_Num_noNum = unique(gsub("[[:digit:]]+$", "",
-                                      TypeNames_Num))
-
-    get_Num = function (x, All) {
-        pattern = paste0("^", x, "[[:digit:]]+$")
-        max(as.numeric(stringr::str_extract(All[grepl(pattern, All)],
-                                            "[[:digit:]]+$")))
-    }
-
-    TypeNames_Num_noNum_n = sapply(TypeNames_Num_noNum,
-                                   get_Num,
-                                   All=TypeNames_Num)
-
-    for (i in 1:length(TypeNames_Num_noNum_n)) {
-        n = TypeNames_Num_noNum_n[i]
-        typeName = names(TypeNames_Num_noNum_n)[i]
-        if (!(paste0(typeName, n) %in% unlist(metadata))) {
-            metadata = replicate_typeName(metadata, typeName, n)
+        get_Num = function (x, All) {
+            pattern = paste0("^", x, "[[:digit:]]+$")
+            max(as.numeric(stringr::str_extract(All[grepl(pattern, All)],
+                                                "[[:digit:]]+$")))
         }
-    }
 
-    for (typeName in TypeNames) {
-        value = res$meta$value[res$meta$typeName == typeName]
-        metadata = add_typeName(metadata, typeName, value)
-    }
-    metadata = clean_metadata(metadata)
+        TypeNames_Num_noNum_n = sapply(TypeNames_Num_noNum,
+                                       get_Num,
+                                       All=TypeNames_Num)
 
-    json = jsonlite::toJSON(metadata,
-                            pretty=TRUE,
-                            auto_unbox=TRUE)
-    res = list(metadata_path=metadata_path, json=json)
-    
-    if (file.exists(metadata_path) & !overwrite_metadata) {
-        message (paste0("Metadata file already exists in ",
-                        metadata_path))
-        return (res)
+        for (i in 1:length(TypeNames_Num_noNum_n)) {
+            n = TypeNames_Num_noNum_n[i]
+            typeName = names(TypeNames_Num_noNum_n)[i]
+            if (!(paste0(typeName, n) %in% unlist(metadata_json))) {
+                metadata_json = replicate_typeName(metadata_json, typeName, n)
+            }
+        }
+
+        for (typeName in TypeNames) {
+            value = res$meta$value[res$meta$typeName == typeName]
+            metadata_json = add_typeName(metadata_json, typeName, value)
+        }
+        metadata_json = clean_metadata(metadata_json)
+
+        metadata_json = jsonlite::toJSON(metadata_json,
+                                         pretty=TRUE,
+                                         auto_unbox=TRUE)
+        
+        if (file.exists(mpath_json) & !overwrite) {
+            message (paste0("Metadata file already exists in ",
+                            mpath_json))
+            return (mpath_json)
+        }
+
+        metadata_json_path = c(metadata_json_path, mpath_json)
+        write(metadata_json, mpath_json)
     }
-    
-    write(json, metadata_path)
-    return (res)
+    return (metadata_json_path)
 }
 
 
-
-
-convert_metadata_hide = function(metadata,
-                                 res=list(group=c(),
-                                          meta=dplyr::tibble()),
-                                 previous="") {
-    if (is.list(metadata)) {
-        for (x in metadata) {
+convert_metadata_to_yml_hide = function(metadata_yml,
+                                        res=list(group=c(),
+                                                 meta=dplyr::tibble()),
+                                        previous="") {
+    if (is.list(metadata_yml)) {
+        for (x in metadata_yml) {
 
             if ("typeName" %in% names(x) &
                 "value" %in% names(x)) {
@@ -352,76 +370,89 @@ convert_metadata_hide = function(metadata,
                     res$group = c(res$group, x$typeName)
                 }
             }
-            res = convert_metadata_hide(x, res, previous)
+            res = convert_metadata_to_yml_hide(x, res, previous)
         }
     }
     return (res)
 }
 
 
-
-
-#' @title convert_metadata
-#' @param metadata metadata
-#' @param metadata_yml_path A character string for the name of the metadata R file to write. By default, "metadata_tmp". 
+#' @title convert_metadata_to_yml
+#' @description Convert a metadata JSON file from the dataverse to a more user-friendly YAML metadata file. See [get_datasets_metadata()] to retrieve metadata JSON file from a dataverse deposit.
+#' @param metadata_json_path A vector of character strings of the JSON metadata paths.
+#' @return A vector of character strings containing the YAML metadata paths.
+#' @examples
+#' \dontrun{
+#' metadata_yml_path = convert_metadata_to_yml("metadata.json")
+#' }
 #' @seealso
-#' - [dataverseuR GitHub documentation](https://github.com/super-lou/dataverseuR) <https://github.com/super-lou/dataverseuR>
+#' - [dataverseuR GitHub documentation](https://github.com/louis-heraut/dataverseuR) <https://github.com/louis-heraut/dataverseuR>
 #' @md
 #' @export
-convert_metadata = function (metadata,
-                             metadata_yml_path) {
-    res = convert_metadata_hide(metadata=metadata)
-    res = format_metadata_res(res)
+convert_metadata_to_yml = function (metadata_json_path) {
 
-    typeName = res$meta$typeName
-    Ok = typeName == "newline"
-    res$meta$typeName[Ok] = paste0(typeName[Ok],
-                                   res$meta$group_index[Ok])
-    
-    group_order = res$meta$group
-    Ok = is.na(group_order)
-    group_order[Ok] = res$meta$typeName[Ok]
-    group_order = unique(group_order)
-    
-    meta_list = as.list(dplyr::group_split(res$meta, group))
-    names(meta_list) = unique(unlist(sapply(meta_list, "[[", "group")))
-    meta = list()
-    nItem = length(meta_list)
-    
-    for (i in 1:nItem) {
-
-        item = meta_list[[i]]
-        name = names(meta_list)[i]
+    metadata_yml_path = c()
+    for (mpath_json in metadata_json_path) {
         
-        if (is.na(name)) {
-            item_list = as.list(tibble::deframe(dplyr::select(item,
-                                                              typeName,
-                                                              value)))
-            meta = append(meta, item_list)
-                          
-        } else {
-            item_list = 
-                dplyr::summarise(dplyr::group_by(item,
-                                                 group_index),
-                                 value=list(tibble::deframe(pick(typeName,
-                                                                 value))),
-                                 .groups="drop")
-            item_list = lapply(item_list$value, as.list)
-            meta = append(meta, list(item_list))
-            names(meta)[length(meta)] = name
-        }
-    }
+        metadata_json = jsonlite::fromJSON(mpath_json,
+                                      simplifyVector=FALSE,
+                                      simplifyDataFrame=FALSE)
+        
+        res = convert_metadata_to_yml_hide(metadata_json)
+        res = format_metadata_res(res)
 
-    meta = meta[group_order]
-    yaml_text = yaml::as.yaml(meta)
-    Lines = strsplit(yaml_text, "\n")[[1]]
-    # yaml::write_yaml(meta, metadata_yml_path)
-    # Lines = readLines(metadata_yml_path)
-    Ok = grepl("^newline[[:digit:]]+[:]", Lines)
-    Lines[Ok] = ""
-    Lines = Lines[c(TRUE, Lines[-1] != Lines[-length(Lines)])]    
-    header_path = system.file("header.txt", package="dataverseuR")
-    header = readLines(header_path)
-    Lines = c(header, Lines)
-    writeLines(Lines, metadata_yml_path)
+        typeName = res$meta$typeName
+        Ok = typeName == "newline"
+        res$meta$typeName[Ok] = paste0(typeName[Ok],
+                                       res$meta$group_index[Ok])
+        
+        group_order = res$meta$group
+        Ok = is.na(group_order)
+        group_order[Ok] = res$meta$typeName[Ok]
+        group_order = unique(group_order)
+        
+        meta_list = as.list(dplyr::group_split(res$meta, group))
+        names(meta_list) = unique(unlist(sapply(meta_list, "[[", "group")))
+        meta = list()
+        nItem = length(meta_list)
+        
+        for (i in 1:nItem) {
+
+            item = meta_list[[i]]
+            name = names(meta_list)[i]
+            
+            if (is.na(name)) {
+                item_list = as.list(tibble::deframe(dplyr::select(item,
+                                                                  typeName,
+                                                                  value)))
+                meta = append(meta, item_list)
+                
+            } else {
+                item_list = 
+                    dplyr::summarise(dplyr::group_by(item,
+                                                     group_index),
+                                     value=list(tibble::deframe(pick(typeName,
+                                                                     value))),
+                                     .groups="drop")
+                item_list = lapply(item_list$value, as.list)
+                meta = append(meta, list(item_list))
+                names(meta)[length(meta)] = name
+            }
+        }
+
+        meta = meta[group_order]
+        yaml_text = yaml::as.yaml(meta)
+        Lines = strsplit(yaml_text, "\n")[[1]]
+        Ok = grepl("^newline[[:digit:]]+[:]", Lines)
+        Lines[Ok] = ""
+        Lines = Lines[c(TRUE, Lines[-1] != Lines[-length(Lines)])]    
+        header_path = system.file("header.txt", package="dataverseuR")
+        header = readLines(header_path)
+        Lines = c(header, Lines)
+        mpath_yml = gsub(".json", ".yml", mpath_json)
+        writeLines(Lines, mpath_yml)
+
+        metadata_yml_path = c(metadata_yml_path, mpath_yml)
+    }
+    return (metadata_yml_path)
 }

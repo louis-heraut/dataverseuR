@@ -21,9 +21,9 @@
 
 #' @name dataverseuR
 #' @title dataverseuR
-#' @description A dataverse API wraper to enhance deposit procedure with only R variables declaration.
+#' @description A dataverse API wraper to enhance deposit procedure with user-friendly YAML parameterization files.
 #' 
-#' @details See [dataverseuR GitHub documentation](https://github.com/super-lou/dataverseuR) <https://github.com/super-lou/dataverseuR> for an easier approach.
+#' @details See [dataverseuR GitHub documentation](https://github.com/louis-heraut/dataverseuR) <https://github.com/louis-heraut/dataverseuR> for an easier approach.
 #'
 #' @author
 #' Main Developer and Maintainer
@@ -35,14 +35,14 @@
 #' - [create_dotenv()] for creating the environment file for credential
 #'
 #' For metadata generation :
-#' - [initialise_metadata()] to initialise a R variable metadata environment
-#' - [generate_metadata()] to generate a metadata json file from a R variable metadata environment
-#' - [convert_metadata()] ***Still need some dev*** to convert a metadata list from a json file to a R variable parameterization file
+#' - [initialise_metadata()] to get a YAML metadata template file
+#' - [generate_metadata()] to generate a metadata JSON file from a YAML parametrization file
+#' - [convert_metadata()] to convert a metadata list from a JSON file to a YAML parameterization file
 #' 
 #' For general API actions :
 #' - [search_datasets()] to perform a search on dataverse
-#' - [create_datasets()] to create datasets
-#' - [modify_datasets()] to modify datasets metadata
+#' - [create_datasets()] to create datasets with a metadata JSON file
+#' - [modify_datasets()] to modify datasets metadata with a metadata JSON file
 #' - [add_datasets_files()] to add files to datasets 
 #' - [delete_datasets_files()] to delete files from datasets
 #' - [delete_all_datasets_files()] to delete all files from datasets

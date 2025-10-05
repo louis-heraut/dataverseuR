@@ -45,8 +45,10 @@ to_do = c(
 
 if ("get_metadata" %in% to_do) {
     dataset_DOI = "doi:10.57745/TLUTKF"
-    metadata = get_datasets_metadata(dataset_DOI=dataset_DOI)
-    res = convert_metadata(metadata, "metadata.yml")
+    get_datasets_metadata(dataset_DOI=dataset_DOI,
+                          metadata_json_path="metadata.json")
+    convert_metadata_to_yml("metadata.json")
+    
 }
 
 

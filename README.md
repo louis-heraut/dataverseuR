@@ -7,7 +7,7 @@
 [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg)](code_of_conduct.md) 
 <!-- badges: end -->
 
-**dataverseuR** is a dataverse API R wrapper to enhance the deposit procedure using simplier YAML metadata file.
+**dataverseuR** is a Dataverse API R wrapper to enhance the deposit procedure using simplier YAML metadata file.
 
 This project was carried out for the National Research Institute for Agriculture, Food and the Environment (Institut National de Recherche pour l’Agriculture, l’Alimentation et l’Environnement, [INRAE](https://agriculture.gouv.fr/inrae-linstitut-national-de-recherche-pour-lagriculture-lalimentation-et-lenvironnement)).
 
@@ -20,11 +20,11 @@ remotes::install_github("louis-heraut/dataverseuR")
 
 
 ## Documentation
-dataverseuR has two separate components: one simplifies dataverse API actions using simple R functions with `dplyr::tibble` formatting, and the other simplifies metadata generation, which can be complex with JSON files.
+dataverseuR has two separate components: one simplifies Dataverse API actions using simple R functions with `dplyr::tibble` formatting, and the other simplifies metadata generation, which can be complex with JSON files.
 
 
 ### Authentication
-The first step is to authenticate with the dataverse instance. The easiest way is to use a `.env` file in your working directory.
+The first step is to authenticate with the Dataverse instance. The easiest way is to use a `.env` file in your working directory.
 
 > ⚠️ Warning: NEVER SHARE YOUR CREDENTIALS (for example, through a Git repository).
 
@@ -33,7 +33,7 @@ dataverseuR has a built-in function for this step. Simply run:
 create_dotenv()
 ```
 A `dist.env` file will be created in your working directory. The next step is to fill in your credentials.  
-To do this, go to your dataverse instance and create a token. For example, for the demo Recherche Data Gouv instance with `BASE_URL`: [https://demo.recherche.data.gouv.fr](https://demo.recherche.data.gouv.fr), click on your account name, find the [API token tab](https://demo.recherche.data.gouv.fr/dataverseuser.xhtml?selectTab=apiTokenTab), and copy your token to the `API_TOKEN` variable in the `dist.env` file, like this:
+To do this, go to your Dataverse instance and create a token. For example, for the demo Recherche Data Gouv instance with `BASE_URL`: [https://demo.recherche.data.gouv.fr](https://demo.recherche.data.gouv.fr), click on your account name, find the [API token tab](https://demo.recherche.data.gouv.fr/dataverseuser.xhtml?selectTab=apiTokenTab), and copy your token to the `API_TOKEN` variable in the `dist.env` file, like this:
 ``` bash
 # .env
 
@@ -55,7 +55,7 @@ You can find the full API documentation [here](https://guides.dataverse.org/en/l
 Below is a list of all available API actions.  
 
 #### General API Actions
-- `search_datasets()`: Performs a search on dataverse, like:
+- `search_datasets()`: Performs a search on Dataverse, like:
 ``` R
 # Find all published datasets that contain the word "climate" in their title 
 datasets = search_datasets(query='title:"climate"',
@@ -153,18 +153,20 @@ Once you have the metadata as a `list` of `list`, it can be challenging to modif
 
 ### Metadata Generation
 #### Metadata Management
-The idea behind this formalism is to create dataverse metadata directly from simplier YAML file human readeable.  
-The metadata base file from dataverse is a JSON file, which is represented by a complex nested list structure in R. To simplify this, every value entry in this JSON file (i.e., every metadata field in dataverse) is converted to a simplier assignation in a YAML text file.
-``` yml
-# Create metadata for the title of the future dataset in dataverse
+The idea behind this formalism is to create Dataverse metadata directly from a simpler, human-readable YAML file.
+The base metadata file in Dataverse is a JSON file, which is represented by a complex nested list structure in R. To simplify this, every value entry in this JSON file (i.e., every metadata field in Dataverse) is converted into a simpler assignment in a YAML text file.
+
+```yml
+# Create metadata for the title of the future dataset in Dataverse
 title: Hydrological projections of discharge for the model {MODEL}
 ```
 
-Every metadata must be clearly identified as such. Therefore:
-- The metadata name is precise and non-negotiable (you need to start from an [example](https://github.com/louis-heraut/dataverseuR_toolbox) or download metadata from dataverse using the function `get_datasets_metadata()` to find a metadata name; see [Metadata Importation](#metadata-importation)).
-- Some metadata can be dupplicated like author names so you need to respect a indented dash list format (see below). 
+Every piece of metadata must be clearly identified as such. Therefore:
+- The metadata name is precise and non-negotiable (you need to start from an [example](https://github.com/louis-heraut/dataverseuR_toolbox) or download metadata from Dataverse using the function `get_datasets_metadata()` to find a metadata name; see [Metadata Importation](#metadata-importation)).
+- Some metadata can be duplicated, such as author names, so you need to use an indented dash list format (see below).
 
-This way, you can create an YAML file that gathers all these metadata, like this:
+This way, you can create a YAML file that gathers all these metadata, like this:
+
 
 ``` yml
 # ░█▀▄░█▀▀▄░▀█▀░█▀▀▄░▄░░░▄░█▀▀░█▀▀▄░█▀▀░█▀▀░█░▒█░▒█▀▀▄
@@ -264,21 +266,20 @@ country: Fiji
 dateOfDeposit: '2020-03-19'
 ```
 
-This allows you to add a new author in the author list with:
+This allows you to add a new author to the author list with:
 ``` yml
 - authorName: Shephard, Jack
   authorAffiliation: Laboratory, An other Institut, Island
 ```
 
-That way you can also modify a metadata with placeholders like `{MODEL}` by using simple R code to read YAML file as text:
+This way, you can also modify metadata containing placeholders like `{MODEL}` by using simple R code to read the YAML file as text:
 ``` R
 metadata = readLines("metadata.yml")
 metadata = gsub("\\{MODEL\\}", "AirDynamics", metadata)
 writeLines(metadata, "metadata.yml")
 ```
 
-Or for more complexe situation by reading the YAML in a for loop :
-
+For more complex situations, you can read and edit the YAML file inside a loop:
 ``` R
 Models = c("AirDynamics", "PlaneSimulation")
 for (model in Models) {
@@ -300,10 +301,10 @@ initialise_metadata("path/to/metadata.yml")
 metadata_json_path = generate_metadata_json("path/to/metadata.yml")
 ```
 
-You can now import this metadata JSON file to a dataverse instance using the `create_datasets()` function mentioned earlier in the [General API Actions](#general-api-actions) section.
+You can now import this metadata JSON file to a Dataverse instance using the `create_datasets()` function mentioned earlier in the [General API Actions](#general-api-actions) section.
 
 #### Metadata Importation
-Otherwise, you can retrieve metadata from an existing dataset on dataverse using `get_datasets_metadata()`. This imports the JSON equivalent of the metadata. From here, you can convert this JSON formatting to a YAML metadata file using the `convert_metadata_to_yml()` function:
+Otherwise, you can retrieve metadata from an existing dataset on Dataverse using `get_datasets_metadata()`. This imports the JSON equivalent of the metadata. From here, you can convert this JSON formatting to a YAML metadata file using the `convert_metadata_to_yml()` function:
 ``` R
 dataset_DOI = "doi:10.57745/LNBEGZ"
 metadata_json_path = "metadata.json"

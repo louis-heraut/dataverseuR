@@ -18,7 +18,7 @@ get_datasets_metrics(
 
 \item{API_TOKEN}{A character string for the API token required to authenticate the request. By default, it uses the value from the environment variable \code{API_TOKEN}.}
 
-\item{verbose}{If FALSE, no processing informations are displayed. By default, TRUE.}
+\item{verbose}{If \code{FALSE}, no processing informations are displayed. Defaults to \code{TRUE}.}
 }
 \value{
 A named list containing total views, unique views, total downloads, unique downloads, and citations.
@@ -26,10 +26,17 @@ A named list containing total views, unique views, total downloads, unique downl
 \description{
 Retrieves dataset metrics of views and downloads from a selection of datasets.
 }
+\examples{
+\dontrun{
+dotenv::load_dot_env()
+dataset_DOI = "doi:10.57745/LNBEGZ"
+get_datasets_metrics(dataset_DOI)
+}
+}
 \seealso{
 \itemize{
-\item \href{https://github.com/super-lou/dataverseuR}{dataverseuR GitHub documentation} \url{https://github.com/super-lou/dataverseuR}
-\item \href{https://github.com/super-lou/dataverseuR_toolbox/blob/main/RiverLy_HCERES_2025/script.R}{R example in context} \url{https://github.com/super-lou/dataverseuR_toolbox/blob/main/RiverLy_HCERES_2025/script.R}
+\item \href{https://github.com/louis-heraut/dataverseuR}{dataverseuR GitHub documentation} \url{https://github.com/louis-heraut/dataverseuR}
+\item \href{https://github.com/louis-heraut/dataverseuR_toolbox/blob/main/RiverLy_HCERES_2025/script.R}{R example in context} \url{https://github.com/louis-heraut/dataverseuR_toolbox/blob/main/RiverLy_HCERES_2025/script.R}
 \item \href{https://guides.dataverse.org/en/5.3/api/native-api.html#dataset-metrics}{Native API documentation} \url{https://guides.dataverse.org/en/5.3/api/native-api.html#dataset-metrics}
 }
 }

@@ -4,10 +4,10 @@
 \alias{dataverseuR}
 \title{dataverseuR}
 \description{
-A dataverse API wraper to enhance deposit procedure with only R variables declaration.
+A dataverse API wraper to enhance deposit procedure with user-friendly YAML parameterization files.
 }
 \details{
-See \href{https://github.com/super-lou/dataverseuR}{dataverseuR GitHub documentation} \url{https://github.com/super-lou/dataverseuR} for an easier approach.
+See \href{https://github.com/louis-heraut/dataverseuR}{dataverseuR GitHub documentation} \url{https://github.com/louis-heraut/dataverseuR} for an easier approach.
 }
 \seealso{
 To start :
@@ -17,16 +17,16 @@ To start :
 
 For metadata generation :
 \itemize{
-\item \code{\link[=initialise_metadata]{initialise_metadata()}} to initialise a R variable metadata environment
-\item \code{\link[=generate_metadata]{generate_metadata()}} to generate a metadata json file from a R variable metadata environment
-\item \code{\link[=convert_metadata]{convert_metadata()}} \emph{\strong{Still need some dev}} to convert a metadata list from a json file to a R variable parameterization file
+\item \code{\link[=initialise_metadata]{initialise_metadata()}} to get a simple YAML metadata template file
+\item \code{\link[=convert_metadata_to_yml]{convert_metadata_to_yml()}} to convert a JSON metadata file from the dataverse to a simplier YAML metadata file
+\item \code{\link[=generate_metadata_json]{generate_metadata_json()}} to generate a JSON metadata file for the dataverse from a simplier YAML metadata file
 }
 
 For general API actions :
 \itemize{
 \item \code{\link[=search_datasets]{search_datasets()}} to perform a search on dataverse
-\item \code{\link[=create_datasets]{create_datasets()}} to create datasets
-\item \code{\link[=modify_datasets]{modify_datasets()}} to modify datasets metadata
+\item \code{\link[=create_datasets]{create_datasets()}} to create datasets with a metadata JSON file
+\item \code{\link[=modify_datasets]{modify_datasets()}} to modify datasets metadata with a metadata JSON file
 \item \code{\link[=add_datasets_files]{add_datasets_files()}} to add files to datasets
 \item \code{\link[=delete_datasets_files]{delete_datasets_files()}} to delete files from datasets
 \item \code{\link[=delete_all_datasets_files]{delete_all_datasets_files()}} to delete all files from datasets

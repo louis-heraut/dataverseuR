@@ -6,7 +6,7 @@
 \usage{
 create_datasets(
   dataverse,
-  metadata_path,
+  metadata_json_path,
   BASE_URL = Sys.getenv("BASE_URL"),
   API_TOKEN = Sys.getenv("API_TOKEN"),
   verbose = TRUE
@@ -15,24 +15,32 @@ create_datasets(
 \arguments{
 \item{dataverse}{A character string specifying the name of the dataverse in which to create datasets.}
 
-\item{metadata_path}{A vector of character string for the paths of json files containing the datasets metadata.}
+\item{metadata_json_path}{A vector of character string for the paths of JSON files containing the datasets metadata.}
 
 \item{BASE_URL}{A character string for the base URL of the Dataverse API. By default, it uses the value from the environment variable \code{BASE_URL}.}
 
 \item{API_TOKEN}{A character string for the API token required to authenticate the request. By default, it uses the value from the environment variable \code{API_TOKEN}.}
 
-\item{verbose}{If FALSE, no processing informations are displayed. By default, TRUE.}
+\item{verbose}{If \code{FALSE}, no processing informations are displayed. Defaults to \code{TRUE}.}
 }
 \value{
 The function returns DOI of the newly created datasets as a vector of character string.
 }
 \description{
-Create new datasets in a specified dataverse for a selection of metadata json file. See \code{\link[=generate_metadata]{generate_metadata()}} in order to generate efficiently metadata json file.
+Create new datasets in a specified dataverse for a selection of metadata JSON file. See \code{\link[=generate_metadata]{generate_metadata()}} in order to generate efficiently metadata JSON file.
+}
+\examples{
+\dontrun{
+dotenv::load_dot_env()
+dataverse = "inrae"
+metadata_json_path = "path/to/read/metadata.json"
+create_datasets(dataverse, metadata_json_path)
+}
 }
 \seealso{
 \itemize{
-\item \href{https://github.com/super-lou/dataverseuR}{dataverseuR GitHub documentation} \url{https://github.com/super-lou/dataverseuR}
-\item \href{https://github.com/super-lou/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R}{R example in context} \url{https://github.com/super-lou/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R}
+\item \href{https://github.com/louis-heraut/dataverseuR}{dataverseuR GitHub documentation} \url{https://github.com/louis-heraut/dataverseuR}
+\item \href{https://github.com/louis-heraut/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R}{R example in context} \url{https://github.com/louis-heraut/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R}
 \item \href{https://guides.dataverse.org/en/5.3/api/native-api.html#create-a-dataset-in-a-dataverse}{Native API documentation} \url{https://guides.dataverse.org/en/5.3/api/native-api.html#create-a-dataset-in-a-dataverse}
 }
 }

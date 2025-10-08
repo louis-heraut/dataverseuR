@@ -21,15 +21,31 @@ delete_datasets_files(
 
 \item{API_TOKEN}{A character string for the API token required to authenticate the request. By default, it uses the value from the environment variable \code{API_TOKEN}.}
 
-\item{verbose}{If FALSE, no processing informations are displayed. By default, TRUE.}
+\item{verbose}{If \code{FALSE}, no processing informations are displayed. Defaults to \code{TRUE}.}
 }
 \description{
 Delete files based on their DOI.
 }
+\examples{
+\dontrun{
+dotenv::load_dot_env()
+
+# In general
+file_DOI = "doi:10.57745/QB73Q0"
+delete_datasets_files(file_DOI)
+
+# A more complexe example when the dataset is a DRAFT
+dataset_DOI = "doi:10.57745/LNBEGZ"
+files = list_datasets_files(dataset_DOI)
+licence = dplyr::filter(files, grepl("LICENCE", label))
+delete_datasets_files(file_DOI=licence$id,
+                      is_DOI_ID=TRUE)
+}
+}
 \seealso{
 \itemize{
-\item \href{https://github.com/super-lou/dataverseuR}{dataverseuR GitHub documentation} \url{https://github.com/super-lou/dataverseuR}
-\item \href{https://github.com/super-lou/dataverseuR_toolbox/blob/main/DRYvER/modify_README.R}{R example in context} \url{https://github.com/super-lou/dataverseuR_toolbox/blob/main/DRYvER/modify_README.R}
+\item \href{https://github.com/louis-heraut/dataverseuR}{dataverseuR GitHub documentation} \url{https://github.com/louis-heraut/dataverseuR}
+\item \href{https://github.com/louis-heraut/dataverseuR_toolbox/blob/main/DRYvER/modify_README.R}{R example in context} \url{https://github.com/louis-heraut/dataverseuR_toolbox/blob/main/DRYvER/modify_README.R}
 \item \href{https://guides.dataverse.org/en/5.3/api/native-api.html#files}{Native API documentation} \url{https://guides.dataverse.org/en/5.3/api/native-api.html#files}
 }
 }

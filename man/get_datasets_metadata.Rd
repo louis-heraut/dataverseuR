@@ -6,6 +6,7 @@
 \usage{
 get_datasets_metadata(
   dataset_DOI,
+  metadata_json_path,
   BASE_URL = Sys.getenv("BASE_URL"),
   API_TOKEN = Sys.getenv("API_TOKEN"),
   verbose = TRUE
@@ -14,11 +15,13 @@ get_datasets_metadata(
 \arguments{
 \item{dataset_DOI}{A vector of character string representing the DOI of datasets that will be process.}
 
+\item{metadata_json_path}{A vector of character string for the paths of JSON files containing the datasets metadata to write.}
+
 \item{BASE_URL}{A character string for the base URL of the Dataverse API. By default, it uses the value from the environment variable \code{BASE_URL}.}
 
 \item{API_TOKEN}{A character string for the API token required to authenticate the request. By default, it uses the value from the environment variable \code{API_TOKEN}.}
 
-\item{verbose}{If FALSE, no processing informations are displayed. By default, TRUE.}
+\item{verbose}{If \code{FALSE}, no processing informations are displayed. Defaults to \code{TRUE}.}
 }
 \value{
 A list containing the datasets metadata.
@@ -26,10 +29,18 @@ A list containing the datasets metadata.
 \description{
 Retrieves metadata for a selection of dataset. See \code{\link[=convert_metadata]{convert_metadata()}} in order to convert metadata extracted by this function to R parameterisation file.
 }
+\examples{
+\dontrun{
+dotenv::load_dot_env()
+dataset_DOI = "doi:10.57745/LNBEGZ"
+metadata_json_path = "path/to/write/metadata.json"
+modify_datasets(dataset_DOI, metadata_json_path)
+}
+}
 \seealso{
 \itemize{
-\item \href{https://github.com/super-lou/dataverseuR}{dataverseuR GitHub documentation} \url{https://github.com/super-lou/dataverseuR}
-\item \href{https://github.com/super-lou/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R}{R example in context} \url{https://github.com/super-lou/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R}
+\item \href{https://github.com/louis-heraut/dataverseuR}{dataverseuR GitHub documentation} \url{https://github.com/louis-heraut/dataverseuR}
+\item \href{https://github.com/louis-heraut/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R}{R example in context} \url{https://github.com/louis-heraut/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R}
 \item \href{https://guides.dataverse.org/en/5.3/api/native-api.html#get-json-representation-of-a-dataset}{Native API documentation} \url{https://guides.dataverse.org/en/5.3/api/native-api.html#get-json-representation-of-a-dataset}
 }
 }

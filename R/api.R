@@ -22,24 +22,32 @@
 #' @title create_dotenv
 #' @description Create a default .env file necessary to fill in environment variables required for dataverse authentication.
 #' @param dotenv_path A character string for the path of the .env file that will be created. By default, it create a file named `dist.env` in the working directory. This file should be rename `.env`.
-#' @param verbose If FALSE, no processing informations are displayed. By default, TRUE.
+#' @param overwrite A logical value indicating whether to overwrite an existing .env file. Defaults to FALSE.
+#' @param verbose If `FALSE`, no processing informations are displayed. Defaults to `TRUE`.
 #' @return The function returns the path to the created .env file.
 #' @seealso
 #' - [dataverseuR GitHub documentation](https://github.com/louis-heraut/dataverseuR) <https://github.com/louis-heraut/dataverseuR>
 #' @examples
+#' \dontrun{
 #' # Create the .env file to the working directory
 #' create_dotenv()
+#' # or create the .env file in a remote location with no informations displayed
+#' create_dotenv("path/to/dir/.env-demo", verbose=FALSE)
 #'
-#' # Create the .env file in a remote location with no informations displayed
-#' create_dotenv("/path/to/dir/.env-demo", verbose=FALSE)
+#' # Then load the environment variables with
+#' dotenv::load_dot_env()
+#' # or
+#' dotenv::load_dot_env("path/to/dir/.env-demo")
+#' }
 #' @md
 #' @export
 create_dotenv = function(dotenv_path=file.path(getwd(), "dist.env"),
+                         overwrite=FALSE,
                          verbose=TRUE) {
     
     dotenv_from_path = system.file("templates", "dist.env",
                                    package="dataverseuR")
-    file.copy(dotenv_from_path, dotenv_path, overwrite=TRUE)
+    file.copy(dotenv_from_path, dotenv_path, overwrite=overwrite)
 
     if (verbose) {
         message(paste0("The '", basename(dotenv_path),
@@ -71,7 +79,7 @@ convert_datasets_to_tibble_hide = function(dataset) {
         if (is.atomic(x)) {
             x
         } else {
-      list(x)
+            list(x)
         }
     })
     dplyr::as_tibble(dataset_flat) 
@@ -133,6 +141,7 @@ convert_DOI_to_URL = function (DOI) {
 #' @return A tibble of the restult of the search.
 #' @examples
 #' \dontrun{
+#' dotenv::load_dot_env()
 #' # A simple example to search all datasets from a dataverse
 #' datasets = search_datasets(query="*",
 #'                            publication_status="RELEASED",
@@ -199,8 +208,14 @@ search_datasets = function(query="*", publication_status="*",
 #' @param dataset_DOI A vector of character string representing the DOI of datasets that will be process.
 #' @param BASE_URL A character string for the base URL of the Dataverse API. By default, it uses the value from the environment variable `BASE_URL`.
 #' @param API_TOKEN A character string for the API token required to authenticate the request. By default, it uses the value from the environment variable `API_TOKEN`.
-#' @param verbose If FALSE, no processing informations are displayed. By default, TRUE.
+#' @param verbose If `FALSE`, no processing informations are displayed. Defaults to `TRUE`.
 #' @return A tibble containing datasets DOI and their corresponding total storage sizes in bytes.
+#' @examples
+#' \dontrun{
+#' dotenv::load_dot_env()
+#' dataset_DOI = "doi:10.57745/LNBEGZ"
+#' get_datasets_size(dataset_DOI)
+#' }
 #' @seealso
 #' - [dataverseuR GitHub documentation](https://github.com/louis-heraut/dataverseuR) <https://github.com/louis-heraut/dataverseuR>
 #' - [R example in context](https://github.com/louis-heraut/dataverseuR_toolbox/blob/main/RiverLy_HCERES_2025/script.R) <https://github.com/louis-heraut/dataverseuR_toolbox/blob/main/RiverLy_HCERES_2025/script.R>
@@ -221,7 +236,7 @@ get_datasets_size = function(dataset_DOI,
         
         query_url = paste0(BASE_URL, "/api/datasets/:persistentId/storagesize/?persistentId=", dDOI)
         response = httr::GET(query_url, 
-                         httr::add_headers("X-Dataverse-key"=API_TOKEN))
+                             httr::add_headers("X-Dataverse-key"=API_TOKEN))
         
         if (httr::status_code(response) == 200) {
             size_value = httr::content(response,
@@ -254,8 +269,14 @@ get_datasets_size = function(dataset_DOI,
 #' @param dataset_DOI A vector of character string representing the DOI of datasets that will be process.
 #' @param BASE_URL A character string for the base URL of the Dataverse API. By default, it uses the value from the environment variable `BASE_URL`.
 #' @param API_TOKEN A character string for the API token required to authenticate the request. By default, it uses the value from the environment variable `API_TOKEN`.
-#' @param verbose If FALSE, no processing informations are displayed. By default, TRUE.
+#' @param verbose If `FALSE`, no processing informations are displayed. Defaults to `TRUE`.
 #' @return A named list containing total views, unique views, total downloads, unique downloads, and citations.
+#' @examples
+#' \dontrun{
+#' dotenv::load_dot_env()
+#' dataset_DOI = "doi:10.57745/LNBEGZ"
+#' get_datasets_metrics(dataset_DOI)
+#' }
 #' @seealso
 #' - [dataverseuR GitHub documentation](https://github.com/louis-heraut/dataverseuR) <https://github.com/louis-heraut/dataverseuR>
 #' - [R example in context](https://github.com/louis-heraut/dataverseuR_toolbox/blob/main/RiverLy_HCERES_2025/script.R) <https://github.com/louis-heraut/dataverseuR_toolbox/blob/main/RiverLy_HCERES_2025/script.R>
@@ -275,7 +296,7 @@ get_datasets_metrics = function(dataset_DOI,
     
     for (i in 1:nDOI) {
         dDOI = dataset_DOI[i]
-                    
+        
         results_tmp = c()
         for (metric in metrics) {
             query_url = paste0(BASE_URL, "/api/datasets/:persistentId/makeDataCount/", 
@@ -322,8 +343,15 @@ get_datasets_metrics = function(dataset_DOI,
 #' @param metadata_json_path A vector of character string for the paths of JSON files containing the datasets metadata.
 #' @param BASE_URL A character string for the base URL of the Dataverse API. By default, it uses the value from the environment variable `BASE_URL`.
 #' @param API_TOKEN A character string for the API token required to authenticate the request. By default, it uses the value from the environment variable `API_TOKEN`.
-#' @param verbose If FALSE, no processing informations are displayed. By default, TRUE.
+#' @param verbose If `FALSE`, no processing informations are displayed. Defaults to `TRUE`.
 #' @return The function returns DOI of the newly created datasets as a vector of character string.
+#' @examples
+#' \dontrun{
+#' dotenv::load_dot_env()
+#' dataverse = "inrae"
+#' metadata_json_path = "path/to/read/metadata.json"
+#' create_datasets(dataverse, metadata_json_path)
+#' }
 #' @seealso
 #' - [dataverseuR GitHub documentation](https://github.com/louis-heraut/dataverseuR) <https://github.com/louis-heraut/dataverseuR>
 #' - [R example in context](https://github.com/louis-heraut/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R) <https://github.com/louis-heraut/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R>
@@ -374,8 +402,15 @@ create_datasets = function(dataverse,
 #' @param metadata_json_path A vector of character string for the paths of JSON files containing the datasets metadata to write.
 #' @param BASE_URL A character string for the base URL of the Dataverse API. By default, it uses the value from the environment variable `BASE_URL`.
 #' @param API_TOKEN A character string for the API token required to authenticate the request. By default, it uses the value from the environment variable `API_TOKEN`.
-#' @param verbose If FALSE, no processing informations are displayed. By default, TRUE.
+#' @param verbose If `FALSE`, no processing informations are displayed. Defaults to `TRUE`.
 #' @return A list containing the datasets metadata.
+#' @examples
+#' \dontrun{
+#' dotenv::load_dot_env()
+#' dataset_DOI = "doi:10.57745/LNBEGZ"
+#' metadata_json_path = "path/to/write/metadata.json"
+#' modify_datasets(dataset_DOI, metadata_json_path)
+#' }
 #' @seealso
 #' - [dataverseuR GitHub documentation](https://github.com/louis-heraut/dataverseuR) <https://github.com/louis-heraut/dataverseuR>
 #' - [R example in context](https://github.com/louis-heraut/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R) <https://github.com/louis-heraut/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R>
@@ -409,7 +444,7 @@ get_datasets_metadata = function(dataset_DOI,
                                      simplifyDataFrame=FALSE,
                                      simplifyVector=TRUE)
         metadata_json = dataset$data[c("metadataLanguage",
-                                  "latestVersion")]
+                                       "latestVersion")]
         # if (nDOI == 1) {
         #     metadata_list = metadata_json
         # } else {
@@ -439,7 +474,14 @@ get_datasets_metadata = function(dataset_DOI,
 #' @param n_retries An integer for the maximum number of retries to reach dataverse server. By default, 3 retries.
 #' @param BASE_URL A character string for the base URL of the Dataverse API. By default, it uses the value from the environment variable `BASE_URL`.
 #' @param API_TOKEN A character string for the API token required to authenticate the request. By default, it uses the value from the environment variable `API_TOKEN`.
-#' @param verbose If FALSE, no processing informations are displayed. By default, TRUE.
+#' @param verbose If `FALSE`, no processing informations are displayed. Defaults to `TRUE`.
+#' @examples
+#' \dontrun{
+#' dotenv::load_dot_env()
+#' dataset_DOI = "doi:10.57745/LNBEGZ"
+#' metadata_json_path = "path/to/read/metadata.json"
+#' modify_datasets("inrae", dataset_DOI, metadata_json_path)
+#' }
 #' @seealso
 #' - [dataverseuR GitHub documentation](https://github.com/louis-heraut/dataverseuR) <https://github.com/louis-heraut/dataverseuR>
 #' - [R example in context](https://github.com/louis-heraut/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R) <https://github.com/louis-heraut/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R>
@@ -505,8 +547,15 @@ modify_datasets = function(dataverse,
 #' @param BASE_URL A character string for the base URL of the Dataverse API. By default, it uses the value from the environment variable `BASE_URL`.
 #' @param API_TOKEN A character string for the API token required to authenticate the request. By default, it uses the value from the environment variable `API_TOKEN`.
 #' @param timeout An integer to set the number of second before timeout of the request. By default, 600.
-#' @param verbose If FALSE, no processing informations are displayed. By default, TRUE.
+#' @param verbose If `FALSE`, no processing informations are displayed. Defaults to `TRUE`.
 #' @return A character vector containing the paths of the files that could not be uploaded, if any.
+#' @examples
+#' \dontrun{
+#' dotenv::load_dot_env()
+#' dataset_DOI = "doi:10.57745/LNBEGZ"
+#' paths = c("path/to/file.csv", other/path/to/README.txt)
+#' not_added = add_datasets_files(dataset_DOI, paths)
+#' }
 #' @seealso
 #' - [dataverseuR GitHub documentation](https://github.com/louis-heraut/dataverseuR) <https://github.com/louis-heraut/dataverseuR>
 #' - [R example in context](https://github.com/louis-heraut/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R) <https://github.com/louis-heraut/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R>
@@ -603,6 +652,7 @@ add_datasets_files = function(dataset_DOI, file_paths,
 #' @return A [tibble][dplyr::tibble()] containing files information.
 #' @examples
 #' \dontrun{
+#' dotenv::load_dot_env()
 #' dataset_DOI = "doi:10.57745/LNBEGZ"
 #' files = list_datasets_files(dataset_DOI)
 #' }
@@ -662,9 +712,11 @@ list_datasets_files = function(dataset_DOI,
 #' @param is_DOI_ID If the dataset is not published yet, the DOI of the file does not exist, so `file_DOI` needs to be the file id of the database instead of a DOI. So if `TRUE`, `file_DOI` is `id` from the results of [list_datasets_files()], elsewhere if `FALSE`, `file_DOI` is actual file DOI. Default, `FALSE`.
 #' @param BASE_URL A character string for the base URL of the Dataverse API. By default, it uses the value from the environment variable `BASE_URL`.
 #' @param API_TOKEN A character string for the API token required to authenticate the request. By default, it uses the value from the environment variable `API_TOKEN`.
-#' @param verbose If `FALSE`, no processing informations are displayed. By default, `TRUE`.
+#' @param verbose If `FALSE`, no processing informations are displayed. Defaults to `TRUE`.
 #' @examples
 #' \dontrun{
+#' dotenv::load_dot_env()
+#' 
 #' # In general
 #' file_DOI = "doi:10.57745/QB73Q0"
 #' rename_datasets_files(file_DOI, new_name="LICENCE_Etalab.pdf")
@@ -724,11 +776,14 @@ rename_datasets_files = function(file_DOI, new_name,
 #' @param file_DOI A vector of character string of the DOI of files to be processed.
 #' @param save_paths A vector of character string representing the local path where files should be saved.
 #' @param is_DOI_ID If the dataset is not published yet, the DOI of the file does not exist, so `file_DOI` needs to be the file id of the database instead of a DOI. So if `TRUE`, `file_DOI` is `id` from the results of [list_datasets_files()], elsewhere if `FALSE`, `file_DOI` is actual file DOI. Default, `FALSE`.
+#' @param overwrite A logical value indicating whether to overwrite an existing file. Defaults to FALSE.
 #' @param BASE_URL A character string for the base URL of the Dataverse API. By default, it uses the value from the environment variable `BASE_URL`.
 #' @param API_TOKEN A character string for the API token required to authenticate the request. By default, it uses the value from the environment variable `API_TOKEN`.
-#' @param verbose If FALSE, no processing informations are displayed. By default, TRUE.
+#' @param verbose If `FALSE`, no processing informations are displayed. Defaults to `TRUE`.
 #' @examples
 #' \dontrun{
+#' dotenv::load_dot_env()
+#' 
 #' # In general
 #' file_DOI = "doi:10.57745/QB73Q0"
 #' download_datasets_files(file_DOI, save_paths="LICENCE.pdf")
@@ -752,6 +807,7 @@ rename_datasets_files = function(file_DOI, new_name,
 download_datasets_files = function(file_DOI,
                                    save_paths,
                                    is_DOI_ID=FALSE,
+                                   overwrite=FALSE,
                                    BASE_URL=Sys.getenv("BASE_URL"),
                                    API_TOKEN=Sys.getenv("API_TOKEN"),
                                    verbose=TRUE) {
@@ -770,7 +826,7 @@ download_datasets_files = function(file_DOI,
         
         response = httr::GET(api_url, 
                              httr::add_headers("X-Dataverse-key"=API_TOKEN),
-                             httr::write_disk(save_path, overwrite=TRUE))
+                             httr::write_disk(save_path, overwrite=overwrite))
         
         if (httr::status_code(response) != 200) {
             stop(paste0(httr::status_code(response), " ",
@@ -787,9 +843,11 @@ download_datasets_files = function(file_DOI,
 #' @param is_DOI_ID If the dataset is not published yet, the DOI of the file does not exist, so `file_DOI` needs to be the file id of the database instead of a DOI. So if `TRUE`, `file_DOI` is `id` from the results of [list_datasets_files()], elsewhere if `FALSE`, `file_DOI` is actual file DOI. Default, `FALSE`.
 #' @param BASE_URL A character string for the base URL of the Dataverse API. By default, it uses the value from the environment variable `BASE_URL`.
 #' @param API_TOKEN A character string for the API token required to authenticate the request. By default, it uses the value from the environment variable `API_TOKEN`.
-#' @param verbose If FALSE, no processing informations are displayed. By default, TRUE.
+#' @param verbose If `FALSE`, no processing informations are displayed. Defaults to `TRUE`.
 #' @examples
 #' \dontrun{
+#' dotenv::load_dot_env()
+#' 
 #' # In general
 #' file_DOI = "doi:10.57745/QB73Q0"
 #' delete_datasets_files(file_DOI)
@@ -841,9 +899,10 @@ delete_datasets_files = function(file_DOI,
 #' @param dataset_DOI A vector of character string representing the DOI of datasets that will be process.
 #' @param BASE_URL A character string for the base URL of the Dataverse API. By default, it uses the value from the environment variable `BASE_URL`.
 #' @param API_TOKEN A character string for the API token required to authenticate the request. By default, it uses the value from the environment variable `API_TOKEN`.
-#' @param verbose If FALSE, no processing informations are displayed. By default, TRUE.
+#' @param verbose If `FALSE`, no processing informations are displayed. Defaults to `TRUE`.
 #' @examples
 #' \dontrun{
+#' dotenv::load_dot_env()
 #' dataset_DOI = "doi:10.57745/LNBEGZ"
 #' delete_all_datasets_files(dataset_DOI)
 #' }
@@ -902,9 +961,10 @@ delete_all_datasets_files = function(dataset_DOI,
 #' @param type A character string specifying the type of publication. Use `"major"` if at least a file as been modified of supressed, if only metadata have changed, use `"minor"`.
 #' @param BASE_URL A character string for the base URL of the Dataverse API. By default, it uses the value from the environment variable `BASE_URL`.
 #' @param API_TOKEN A character string for the API token required to authenticate the request. By default, it uses the value from the environment variable `API_TOKEN`.
-#' @param verbose If FALSE, no processing informations are displayed. By default, TRUE.
+#' @param verbose If `FALSE`, no processing informations are displayed. Defaults to `TRUE`.
 #' @examples
 #' \dontrun{
+#' dotenv::load_dot_env()
 #' dataset_DOI = "doi:10.57745/LNBEGZ"
 #' publish_datasets(dataset_DOI)
 #' }
@@ -943,9 +1003,10 @@ publish_datasets = function(dataset_DOI, type="major",
 #' @param dataset_DOI A vector of character string representing the DOI of datasets that will be process.
 #' @param BASE_URL A character string for the base URL of the Dataverse API. By default, it uses the value from the environment variable `BASE_URL`.
 #' @param API_TOKEN A character string for the API token required to authenticate the request. By default, it uses the value from the environment variable `API_TOKEN`.
-#' @param verbose If FALSE, no processing informations are displayed. By default, TRUE.
+#' @param verbose If `FALSE`, no processing informations are displayed. Defaults to `TRUE`.
 #' @examples
 #' \dontrun{
+#' dotenv::load_dot_env()
 #' dataset_DOI = "doi:10.57745/LNBEGZ"
 #' delete_datasets(dataset_DOI)
 #' }

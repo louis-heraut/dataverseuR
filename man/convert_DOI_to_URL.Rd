@@ -20,6 +20,6 @@ convert_DOI_to_URL("doi:10.57745/LNBEGZ")
 }
 \seealso{
 \itemize{
-\item \href{https://github.com/super-lou/dataverseuR}{dataverseuR GitHub documentation} \url{https://github.com/super-lou/dataverseuR}
+\item \href{https://github.com/louis-heraut/dataverseuR}{dataverseuR GitHub documentation} \url{https://github.com/louis-heraut/dataverseuR}
 }
 }

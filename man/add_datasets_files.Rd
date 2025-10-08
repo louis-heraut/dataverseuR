@@ -24,7 +24,7 @@ add_datasets_files(
 
 \item{timeout}{An integer to set the number of second before timeout of the request. By default, 600.}
 
-\item{verbose}{If FALSE, no processing informations are displayed. By default, TRUE.}
+\item{verbose}{If \code{FALSE}, no processing informations are displayed. Defaults to \code{TRUE}.}
 }
 \value{
 A character vector containing the paths of the files that could not be uploaded, if any.
@@ -32,10 +32,18 @@ A character vector containing the paths of the files that could not be uploaded,
 \description{
 This function uploads files to a dataset.
 }
+\examples{
+\dontrun{
+dotenv::load_dot_env()
+dataset_DOI = "doi:10.57745/LNBEGZ"
+paths = c("path/to/file.csv", other/path/to/README.txt)
+not_added = add_datasets_files(dataset_DOI, paths)
+}
+}
 \seealso{
 \itemize{
-\item \href{https://github.com/super-lou/dataverseuR}{dataverseuR GitHub documentation} \url{https://github.com/super-lou/dataverseuR}
-\item \href{https://github.com/super-lou/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R}{R example in context} \url{https://github.com/super-lou/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R}
+\item \href{https://github.com/louis-heraut/dataverseuR}{dataverseuR GitHub documentation} \url{https://github.com/louis-heraut/dataverseuR}
+\item \href{https://github.com/louis-heraut/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R}{R example in context} \url{https://github.com/louis-heraut/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R}
 \item \href{https://guides.dataverse.org/en/5.3/api/native-api.html#add-a-file-to-a-dataset}{Native API documentation} \url{https://guides.dataverse.org/en/5.3/api/native-api.html#add-a-file-to-a-dataset}
 }
 }

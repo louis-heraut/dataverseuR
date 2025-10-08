@@ -25,15 +25,15 @@
             "roleName": "Maintainer"
         }
     ],
-    "codeRepository": "https://github.com/super-lou/dataverseuR",
-    "dateCreated": "2024-01-28",
-    "dateModified": "2024-01-28",
-    "datePublished": "2024-01-28",
-    "description": "A Dataverse API wrapper to streamline the deposit process using only R variable declarations.\n\nUn wrapper pour l'API Dataverse afin de simplifier le processus de dépôt en utilisant uniquement des déclarations de variables R.",
+    "codeRepository": "https://github.com/louis-heraut/dataverseuR",
+    "dateCreated": "2025-10-08",
+    "dateModified": "2025-10-08",
+    "datePublished": "2025-10-08",
+    "description": "An R Dataverse API wrapper to improve the submission process using a simpler YAML metadata file..\n\nA dataverse API R wrapper to enhance the deposit procedure using simplier YAML metadata file.",
     "license": "https://spdx.org/licenses/AGPL-3.0-or-later",
     "name": "dataverseuR",
     "operatingSystem": "Debian 12.x",
     "programmingLanguage": "R 4.x.x",
-    "version": "0.0.1",
+    "version": "0.1.0",
     "developmentStatus": "active"
 }

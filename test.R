@@ -88,7 +88,7 @@ if ("create_dataset" %in% to_do) {
     # initialise_metadata_old()
     # source("dev/old/metadata_template.R")
     # res = generate_metadata_old(dev=TRUE)
-    res = generate_metadata("metadata.yml")
+    res = generate_metadata_json("metadata.yml")
     dataset_DOI = create_datasets(dataverse="explore2",
                                   metadata_path=res$metadata_path)
 }

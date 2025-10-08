@@ -21,15 +21,22 @@ publish_datasets(
 
 \item{API_TOKEN}{A character string for the API token required to authenticate the request. By default, it uses the value from the environment variable \code{API_TOKEN}.}
 
-\item{verbose}{If FALSE, no processing informations are displayed. By default, TRUE.}
+\item{verbose}{If \code{FALSE}, no processing informations are displayed. Defaults to \code{TRUE}.}
 }
 \description{
 Publish a selection of datasets.
 }
+\examples{
+\dontrun{
+dotenv::load_dot_env()
+dataset_DOI = "doi:10.57745/LNBEGZ"
+publish_datasets(dataset_DOI)
+}
+}
 \seealso{
 \itemize{
-\item \href{https://github.com/super-lou/dataverseuR}{dataverseuR GitHub documentation} \url{https://github.com/super-lou/dataverseuR}
-\item \href{https://github.com/super-lou/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R}{R example in context} \url{https://github.com/super-lou/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R}
+\item \href{https://github.com/louis-heraut/dataverseuR}{dataverseuR GitHub documentation} \url{https://github.com/louis-heraut/dataverseuR}
+\item \href{https://github.com/louis-heraut/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R}{R example in context} \url{https://github.com/louis-heraut/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R}
 \item \href{https://guides.dataverse.org/en/5.3/api/native-api.html#publish-a-dataset}{Native API documentation} \url{https://guides.dataverse.org/en/5.3/api/native-api.html#publish-a-dataset}
 }
 }

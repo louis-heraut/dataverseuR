@@ -49,6 +49,7 @@ Performs a search query on the Dataverse API.
 }
 \examples{
 \dontrun{
+dotenv::load_dot_env()
 # A simple example to search all datasets from a dataverse
 datasets = search_datasets(query="*",
                            publication_status="RELEASED",
@@ -67,8 +68,8 @@ datasets = search_datasets(query=query,
 }
 \seealso{
 \itemize{
-\item \href{https://github.com/super-lou/dataverseuR}{dataverseuR GitHub documentation} \url{https://github.com/super-lou/dataverseuR}
-\item \href{https://github.com/super-lou/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R}{R example in context} \url{https://github.com/super-lou/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R}
+\item \href{https://github.com/louis-heraut/dataverseuR}{dataverseuR GitHub documentation} \url{https://github.com/louis-heraut/dataverseuR}
+\item \href{https://github.com/louis-heraut/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R}{R example in context} \url{https://github.com/louis-heraut/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R}
 \item \href{https://guides.dataverse.org/en/5.3/api/search.html}{Search API documentation} \url{https://guides.dataverse.org/en/5.3/api/search.html}
 }
 }

@@ -35,9 +35,9 @@
 #' - [create_dotenv()] for creating the environment file for credential
 #'
 #' For metadata generation :
-#' - [initialise_metadata()] to get a YAML metadata template file
-#' - [generate_metadata()] to generate a metadata JSON file from a YAML parametrization file
-#' - [convert_metadata()] to convert a metadata list from a JSON file to a YAML parameterization file
+#' - [initialise_metadata()] to get a simple YAML metadata template file
+#' - [convert_metadata_to_yml()] to convert a JSON metadata file from the dataverse to a simplier YAML metadata file
+#' - [generate_metadata_json()] to generate a JSON metadata file for the dataverse from a simplier YAML metadata file
 #' 
 #' For general API actions :
 #' - [search_datasets()] to perform a search on dataverse

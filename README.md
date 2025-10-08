@@ -7,7 +7,7 @@
 [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg)](code_of_conduct.md) 
 <!-- badges: end -->
 
-**dataverseuR** is a dataverse API R wrapper to enhance the deposit procedure using only R variable declarations.
+**dataverseuR** is a dataverse API R wrapper to enhance the deposit procedure using simplier YAML metadata file.
 
 This project was carried out for the National Research Institute for Agriculture, Food and the Environment (Institut National de Recherche pour l’Agriculture, l’Alimentation et l’Environnement, [INRAE](https://agriculture.gouv.fr/inrae-linstitut-national-de-recherche-pour-lagriculture-lalimentation-et-lenvironnement)).
 
@@ -153,18 +153,18 @@ Once you have the metadata as a `list` of `list`, it can be challenging to modif
 
 ### Metadata Generation
 #### Metadata Management
-The idea behind this formalism is to create dataverse metadata directly in R code using only R variables.  
-The metadata base file from dataverse is a JSON file, which is represented by a complex nested list structure in R. To simplify this, every value entry in this JSON file (i.e., every metadata field in dataverse) is linked to an R variable.
-``` R
+The idea behind this formalism is to create dataverse metadata directly from simplier YAML file human readeable.  
+The metadata base file from dataverse is a JSON file, which is represented by a complex nested list structure in R. To simplify this, every value entry in this JSON file (i.e., every metadata field in dataverse) is converted to a simplier assignation in a YAML text file.
+``` yml
 # Create metadata for the title of the future dataset in dataverse
-META$title = "Hydrological projections of discharge for the model {MODEL}"
+title: Hydrological projections of discharge for the model {MODEL}
 ```
 
-In the example above, there are several key points to understand. Every metadata variable must be clearly identified as such. Therefore:
-- The variable name is precise and non-negotiable (you need to start from an [example](https://github.com/louis-heraut/dataverseuR_toolbox) or download metadata from dataverse using the function `get_datasets_metadata()` to find a metadata name; see [Metadata Importation](#metadata-importation)).
-- The variable must be stored in an environment variable clearly identified here as `META`.
+Every metadata must be clearly identified as such. Therefore:
+- The metadata name is precise and non-negotiable (you need to start from an [example](https://github.com/louis-heraut/dataverseuR_toolbox) or download metadata from dataverse using the function `get_datasets_metadata()` to find a metadata name; see [Metadata Importation](#metadata-importation)).
+- Some metadata can be dupplicated like author names so you need to respect a indented dash list format (see below). 
 
-This way, you can create an R file that gathers all these R metadata variables, like this:
+This way, you can create an YAML file that gathers all these metadata, like this:
 
 ``` yml
 # ░█▀▄░█▀▀▄░▀█▀░█▀▀▄░▄░░░▄░█▀▀░█▀▀▄░█▀▀░█▀▀░█░▒█░▒█▀▀▄
@@ -264,44 +264,52 @@ country: Fiji
 dateOfDeposit: '2020-03-19'
 ```
 
-This allows you to add a new author with:
-``` R
-META$authorName2 = "Shephard, Jack"
-META$authorAffiliation2 = "Laboratory, An other Institut, Island"
+This allows you to add a new author in the author list with:
+``` yml
+- authorName: Shephard, Jack
+  authorAffiliation: Laboratory, An other Institut, Island
 ```
-(Note the numerical incrementation.)<br>
-You can also modify a metadata variable in a for loop with placeholders like `{MODEL}`:
+
+That way you can also modify a metadata with placeholders like `{MODEL}` by using simple R code to read YAML file as text:
 ``` R
+metadata = readLines("metadata.yml")
+metadata = gsub("\\{MODEL\\}", "AirDynamics", metadata)
+writeLines(metadata, "metadata.yml")
+```
+
+Or for more complexe situation by reading the YAML in a for loop :
+
+``` R
+Models = c("AirDynamics", "PlaneSimulation")
 for (model in Models) {
-    META$title = gsub("[{]MODEL[}]", model, META$title)
+    metadata = yaml::read_yaml("metadata.yml")
+    metadata$software[[1]]$softwareName = model
+    yaml::write_yaml(yml_data, paste0("metadata_", model, ".yml"))
 }
 ```
 
 #### Metadata Generation Workflow
-All these R-formatted metadata variables need to be processed by R functions. The workflow is as follows:
-1. Initialize a metadata variable environment:
+In order to create a dataset from scratch:
+1. Initialize a YAML metadata template
 ```R
-initialise_metadata()
+initialise_metadata("path/to/metadata.yml")
 ```
-2. Assign in your current script R metadata variables as shown earlier or source an external R script:
+2. Modify the file as seen above
+3. Generate the JSON file
 ```R
-source("/path/to/metadata/Rfile.R")
-```
-3. Generate the JSON file:
-```R
-res = generate_metadata()
+metadata_json_path = generate_metadata_json("path/to/metadata.yml")
 ```
 
 You can now import this metadata JSON file to a dataverse instance using the `create_datasets()` function mentioned earlier in the [General API Actions](#general-api-actions) section.
 
 #### Metadata Importation
-You can retrieve metadata from an existing dataset on dataverse using `get_datasets_metadata()`. This imports the JSON equivalent of the metadata. From here, you can convert this JSON formatting to a R file containing all the R metadata variable using the `convert_metadata()` function:
+Otherwise, you can retrieve metadata from an existing dataset on dataverse using `get_datasets_metadata()`. This imports the JSON equivalent of the metadata. From here, you can convert this JSON formatting to a YAML metadata file using the `convert_metadata_to_yml()` function:
 ``` R
 dataset_DOI = "doi:10.57745/LNBEGZ"
-metadata = get_datasets_metadata(dataset_DOI=dataset_DOI)
-convert_metadata(metadata)
+metadata_json_path = "metadata.json"
+get_datasets_metadata(dataset_DOI, metadata_json_path)
+metadata_yml_path = convert_metadata_to_yml(metadata_json_path)
 ```
-> ℹ️ Note: Ideally, this R metadata variables file should be directly reusable to create a new dataset, but the numerical information for ordering duplicable metadata is not yet managed. It is still under development. For now, you can manually add this ordering numerical information.
 
 
 ### Workflow Examples

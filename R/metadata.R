@@ -69,6 +69,32 @@ format_full_metadata = function (file="rechercheDataGouv-full-metadata.json",
 }
 
 
+#' @title initialise_metadata
+#' @description Create an empty example for a dataverse YAML metadata file.
+#' @param metadata_yml_path A character string specifying the path to which the YAML metadata template should be written. By default, `"metadata.yml"` in the working directory.
+#' @param overwrite A logical value indicating whether to overwrite an existing metadata template. Defaults to FALSE.
+#' @return The function returns the path to the created .env file.
+#' @seealso
+#' - [dataverseuR GitHub documentation](https://github.com/louis-heraut/dataverseuR) <https://github.com/louis-heraut/dataverseuR>
+#' @examples
+#' \dontrun{
+#' # Create the metadata template to the working directory
+#' initialise_metadata()
+#' # or create the metadata template in a remote location
+#' initialise_metadata("path/to/metadata_project.yml")
+#' }
+#' @md
+#' @export
+initialise_metadata = function(metadata_yml_path="metadata.yml",
+                               overwrite=FALSE) {
+    check_yml_format(metadata_yml_path)
+    check_dir(metadata_yml_path)    
+    template_from_path = system.file("templates", "metadata_template.yml",
+                                     package="dataverseuR")
+    file.copy(template_from_path, metadata_yml_path, overwrite=overwrite)
+}
+
+
 replicate_typeName = function (metadata, typeName, n) {
     if (is.list(metadata)) {
         return (lapply(metadata, function(x) {
@@ -103,6 +129,7 @@ replicate_typeName = function (metadata, typeName, n) {
     }
     return (metadata)
 }
+
 
 add_typeName = function (metadata, typeName, value) {
     if (is.list(metadata)) {
@@ -182,7 +209,6 @@ clean_metadata_hide = function (metadata) {
 }
 
 
-
 clean_metadata = function (metadata) {
     get_condition = function (x) {
         if (is.list(x$fields)) {
@@ -202,11 +228,9 @@ clean_metadata = function (metadata) {
 }
 
 
-
-
 generate_metadata_json_hide = function(metadata_yml,
-                                  res=list(group=c(),
-                                           meta=dplyr::tibble())) {
+                                       res=list(group=c(),
+                                                meta=dplyr::tibble())) {
     if (is.list(metadata_yml)) {
         for (i in 1:length(metadata_yml)) {
             typeName = names(metadata_yml)[i]
@@ -244,8 +268,8 @@ format_metadata_res = function (res) {
 
 #' @title generate_metadata_json
 #' @description Generate from a YAML metadata file a JSON metadata file used by dataverse to create or modify a dataset. See [initialise_metadata()] or [get_datasets_metadata()] and [convert_metadata()] to get a metadata YAML file.
-#' @param metadata_yml_path A vector of character strings of the YAML metadata paths.
-#' @param overwrite A logical value indicating whether to overwrite an existing metadata file. Defaults to TRUE.
+#' @param metadata_yml_path A character vector specifying the paths from which the YAML metadata should be read.
+#' @param overwrite A logical value indicating whether to overwrite an existing metadata file. Defaults to FALSE.
 #' @return A vector of character strings containing the JSON metadata paths.
 #' @examples
 #' \dontrun{
@@ -268,8 +292,11 @@ format_metadata_res = function (res) {
 #' @md
 #' @export
 generate_metadata_json = function (metadata_yml_path,
-                                   overwrite=TRUE) {
+                                   overwrite=FALSE) {
 
+    sapply(metadata_yml_path, check_yml_format)
+    sapply(metadata_yml_path, check_dir)
+    
     metadata_json_path = c()
     for (mpath_yml in metadata_yml_path) {
         
@@ -279,8 +306,8 @@ generate_metadata_json = function (metadata_yml_path,
                         package="dataverseuR")
         
         metadata_json = jsonlite::fromJSON(full_template_path,
-                                      simplifyVector=FALSE,
-                                      simplifyDataFrame=FALSE)
+                                           simplifyVector=FALSE,
+                                           simplifyDataFrame=FALSE)
 
         mpath_json = gsub(".yml", ".json", mpath_yml)
         metadata_yml = yaml::read_yaml(mpath_yml)
@@ -379,7 +406,7 @@ convert_metadata_to_yml_hide = function(metadata_yml,
 
 #' @title convert_metadata_to_yml
 #' @description Convert a metadata JSON file from the dataverse to a more user-friendly YAML metadata file. See [get_datasets_metadata()] to retrieve metadata JSON file from a dataverse deposit.
-#' @param metadata_json_path A vector of character strings of the JSON metadata paths.
+#' @param metadata_json_path A character vector specifying the paths from which the JSON metadata files should be converted.
 #' @return A vector of character strings containing the YAML metadata paths.
 #' @examples
 #' \dontrun{
@@ -391,12 +418,15 @@ convert_metadata_to_yml_hide = function(metadata_yml,
 #' @export
 convert_metadata_to_yml = function (metadata_json_path) {
 
+    sapply(metadata_json_path, check_json_format)
+    sapply(metadata_json_path, check_dir)
+    
     metadata_yml_path = c()
     for (mpath_json in metadata_json_path) {
         
         metadata_json = jsonlite::fromJSON(mpath_json,
-                                      simplifyVector=FALSE,
-                                      simplifyDataFrame=FALSE)
+                                           simplifyVector=FALSE,
+                                           simplifyDataFrame=FALSE)
         
         res = convert_metadata_to_yml_hide(metadata_json)
         res = format_metadata_res(res)

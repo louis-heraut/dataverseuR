@@ -27,7 +27,7 @@ create_datasets(
 The function returns DOI of the newly created datasets as a vector of character string.
 }
 \description{
-Create new datasets in a specified dataverse for a selection of metadata JSON file. See \code{\link[=generate_metadata]{generate_metadata()}} in order to generate efficiently metadata JSON file.
+Create new datasets in a specified dataverse for a selection of metadata JSON file. See \code{\link[=generate_metadata_json]{generate_metadata_json()}} in order to generate efficiently metadata JSON file.
 }
 \examples{
 \dontrun{

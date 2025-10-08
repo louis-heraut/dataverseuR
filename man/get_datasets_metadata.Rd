@@ -27,7 +27,7 @@ get_datasets_metadata(
 A list containing the datasets metadata.
 }
 \description{
-Retrieves metadata for a selection of dataset. See \code{\link[=convert_metadata]{convert_metadata()}} in order to convert metadata extracted by this function to R parameterisation file.
+Retrieves metadata for a selection of dataset. See \code{\link[=convert_metadata_to_yml]{convert_metadata_to_yml()}} in order to convert metadata extracted by this function to R parameterisation file.
 }
 \examples{
 \dontrun{

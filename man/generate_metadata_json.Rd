@@ -15,7 +15,7 @@ generate_metadata_json(metadata_yml_path, overwrite = FALSE)
 A vector of character strings containing the JSON metadata paths.
 }
 \description{
-Generate from a YAML metadata file a JSON metadata file used by dataverse to create or modify a dataset. See \code{\link[=initialise_metadata]{initialise_metadata()}} or \code{\link[=get_datasets_metadata]{get_datasets_metadata()}} and \code{\link[=convert_metadata]{convert_metadata()}} to get a metadata YAML file.
+Generate from a YAML metadata file a JSON metadata file used by dataverse to create or modify a dataset. See \code{\link[=initialise_metadata]{initialise_metadata()}} or \code{\link[=get_datasets_metadata]{get_datasets_metadata()}} and \code{\link[=convert_metadata_to_yml]{convert_metadata_to_yml()}} to get a metadata YAML file.
 }
 \examples{
 \dontrun{

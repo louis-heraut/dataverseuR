@@ -338,7 +338,7 @@ get_datasets_metrics = function(dataset_DOI,
 
 
 #' @title create_datasets
-#' @description Create new datasets in a specified dataverse for a selection of metadata JSON file. See [generate_metadata()] in order to generate efficiently metadata JSON file.
+#' @description Create new datasets in a specified dataverse for a selection of metadata JSON file. See [generate_metadata_json()] in order to generate efficiently metadata JSON file.
 #' @param dataverse A character string specifying the name of the dataverse in which to create datasets.
 #' @param metadata_json_path A vector of character string for the paths of JSON files containing the datasets metadata.
 #' @param BASE_URL A character string for the base URL of the Dataverse API. By default, it uses the value from the environment variable `BASE_URL`.
@@ -397,7 +397,7 @@ create_datasets = function(dataverse,
 
 
 #' @title get_datasets_metadata
-#' @description Retrieves metadata for a selection of dataset. See [convert_metadata()] in order to convert metadata extracted by this function to R parameterisation file.
+#' @description Retrieves metadata for a selection of dataset. See [convert_metadata_to_yml()] in order to convert metadata extracted by this function to R parameterisation file.
 #' @param dataset_DOI A vector of character string representing the DOI of datasets that will be process.
 #' @param metadata_json_path A vector of character string for the paths of JSON files containing the datasets metadata to write.
 #' @param BASE_URL A character string for the base URL of the Dataverse API. By default, it uses the value from the environment variable `BASE_URL`.
@@ -466,7 +466,7 @@ get_datasets_metadata = function(dataset_DOI,
 
 
 #' @title modify_datasets
-#' @description Modify datasets metadata from a selection of metadata JSON file. See [generate_metadata()] in order to generate efficiently metadata JSON file.
+#' @description Modify datasets metadata from a selection of metadata JSON file. See [generate_metadata_json()] in order to generate efficiently metadata JSON file.
 #' @param dataverse A character string specifying the name of the dataverse in which to create datasets.
 #' @param dataset_DOI A vector of character string representing the DOI of datasets that will be process.
 #' @param metadata_json_path A vector of character string for the paths of JSON files containing the datasets metadata.

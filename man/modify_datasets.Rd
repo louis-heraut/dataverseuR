@@ -33,7 +33,7 @@ modify_datasets(
 \item{verbose}{If \code{FALSE}, no processing informations are displayed. Defaults to \code{TRUE}.}
 }
 \description{
-Modify datasets metadata from a selection of metadata JSON file. See \code{\link[=generate_metadata]{generate_metadata()}} in order to generate efficiently metadata JSON file.
+Modify datasets metadata from a selection of metadata JSON file. See \code{\link[=generate_metadata_json]{generate_metadata_json()}} in order to generate efficiently metadata JSON file.
 }
 \examples{
 \dontrun{

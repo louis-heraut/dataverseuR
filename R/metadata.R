@@ -267,7 +267,7 @@ format_metadata_res = function (res) {
 
 
 #' @title generate_metadata_json
-#' @description Generate from a YAML metadata file a JSON metadata file used by dataverse to create or modify a dataset. See [initialise_metadata()] or [get_datasets_metadata()] and [convert_metadata()] to get a metadata YAML file.
+#' @description Generate from a YAML metadata file a JSON metadata file used by dataverse to create or modify a dataset. See [initialise_metadata()] or [get_datasets_metadata()] and [convert_metadata_to_yml()] to get a metadata YAML file.
 #' @param metadata_yml_path A character vector specifying the paths from which the YAML metadata should be read.
 #' @param overwrite A logical value indicating whether to overwrite an existing metadata file. Defaults to FALSE.
 #' @return A vector of character strings containing the JSON metadata paths.

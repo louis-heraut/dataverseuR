@@ -939,10 +939,10 @@ delete_all_datasets_files = function(dataset_DOI,
             file = files[j, ]
             fDOI = file$file_DOI
             
-            delete_dataset_file(file_DOI=fDOI,
-                                BASE_URL=BASE_URL,
-                                API_TOKEN=API_TOKEN,
-                                verbose=FALSE)
+            delete_datasets_files(file_DOI=fDOI,
+                                  BASE_URL=BASE_URL,
+                                  API_TOKEN=API_TOKEN,
+                                  verbose=FALSE)
 
             if (verbose) message(paste0(" - ", round(j/nFiles*100, 1), "% : file ", convert_DOI_to_URL(fDOI), " deleted"))
             

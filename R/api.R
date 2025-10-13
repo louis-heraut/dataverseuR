@@ -930,9 +930,9 @@ delete_all_datasets_files = function(dataset_DOI,
         dDOI = dataset_DOI[i]
         if (verbose) message(paste0(round(i/nDOI*100, 1), "% : files deletion for dataset ", convert_DOI_to_URL(dDOI)))
         
-        files = list_dataset_files(dataset_DOI=dDOI,
-                                   BASE_URL=BASE_URL,
-                                   API_TOKEN=API_TOKEN)
+        files = list_datasets_files(dataset_DOI=dDOI,
+                                    BASE_URL=BASE_URL,
+                                    API_TOKEN=API_TOKEN)
         nFiles = nrow(files)
         
         for (j in 1:nFiles) {

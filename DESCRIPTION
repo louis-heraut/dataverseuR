@@ -1,6 +1,6 @@
 Package: dataverseuR
-Version: 0.1.0
-Date: 2025-10-08
+Version: 0.1.1
+Date: 2025-10-13
 Title: dataverseuR
 Description: A dataverse API R wrapper to enhance the deposit procedure using simplier YAML metadata file.
 Authors@R: c(

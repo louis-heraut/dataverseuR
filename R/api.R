@@ -402,6 +402,7 @@ create_datasets = function(dataverse,
 #' @param metadata_json_path A vector of character string for the paths of JSON files containing the datasets metadata to write.
 #' @param BASE_URL A character string for the base URL of the Dataverse API. By default, it uses the value from the environment variable `BASE_URL`.
 #' @param API_TOKEN A character string for the API token required to authenticate the request. By default, it uses the value from the environment variable `API_TOKEN`.
+#' @param overwrite A logical value indicating whether to overwrite an existing metadata file. Defaults to FALSE.
 #' @param verbose If `FALSE`, no processing informations are displayed. Defaults to `TRUE`.
 #' @return A list containing the datasets metadata.
 #' @examples
@@ -421,6 +422,7 @@ get_datasets_metadata = function(dataset_DOI,
                                  metadata_json_path,
                                  BASE_URL=Sys.getenv("BASE_URL"),
                                  API_TOKEN=Sys.getenv("API_TOKEN"),
+                                 overwrite=FALSE,
                                  verbose=TRUE) {
 
     metadata_list = list()
@@ -451,9 +453,14 @@ get_datasets_metadata = function(dataset_DOI,
         #     metadata_list = append(metadata_list, list(metadata_json))
         #     names(metadata_list)[i] = dDOI
         # }
-        write(jsonlite::toJSON(metadata_json,
-                               pretty=TRUE,
-                               auto_unbox=TRUE), mpath)
+        if (file.exists(mpath) & !overwrite) {
+            message (paste0("Metadata file already exists in ",
+                            mpath))
+        } else {
+            write(jsonlite::toJSON(metadata_json,
+                                   pretty=TRUE,
+                                   auto_unbox=TRUE), mpath)
+        }
         
         if (verbose) message(paste0(round(i/nDOI*100, 1),
                                     "% : dataset metadata ",

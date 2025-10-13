@@ -228,41 +228,73 @@ clean_metadata = function (metadata) {
 }
 
 
-generate_metadata_json_hide = function(metadata_yml,
-                                       res=list(group=c(),
-                                                meta=dplyr::tibble())) {
-    if (is.list(metadata_yml)) {
-        for (i in 1:length(metadata_yml)) {
-            typeName = names(metadata_yml)[i]
-            value = metadata_yml[[i]]
-            if (is.character(value)) {
-                line = dplyr::tibble(typeName=typeName,
-                                     value=value)
-                res$meta = dplyr::bind_rows(res$meta,
-                                            line)
-            } else if (is.list(value)) {
-                res$group = c(res$group, typeName)
+# generate_metadata_json_hide = function(metadata_yml,
+#                                        res=list(group=c(),
+#                                                 meta=dplyr::tibble())) {
+#     if (is.list(metadata_yml)) {
+#         for (i in 1:length(metadata_yml)) {
+#             typeName = names(metadata_yml)[i]
+#             value = metadata_yml[[i]]
+#             if (is.character(value)) {
+#                 line = dplyr::tibble(typeName=typeName,
+#                                      value=value)
+#                 res$meta = dplyr::bind_rows(res$meta,
+#                                             line)
+#             } else if (is.list(value)) {
+#                 res$group = c(res$group, typeName)
+#             }
+#             res = generate_metadata_json_hide(value, res)
+#         }
+#     }
+#     return (res)
+# }
+
+
+generate_metadata_json_hide = function(metadata_yml) {
+    metadata_json = dplyr::tibble()
+    for (i in 1:length(metadata_yml)) {
+
+        field_value = metadata_yml[[i]]
+        field_name = names(metadata_yml)[i]
+        
+        if (is.character(field_value)) {
+            meta = dplyr::tibble(typeName=field_name,
+                                 value=field_value,
+                                 group=NA)
+            metadata_json = dplyr::bind_rows(metadata_json,
+                                            meta)
+        
+        } else if (is.list(field_value)) {
+            for (element in field_value) {
+                for (j in 1:length(element)) {
+                    x_value = element[[j]]
+                    x_name = names(element)[j]
+                    meta =
+                        dplyr::tibble(typeName=x_name,
+                                      value=x_value,
+                                      group=field_name)
+                    
+                    metadata_json =
+                        dplyr::bind_rows(metadata_json,
+                                         meta)
+                }
             }
-            res = generate_metadata_json_hide(value, res)
         }
     }
-    return (res)
+    return (metadata_json)
 }
 
-format_metadata_res = function (res) {
-    res$meta$group = NA
-    for (group in res$group) {
-        res$meta$group[grepl(group, res$meta$typeName)] = group 
-    }
-    res$meta =
-        dplyr::mutate(dplyr::group_by(res$meta, typeName),
+
+format_metadata_tbl = function (metadata_tbl) {
+    metadata_tbl =
+        dplyr::mutate(dplyr::group_by(metadata_tbl, typeName),
                       group_index=ifelse(
                           !is.na(typeName) &
                           dplyr::n() > 1,
                           dplyr::row_number(),
                           NA))
-    res$meta = dplyr::ungroup(res$meta)
-    return (res)
+    metadata_tbl = dplyr::ungroup(metadata_tbl)
+    return (metadata_tbl)
 }
 
 
@@ -312,14 +344,15 @@ generate_metadata_json = function (metadata_yml_path,
         mpath_json = gsub(".yml", ".json", mpath_yml)
         metadata_yml = yaml::read_yaml(mpath_yml)
 
-        res = generate_metadata_json_hide(metadata_yml)
-        res = format_metadata_res(res)
+        metadata_tbl = generate_metadata_json_hide(metadata_yml)
+        metadata_tbl = format_metadata_tbl(metadata_tbl)
+
+        Ok = !is.na(metadata_tbl$group_index)
+        metadata_tbl$typeName[Ok] =
+            paste0(metadata_tbl$typeName[Ok],
+                   metadata_tbl$group_index[Ok])
         
-        Ok = !is.na(res$meta$group_index)
-        res$meta$typeName[Ok] = paste0(res$meta$typeName[Ok],
-                                       res$meta$group_index[Ok])
-        
-        TypeNames = res$meta$typeName
+        TypeNames = metadata_tbl$typeName
         TypeNames_Num = TypeNames[grepl("[[:digit:]]+$", TypeNames)]
         TypeNames_Num_noNum = unique(gsub("[[:digit:]]+$", "",
                                           TypeNames_Num))
@@ -343,7 +376,8 @@ generate_metadata_json = function (metadata_yml_path,
         }
 
         for (typeName in TypeNames) {
-            value = res$meta$value[res$meta$typeName == typeName]
+            value = metadata_tbl$value[metadata_tbl$typeName ==
+                                       typeName]
             metadata_json = add_typeName(metadata_json, typeName, value)
         }
         metadata_json = clean_metadata(metadata_json)
@@ -355,58 +389,106 @@ generate_metadata_json = function (metadata_yml_path,
         if (file.exists(mpath_json) & !overwrite) {
             message (paste0("Metadata file already exists in ",
                             mpath_json))
-            return (mpath_json)
+        } else {
+            write(metadata_json, mpath_json)
         }
-
         metadata_json_path = c(metadata_json_path, mpath_json)
-        write(metadata_json, mpath_json)
+
     }
     return (metadata_json_path)
 }
 
 
-convert_metadata_to_yml_hide = function(metadata_yml,
-                                        res=list(group=c(),
-                                                 meta=dplyr::tibble()),
-                                        previous="") {
-    if (is.list(metadata_yml)) {
-        for (x in metadata_yml) {
+# convert_metadata_to_yml_hide = function(metadata_yml,
+#                                         res=list(group=c(),
+#                                                  meta=dplyr::tibble()),
+#                                         previous="",
+#                                         multipleGroup=NA) {
+#     if (is.list(metadata_yml)) {
+#         for (x in metadata_yml) {
 
-            if ("typeName" %in% names(x) &
-                "value" %in% names(x)) {
-                if (is.character(x$value)) {
-                    following = gsub("[[:upper:]].*", "",
-                                     x$typeName)
-                    following = following[!is.na(following)]
+#             if ("typeName" %in% names(x) &
+#                 "value" %in% names(x)) {
+#                 if (is.character(x$value)) {
+#                     print(x$typeName)
+#                     following = gsub("[[:upper:]].*", "",
+#                                      x$typeName)
+#                     print(following)
+#                     following = following[!is.na(following)]
+#                     print("")
+                    
+#                     line = dplyr::tibble(typeName=x$typeName,
+#                                          value=x$value,
+#                                          group=multipleGroup)
+#                     if (previous[1] != following[1]) {
+#                         empty = dplyr::tibble(typeName="newline",
+#                                               value="",
+#                                               group=NA)
+#                         res$meta =
+#                             dplyr::bind_rows(res$meta,
+#                                              empty)
+#                         multipleGroup = NA
+#                     }
+#                     res$meta = dplyr::bind_rows(res$meta,
+#                                                 line)
+#                     previous = following
+                    
 
-                    line = dplyr::tibble(typeName=x$typeName,
-                                         value=x$value)
-                    if (previous[1] != following[1]) {
-                        empty = dplyr::tibble(typeName="newline",
-                                              value="")
-                        res$meta =
-                            dplyr::bind_rows(res$meta,
-                                             empty)
+#                 } else if (is.list(x$value)) {
+#                     res$group = c(res$group, x$typeName)
+#                     multipleGroup = x$typeName
+#                 }
+#             }
+#             res = convert_metadata_to_yml_hide(x, res,
+#                                                previous,
+#                                                multipleGroup)
+#         }
+#     }
+#     return (res)
+# }
+
+
+convert_metadata_to_yml_hide = function(metadata_json) {
+    metadata_yml = dplyr::tibble()
+    for (block in metadata_json$latestVersion$metadataBlocks) {
+        for (field in block$fields) {
+            if (is.character(field$value)) {
+                meta = dplyr::tibble(typeName=field$typeName,
+                                     value=field$value,
+                                     group=NA)
+                metadata_yml = dplyr::bind_rows(metadata_yml,
+                                                meta)
+                
+            } else if (is.list(field$value)) {
+                for (element in field$value) {
+                    for (x in element) {
+                        if ("typeName" %in% names(x) &
+                            "value" %in% names(x)) {        
+                            meta =
+                                dplyr::tibble(typeName=x$typeName,
+                                              value=x$value,
+                                              group=field$typeName)
+                            metadata_yml =
+                                dplyr::bind_rows(metadata_yml,
+                                                 meta)
+                        }
                     }
-                    res$meta = dplyr::bind_rows(res$meta,
-                                                line)
-                    previous = following
-
-
-                } else if (is.list(x$value)) {
-                    res$group = c(res$group, x$typeName)
                 }
             }
-            res = convert_metadata_to_yml_hide(x, res, previous)
+            empty = dplyr::tibble(typeName="newline",
+                                  value="",
+                                  group=NA)
+            metadata_yml = dplyr::bind_rows(metadata_yml, empty)
         }
     }
-    return (res)
+    return (metadata_yml)
 }
 
 
 #' @title convert_metadata_to_yml
 #' @description Convert a metadata JSON file from the dataverse to a more user-friendly YAML metadata file. See [get_datasets_metadata()] to retrieve metadata JSON file from a dataverse deposit.
 #' @param metadata_json_path A character vector specifying the paths from which the JSON metadata files should be converted.
+#' @param overwrite A logical value indicating whether to overwrite an existing metadata file. Defaults to FALSE.
 #' @return A vector of character strings containing the YAML metadata paths.
 #' @examples
 #' \dontrun{
@@ -416,7 +498,8 @@ convert_metadata_to_yml_hide = function(metadata_yml,
 #' - [dataverseuR GitHub documentation](https://github.com/louis-heraut/dataverseuR) <https://github.com/louis-heraut/dataverseuR>
 #' @md
 #' @export
-convert_metadata_to_yml = function (metadata_json_path) {
+convert_metadata_to_yml = function (metadata_json_path,
+                                    overwrite=FALSE) {
 
     sapply(metadata_json_path, check_json_format)
     sapply(metadata_json_path, check_dir)
@@ -428,21 +511,24 @@ convert_metadata_to_yml = function (metadata_json_path) {
                                            simplifyVector=FALSE,
                                            simplifyDataFrame=FALSE)
         
-        res = convert_metadata_to_yml_hide(metadata_json)
-        res = format_metadata_res(res)
+        metadata_tbl = convert_metadata_to_yml_hide(metadata_json)
+        metadata_tbl = format_metadata_tbl(metadata_tbl)
 
-        typeName = res$meta$typeName
+        typeName = metadata_tbl$typeName
         Ok = typeName == "newline"
-        res$meta$typeName[Ok] = paste0(typeName[Ok],
-                                       res$meta$group_index[Ok])
+        metadata_tbl$typeName[Ok] =
+            paste0(typeName[Ok],
+                   metadata_tbl$group_index[Ok])
         
-        group_order = res$meta$group
+        group_order = metadata_tbl$group
         Ok = is.na(group_order)
-        group_order[Ok] = res$meta$typeName[Ok]
+        group_order[Ok] = metadata_tbl$typeName[Ok]
         group_order = unique(group_order)
         
-        meta_list = as.list(dplyr::group_split(res$meta, group))
-        names(meta_list) = unique(unlist(sapply(meta_list, "[[", "group")))
+        meta_list = as.list(dplyr::group_split(metadata_tbl,
+                                               group))
+        names(meta_list) = unique(unlist(sapply(meta_list,
+                                                "[[", "group")))
         meta = list()
         nItem = length(meta_list)
         
@@ -475,13 +561,21 @@ convert_metadata_to_yml = function (metadata_json_path) {
         Lines = strsplit(yaml_text, "\n")[[1]]
         Ok = grepl("^newline[[:digit:]]+[:]", Lines)
         Lines[Ok] = ""
-        Lines = Lines[c(TRUE, Lines[-1] != Lines[-length(Lines)])]    
-        header_path = system.file("header.txt", package="dataverseuR")
+        Lines = Lines[c(TRUE, Lines[-1] !=
+                              Lines[-length(Lines)])]    
+        header_path = system.file(file.path("templates",
+                                            "header.txt"),
+                                  package="dataverseuR")
         header = readLines(header_path)
         Lines = c(header, Lines)
         mpath_yml = gsub(".json", ".yml", mpath_json)
-        writeLines(Lines, mpath_yml)
 
+        if (file.exists(mpath_yml) & !overwrite) {
+            message (paste0("Metadata file already exists in ",
+                            mpath_yml))
+        } else {
+            writeLines(Lines, mpath_yml)
+        }
         metadata_yml_path = c(metadata_yml_path, mpath_yml)
     }
     return (metadata_yml_path)

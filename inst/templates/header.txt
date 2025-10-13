@@ -9,3 +9,4 @@
 # This file is a parameterization file used by the dataverseuR R
 # package to generate a metadata JSON file needed by the Dataverse API
 # to create or modify a dataset.
+

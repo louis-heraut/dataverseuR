@@ -23,6 +23,7 @@ devtools::load_all(".")
 # source("R/api.R")
 # source("R/dataverseuR.R")
 # source("R/metadata.R")
+# source("R/tools.R")
 # source("dev/old/metadata.R")
 
 dotenv::load_dot_env(file=".env-entrepot")
@@ -44,11 +45,17 @@ to_do = c(
 
 
 if ("get_metadata" %in% to_do) {
-    dataset_DOI = "doi:10.57745/TLUTKF"
-    get_datasets_metadata(dataset_DOI=dataset_DOI,
-                          metadata_json_path="metadata.json")
-    convert_metadata_to_yml("metadata.json")
-    
+    dataset_DOI = "doi:10.57745/2YPNZ7"
+    metadata_json_path = "metadata.json"
+    get_datasets_metadata(dataset_DOI,
+                          metadata_json_path,
+                          overwrite=TRUE)
+    convert_metadata_to_yml(metadata_json_path, overwrite=TRUE)
+
+    # stop()
+    # mpath_json = metadata_json_path
+    # mpath_yml = "metadata.yml"
+    # generate_metadata_json("metadata.yml", overwrite=TRUE)
 }
 
 
@@ -88,7 +95,7 @@ if ("create_dataset" %in% to_do) {
     # initialise_metadata_old()
     # source("dev/old/metadata_template.R")
     # res = generate_metadata_old(dev=TRUE)
-    res = generate_metadata_json("metadata.yml")
+    generate_metadata_json("metadata.yml")
     dataset_DOI = create_datasets(dataverse="explore2",
                                   metadata_path=res$metadata_path)
 }

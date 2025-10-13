@@ -937,9 +937,11 @@ delete_all_datasets_files = function(dataset_DOI,
         
         for (j in 1:nFiles) {
             file = files[j, ]
+            fID = file$id
             fDOI = file$file_DOI
             
-            delete_datasets_files(file_DOI=fDOI,
+            delete_datasets_files(file_DOI=fID,
+                                  is_DOI_ID=TRUE,
                                   BASE_URL=BASE_URL,
                                   API_TOKEN=API_TOKEN,
                                   verbose=FALSE)

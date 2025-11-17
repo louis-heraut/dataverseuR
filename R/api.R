@@ -396,6 +396,100 @@ create_datasets = function(dataverse,
 }
 
 
+#' @title convert_DOI_to_ID
+#' @description Convert a dataset DOI (persistentId) to the internal Dataverse numeric dataset ID.
+#' @param dataset_DOI A vector of character string representing the DOI of datasets that will be process.
+#' @param BASE_URL A character string for the base URL of the Dataverse API. By default, it uses the value from the environment variable `BASE_URL`.
+#' @param API_TOKEN A character string for the API token required to authenticate the request. By default, it uses the value from the environment variable `API_TOKEN`.
+#' @param verbose If `FALSE`, no processing informations are displayed. Defaults to `TRUE`.
+#' @return A numeric vector of dataset IDs corresponding to the DOIs.
+#' @examples
+#' \dontrun{
+#' dotenv::load_dot_env()
+#' convert_DOI_to_ID("doi:10.57745/XXXXXX")
+#' }
+#' @md
+#' @export
+convert_DOI_to_ID = function(dataset_DOI,
+                             BASE_URL=Sys.getenv("BASE_URL"),
+                             API_TOKEN=Sys.getenv("API_TOKEN"),
+                             verbose=TRUE) {
+
+    dataset_ID = c()
+    nDOI = length(dataset_DOI)
+    
+    for (i in 1:nDOI) {
+        dDOI = dataset_DOI[i]
+
+        convert_url = paste0(BASE_URL,
+                             "/api/datasets/:persistentId/?persistentId=",
+                             dDOI)
+        response = httr::GET(convert_url,
+                             httr::add_headers("X-Dataverse-key"=API_TOKEN))
+        
+        if (httr::status_code(response) != 200) {
+            stop(paste0(httr::status_code(response), " ",
+                        httr::content(response, "text")))
+        }
+
+        content = httr::content(response, "parsed")
+        dID = content$data$id
+        dataset_ID = c(dataset_ID, dID)
+
+        if (verbose) message(paste0(round(i/nDOI*100, 1), "% : dataset DOI ", convert_DOI_to_URL(dDOI), " converted"))
+    }
+    return (dataset_ID)
+}
+
+
+#' @title move_datasets
+#' @description Move one or more datasets from their current Dataverse collection to another Dataverse collection (superuser or authorized user only).
+#' @param dataset_DOI A vector of character string representing the DOI of datasets that will be process.
+#' @param target_dataverse A character string giving the alias of the destination Dataverse.
+#' @param BASE_URL A character string for the base URL of the Dataverse API. By default, it uses the value from the environment variable `BASE_URL`.
+#' @param API_TOKEN A character string for the API token required to authenticate the request. By default, it uses the value from the environment variable `API_TOKEN`.
+#' @param verbose If `FALSE`, no processing informations are displayed. Defaults to `TRUE`.
+#' @examples
+#' \dontrun{
+#' dotenv::load_dot_env()
+#' move_datasets(dataset_ID=12345,
+#'               target_dataverse="new_dataverse")
+#' }
+#' @md
+#' @export
+move_datasets = function(dataset_DOI,
+                         target_dataverse,
+                         BASE_URL=Sys.getenv("BASE_URL"),
+                         API_TOKEN=Sys.getenv("API_TOKEN"),
+                         verbose=TRUE) {
+
+    dataverse_url = paste0(BASE_URL, "/dataverse/", target_dataverse)
+    
+    nDOI = length(dataset_DOI)
+
+    for (i in 1:nDOI) {
+        dDOI = dataset_DOI[i]
+        dID = convert_DOI_to_ID(dDOI,
+                                BASE_URL=BASE_URL,
+                                API_TOKEN=API_TOKEN,
+                                verbose=FALSE)
+
+        move_url = paste0(BASE_URL,
+                          "/api/datasets/", dID,
+                          "/move/", target_dataverse,
+                          "?forceMove=true")
+        response = httr::POST(move_url,
+                              httr::add_headers("X-Dataverse-key"=API_TOKEN))
+
+        if (httr::status_code(response) != 200) {
+            stop(paste0(httr::status_code(response), " ",
+                        httr::content(response, "text")))
+        }
+        if (verbose) message(paste0(round(i/nDOI*100, 1), "% : dataset DOI ", convert_DOI_to_URL(dDOI), " moved in ", dataverse_url))
+    }
+}
+
+
 #' @title get_datasets_metadata
 #' @description Retrieves metadata for a selection of dataset. See [convert_metadata_to_yml()] in order to convert metadata extracted by this function to R parameterisation file.
 #' @param dataset_DOI A vector of character string representing the DOI of datasets that will be process.

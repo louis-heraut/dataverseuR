@@ -44,6 +44,14 @@ to_do = c(
 )
 
 
+if ("move_dataset" %in% to_do) {
+    dataset_DOI = "doi:10.57745/FGAOCD"
+    dataset_ID = convert_DOI_to_ID(dataset_DOI)
+    move_datasets(dataset_DOI,
+                  target_dataverse="explore2-rapports_techniques")
+}
+
+
 if ("get_metadata" %in% to_do) {
     dataset_DOI = "doi:10.57745/2YPNZ7"
     metadata_json_path = "metadata.json"

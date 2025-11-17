@@ -4,10 +4,12 @@
 \alias{convert_metadata_to_yml}
 \title{convert_metadata_to_yml}
 \usage{
-convert_metadata_to_yml(metadata_json_path)
+convert_metadata_to_yml(metadata_json_path, overwrite = FALSE)
 }
 \arguments{
 \item{metadata_json_path}{A character vector specifying the paths from which the JSON metadata files should be converted.}
+
+\item{overwrite}{A logical value indicating whether to overwrite an existing metadata file. Defaults to FALSE.}
 }
 \value{
 A vector of character strings containing the YAML metadata paths.

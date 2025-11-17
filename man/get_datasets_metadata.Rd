@@ -9,6 +9,7 @@ get_datasets_metadata(
   metadata_json_path,
   BASE_URL = Sys.getenv("BASE_URL"),
   API_TOKEN = Sys.getenv("API_TOKEN"),
+  overwrite = FALSE,
   verbose = TRUE
 )
 }
@@ -20,6 +21,8 @@ get_datasets_metadata(
 \item{BASE_URL}{A character string for the base URL of the Dataverse API. By default, it uses the value from the environment variable \code{BASE_URL}.}
 
 \item{API_TOKEN}{A character string for the API token required to authenticate the request. By default, it uses the value from the environment variable \code{API_TOKEN}.}
+
+\item{overwrite}{A logical value indicating whether to overwrite an existing metadata file. Defaults to FALSE.}
 
 \item{verbose}{If \code{FALSE}, no processing informations are displayed. Defaults to \code{TRUE}.}
 }

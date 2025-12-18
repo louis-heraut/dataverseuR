@@ -28,7 +28,53 @@ Related publication: >
 <Remove or add any section if applicable>
 
 
+# METHODOLOGICAL INFORMATION ___________________________________________________
+## Environmental/experimental condition ________________________________________
 
+## Description of sources and methods used to collect and generate data ________
+# <If applicable, describe standards, calibration information, facility
+# instruments, etc.>
+
+## Methods for processing the data _____________________________________________
+# <If applicable, describe how submitted data were processed and include details
+# that may be important for data reuse or replication. Add comments to explain
+# each step taken. For example, include data cleaning and analysis methods; code
+# and/or algorithms, de-identification procedures for sensitive data human
+# subjects or endangered species data.>
+ 
+## Quality-assurance procedures performed on the data __________________________
+
+## Other contextual information ________________________________________________
+# <Any information that you consider important for the evaluation of the
+# dataset’s quality and reuse thereof: for example, information about the
+# software required to interpret the data. If applicable and not covered above,
+# include full name and version of software, and any necessary packages or
+# libraries needed to read and interpret the data, *e.g.* to run scripts.>
+
+
+# DATA & FILE OVERVIEW _________________________________________________________
+## File hierarchy convention ___________________________________________________
+.
+├── data-additional_Beverage-and-Williams-1989_sand-flux_125-250-micrometre_Colorado-Mississippi.csv
+├── data-additional_Beverage-and-Williams-1989_sand-flux_62-125-micrometre_Colorado-Mississippi.csv
+├── data-additional_Beverage-and-Williams-1989_sand-flux_62-larger-micrometre_Colorado-Mississippi.csv
+├── data-additional_Dijkman-and-Milisic-1982.csv
+├── data-additional_Florian-Benoit-2025.csv
+├── data-additional_Samuel-Payen_field.csv
+├── data-additional_Samuel-Payen_lab.csv
+├── data-comparison_pump-PP36_vs_DB_point_Grenoble-Campus.csv
+├── data-comparison_pump-PP36_vs_US-P-6_cross-section_Grenoble-Campus.csv
+├── data-comparison_pump-PP36_vs_US-P-6_grain-size-distribution_all-sites.csv
+├── data-comparison_pump-PP36_vs_US-P-6_point_all-sites.csv
+├── data-gaugings_DB_localisation.csv
+├── data-gaugings_US-P-6_localisation.csv
+└── meta_cross-section-area_Grenoble-Campus.csv
+0 directoryies, 14 files
+
+## File naming convention ______________________________________________________
+
+
+## Additional information ______________________________________________________
 
 
 # DATA-SPECIFIC INFORMATION ____________________________________________________

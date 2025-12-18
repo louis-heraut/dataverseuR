@@ -14,6 +14,7 @@ Last update: ", Sys.Date() , ".")
 
 
 
+RDG_datadir = "to"
 RDG_TITLE = "Suspended sand measurements in the Isere River catchment for sampler comparison"
 RDG_DOI = "https://doi.org/10.57745/5EBITB"
 RDG_CITATION = ""
@@ -34,6 +35,25 @@ cut_line = function (line_title, line_content, nchar_line) {
     }
     return (line)
 }
+
+get_info_dir = function(path) {
+    paths = list.files(path,
+                       recursive=TRUE,
+                       all.files=FALSE,
+                       full.names=TRUE)
+    n_files = sum(file.info(paths)$isdir == FALSE, na.rm=TRUE)
+    n_dirs = sum(file.info(paths)$isdir == TRUE, na.rm=TRUE)
+    
+    info = sprintf(
+        "%d directory%s, %d file%s",
+        n_dirs,
+        ifelse(n_dirs == 1, "", "ies"),
+        n_files,
+        ifelse(n_files == 1, "", "s"))
+    
+    return (info)
+}
+
 
 section = "# GENERAL INFORMATION __________________________________________________________"
 
@@ -90,56 +110,30 @@ methodo_info =
 # libraries needed to read and interpret the data, *e.g.* to run scripts.>"
 
 
-
+section = 
 "# DATA & FILE OVERVIEW _________________________________________________________
-## File hierarchy convention ___________________________________________________
-.
-├── data-additional_Beverage-and-Williams-1989_sand-flux_125-250-micrometre_Colorado-Mississippi.csv
-├── data-additional_Beverage-and-Williams-1989_sand-flux_62-125-micrometre_Colorado-Mississippi.csv
-├── data-additional_Beverage-and-Williams-1989_sand-flux_62-larger-micrometre_Colorado-Mississippi.csv
-├── data-additional_Dijkman-and-Milisic-1982.csv
-├── data-additional_Florian-Benoit-2025.csv
-├── data-additional_Samuel-Payen_field.csv
-├── data-additional_Samuel-Payen_lab.csv
-├── data-comparison_pump-PP36_vs_DB_point_Grenoble-Campus.csv
-├── data-comparison_pump-PP36_vs_US-P-6_cross-section_Grenoble-Campus.csv
-├── data-comparison_pump-PP36_vs_US-P-6_grain-size-distribution_all-sites.csv
-├── data-comparison_pump-PP36_vs_US-P-6_point_all-sites.csv
-├── data-gaugings_DB_localisation.csv
-├── data-gaugings_US-P-6_localisation.csv
-└── meta_cross-section-area_Grenoble-Campus.csv
-1 directory, 14 files
+## File hierarchy convention ___________________________________________________"
 
-## File naming convention ______________________________________________________
-### data-additional:
-No naming convention
 
-### data-comparison:
-data-comparison_{1}_vs_{2}_{3}_{4}.csv
-{1} first sampler type:
-  -- pump-PP36
-{2} second sampler type:
-  -- DB (Delft bottle) 
-  -- US-P-6
-{3} measurement type:
-  -- point (point sand concentration)
-  -- cross-section (cross-sectional averages of sand concentration)
-  -- grain-size-distribution (point grain size distribution)
-{4} localisation:
-  -- all-sites
-  -- Grenoble-Campus (Isère River at Grenoble Campus)
-  -- Chamousset (Arc River at Chamousset)
-  -- Pont-Rouge (Romanche River at Pont Rouge)
+content = capture.output(fs::dir_tree(RDG_datadir))
+# content[1] = "."
+content = c(content, get_info_dir(RDG_datadir))
+content = paste0(content, collapse="\n")
+
+additional_info =
+    "## File naming convention ______________________________________________________
 
 
 ## Additional information ______________________________________________________"
-
+    
+content = paste0(content, "\n\n", additional_info)
+data_overview = paste0(section, "\n", content)
 
 
 
 section = "# DATA-SPECIFIC INFORMATION ____________________________________________________"
 
-Paths = list.files("to", pattern="*.csv", full.names=TRUE) 
+Paths = list.files(RDG_datadir, pattern="*.csv", full.names=TRUE) 
 nPaths = length(Paths)
 
 data_info = c()
@@ -192,6 +186,7 @@ data_info = paste0(section, "\n", data_info)
 README = paste(header,
                general_info,
                methodo_info,
+               data_overview,
                data_info,
                sep="\n\n\n")
 

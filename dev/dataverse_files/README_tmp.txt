@@ -3,8 +3,8 @@
 |   /| _|  / _ \ | |) || |\/| || _|   RDG x RiverLy README File Template
 |_|_\|___|/_/ \_\|___/ |_|  |_||___|  English - Version: 1 (2025-12-15)
 
-This README file was automatically generated on 2025-12-18 by Louis Héraut.
-Last update: 2025-12-18.
+This README file was automatically generated on 2026-01-14 by DataverseuR.
+Last update: 2026-01-14.
 
 
 # GENERAL INFORMATION __________________________________________________________
@@ -16,7 +16,7 @@ DOI: https://doi.org/10.57745/5EBITB
 
 Citation: 
 
-Contact email:
+Contact email: 
   - guillaume.dramais@inrae.fr
   - test
 
@@ -54,7 +54,7 @@ Related publication: >
 
 # DATA & FILE OVERVIEW _________________________________________________________
 ## File hierarchy convention ___________________________________________________
-.
+to
 ├── data-additional_Beverage-and-Williams-1989_sand-flux_125-250-micrometre_Colorado-Mississippi.csv
 ├── data-additional_Beverage-and-Williams-1989_sand-flux_62-125-micrometre_Colorado-Mississippi.csv
 ├── data-additional_Beverage-and-Williams-1989_sand-flux_62-larger-micrometre_Colorado-Mississippi.csv
@@ -73,7 +73,6 @@ Related publication: >
 
 ## File naming convention ______________________________________________________
 
-
 ## Additional information ______________________________________________________
 
 
@@ -83,25 +82,25 @@ Filename: data-additional_Beverage-and-Williams-1989_sand-flux_125-250-micrometr
 
 Path: to
 
-Description: 
+Description: aaa
 
 Column information:
 
-- displayed name : Sand_flux_P61_g_m2s
+- displayed_name: Sand_flux_P61_g_m2s
   long_name: <full “human readable” name>
   description:
   type: numeric
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-- displayed name : Sand_flux_DB_g_m2s
+- displayed_name: Sand_flux_DB_g_m2s
   long_name: <full “human readable” name>
   description:
   type: numeric
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-Missing data codes:NA
+Missing data codes: NA
 
 Additional information:
 
@@ -110,25 +109,25 @@ Filename: data-additional_Beverage-and-Williams-1989_sand-flux_62-125-micrometre
 
 Path: to
 
-Description: 
+Description: aaa
 
 Column information:
 
-- displayed name : Sand_flux_P61_g_m2s
+- displayed_name: Sand_flux_P61_g_m2s
   long_name: <full “human readable” name>
   description:
   type: numeric
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-- displayed name : Sand_flux_DB_g_m2s
+- displayed_name: Sand_flux_DB_g_m2s
   long_name: <full “human readable” name>
   description:
   type: numeric
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-Missing data codes:NA
+Missing data codes: NA
 
 Additional information:
 
@@ -137,25 +136,25 @@ Filename: data-additional_Beverage-and-Williams-1989_sand-flux_62-larger-microme
 
 Path: to
 
-Description: 
+Description: aaa
 
 Column information:
 
-- displayed name : Sand_flux_P61_g_m2s
+- displayed_name: Sand_flux_P61_g_m2s
   long_name: <full “human readable” name>
   description:
   type: numeric
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-- displayed name : Sand_flux_DB_g_m2s
+- displayed_name: Sand_flux_DB_g_m2s
   long_name: <full “human readable” name>
   description:
   type: numeric
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-Missing data codes:NA
+Missing data codes: NA
 
 Additional information:
 
@@ -164,60 +163,60 @@ Filename: data-additional_Dijkman-and-Milisic-1982.csv
 
 Path: to
 
-Description: 
+Description: aaa
 
 Column information:
 
-- displayed name : Period
+- displayed_name: Period
   long_name: <full “human readable” name>
   description:
   type: integer
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-- displayed name : Fraction
+- displayed_name: Fraction
   long_name: <full “human readable” name>
   description:
   type: character
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-- displayed name : USP
+- displayed_name: USP
   long_name: <full “human readable” name>
   description:
   type: numeric
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-- displayed name : DBS1
+- displayed_name: DBS1
   long_name: <full “human readable” name>
   description:
   type: numeric
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-- displayed name : DBB1
+- displayed_name: DBB1
   long_name: <full “human readable” name>
   description:
   type: numeric
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-- displayed name : DBS2
+- displayed_name: DBS2
   long_name: <full “human readable” name>
   description:
   type: numeric
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-- displayed name : DBB2
+- displayed_name: DBB2
   long_name: <full “human readable” name>
   description:
   type: numeric
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-Missing data codes:NA
+Missing data codes: NA
 
 Additional information:
 
@@ -226,88 +225,88 @@ Filename: data-additional_Florian-Benoit-2025.csv
 
 Path: to
 
-Description: 
+Description: aaa
 
 Column information:
 
-- displayed name : Type
+- displayed_name: Type
   long_name: <full “human readable” name>
   description:
   type: character
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-- displayed name : Diameter_nozzle_mm
+- displayed_name: Diameter_nozzle_mm
   long_name: <full “human readable” name>
   description:
   type: integer
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-- displayed name : Orientation
+- displayed_name: Orientation
   long_name: <full “human readable” name>
   description:
   type: character
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-- displayed name : Sampling_velocity
+- displayed_name: Sampling_velocity
   long_name: <full “human readable” name>
   description:
   type: numeric
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-- displayed name : Ratio_velocity
+- displayed_name: Ratio_velocity
   long_name: <full “human readable” name>
   description:
   type: numeric
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-- displayed name : C_reference
+- displayed_name: C_reference
   long_name: <full “human readable” name>
   description:
   type: numeric
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-- displayed name : C_sampler
+- displayed_name: C_sampler
   long_name: <full “human readable” name>
   description:
   type: numeric
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-- displayed name : Ratio_Conc
+- displayed_name: Ratio_Conc
   long_name: <full “human readable” name>
   description:
   type: numeric
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-- displayed name : Velocity_flow
+- displayed_name: Velocity_flow
   long_name: <full “human readable” name>
   description:
   type: numeric
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-- displayed name : Concentration
+- displayed_name: Concentration
   long_name: <full “human readable” name>
   description:
   type: character
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-- displayed name : Sediments
+- displayed_name: Sediments
   long_name: <full “human readable” name>
   description:
   type: character
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-Missing data codes:NA
+Missing data codes: NA
 
 Additional information:
 
@@ -316,123 +315,123 @@ Filename: data-additional_Samuel-Payen_field.csv
 
 Path: to
 
-Description: 
+Description: aaa
 
 Column information:
 
-- displayed name : Type
+- displayed_name: Type
   long_name: <full “human readable” name>
   description:
   type: character
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-- displayed name : Site
+- displayed_name: Site
   long_name: <full “human readable” name>
   description:
   type: character
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-- displayed name : Serie
+- displayed_name: Serie
   long_name: <full “human readable” name>
   description:
   type: character
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-- displayed name : Ratio_velocity_buse
+- displayed_name: Ratio_velocity_buse
   long_name: <full “human readable” name>
   description:
   type: numeric
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-- displayed name : Velocity_sampling_m_s_buse
+- displayed_name: Velocity_sampling_m_s_buse
   long_name: <full “human readable” name>
   description:
   type: numeric
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-- displayed name : Sampling_duration_s_buse
+- displayed_name: Sampling_duration_s_buse
   long_name: <full “human readable” name>
   description:
   type: numeric
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-- displayed name : Csand_sampling_inf400_buse
+- displayed_name: Csand_sampling_inf400_buse
   long_name: <full “human readable” name>
   description:
   type: numeric
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-- displayed name : Csand_sampling_sup400_buse
+- displayed_name: Csand_sampling_sup400_buse
   long_name: <full “human readable” name>
   description:
   type: numeric
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-- displayed name : Ratio_velocity_crepine
+- displayed_name: Ratio_velocity_crepine
   long_name: <full “human readable” name>
   description:
   type: numeric
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-- displayed name : Velocity_sampling_m_s_crepine
+- displayed_name: Velocity_sampling_m_s_crepine
   long_name: <full “human readable” name>
   description:
   type: numeric
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-- displayed name : Sampling_duration_s_crepine
+- displayed_name: Sampling_duration_s_crepine
   long_name: <full “human readable” name>
   description:
   type: numeric
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-- displayed name : Csand_sampling_inf400_crepine
+- displayed_name: Csand_sampling_inf400_crepine
   long_name: <full “human readable” name>
   description:
   type: numeric
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-- displayed name : Csand_sampling_sup400_crepine
+- displayed_name: Csand_sampling_sup400_crepine
   long_name: <full “human readable” name>
   description:
   type: numeric
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-- displayed name : Mean_Csand_serie_inf400_buse
+- displayed_name: Mean_Csand_serie_inf400_buse
   long_name: <full “human readable” name>
   description:
   type: numeric
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-- displayed name : Csand_sampling_inf400_buse_norm
+- displayed_name: Csand_sampling_inf400_buse_norm
   long_name: <full “human readable” name>
   description:
   type: numeric
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-- displayed name : Csand_sampling_inf400_crepine_norm
+- displayed_name: Csand_sampling_inf400_crepine_norm
   long_name: <full “human readable” name>
   description:
   type: numeric
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-Missing data codes:NA
+Missing data codes: NA
 
 Additional information:
 
@@ -441,88 +440,88 @@ Filename: data-additional_Samuel-Payen_lab.csv
 
 Path: to
 
-Description: 
+Description: aaa
 
 Column information:
 
-- displayed name : Type
+- displayed_name: Type
   long_name: <full “human readable” name>
   description:
   type: character
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-- displayed name : Serie
+- displayed_name: Serie
   long_name: <full “human readable” name>
   description:
   type: integer
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-- displayed name : Label
+- displayed_name: Label
   long_name: <full “human readable” name>
   description:
   type: character
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-- displayed name : Ratio_velocity
+- displayed_name: Ratio_velocity
   long_name: <full “human readable” name>
   description:
   type: numeric
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-- displayed name : Velocity_sampling_m_s
+- displayed_name: Velocity_sampling_m_s
   long_name: <full “human readable” name>
   description:
   type: numeric
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-- displayed name : Sampling_duration_s
+- displayed_name: Sampling_duration_s
   long_name: <full “human readable” name>
   description:
   type: numeric
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-- displayed name : Csand_sampling
+- displayed_name: Csand_sampling
   long_name: <full “human readable” name>
   description:
   type: numeric
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-- displayed name : Ratio_conc
+- displayed_name: Ratio_conc
   long_name: <full “human readable” name>
   description:
   type: numeric
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-- displayed name : Csand_ref
+- displayed_name: Csand_ref
   long_name: <full “human readable” name>
   description:
   type: numeric
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-- displayed name : Ratio_conc_norm
+- displayed_name: Ratio_conc_norm
   long_name: <full “human readable” name>
   description:
   type: numeric
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-- displayed name : ...11
+- displayed_name: ...11
   long_name: <full “human readable” name>
   description:
   type: numeric
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-Missing data codes:NA
+Missing data codes: NA
 
 Additional information:
 
@@ -531,95 +530,95 @@ Filename: data-comparison_pump-PP36_vs_DB_point_Grenoble-Campus.csv
 
 Path: to
 
-Description: 
+Description: aaa
 
 Column information:
 
-- displayed name : ID
+- displayed_name: ID
   long_name: <full “human readable” name>
   description:
   type: logical
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-- displayed name : Date
+- displayed_name: Date
   long_name: <full “human readable” name>
   description:
   type: Date
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-- displayed name : Abscissa
+- displayed_name: Abscissa
   long_name: <full “human readable” name>
   description:
   type: integer
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-- displayed name : Height_field
+- displayed_name: Height_field
   long_name: <full “human readable” name>
   description:
   type: numeric
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-- displayed name : Depth_field
+- displayed_name: Depth_field
   long_name: <full “human readable” name>
   description:
   type: numeric
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-- displayed name : Sand_flux_BD_kg_s_m2
+- displayed_name: Sand_flux_BD_kg_s_m2
   long_name: <full “human readable” name>
   description:
   type: numeric
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-- displayed name : Velocity_sampling_point_ADCP
+- displayed_name: Velocity_sampling_point_ADCP
   long_name: <full “human readable” name>
   description:
   type: numeric
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-- displayed name : Vitesse_moulinet_m_s
+- displayed_name: Vitesse_moulinet_m_s
   long_name: <full “human readable” name>
   description:
   type: logical
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-- displayed name : Sand_concentration_BD_ADCP
+- displayed_name: Sand_concentration_BD_ADCP
   long_name: <full “human readable” name>
   description:
   type: numeric
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-- displayed name : Sand_concentration_BD_moulinet
+- displayed_name: Sand_concentration_BD_moulinet
   long_name: <full “human readable” name>
   description:
   type: numeric
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-- displayed name : Sand_concentration_pump
+- displayed_name: Sand_concentration_pump
   long_name: <full “human readable” name>
   description:
   type: numeric
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-- displayed name : Remarks
+- displayed_name: Remarks
   long_name: <full “human readable” name>
   description:
   type: logical
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-Missing data codes:NA
+Missing data codes: NA
 
 Additional information:
 
@@ -628,60 +627,60 @@ Filename: data-comparison_pump-PP36_vs_US-P-6_cross-section_Grenoble-Campus.csv
 
 Path: to
 
-Description: 
+Description: aaa
 
 Column information:
 
-- displayed name : ID
+- displayed_name: ID
   long_name: <full “human readable” name>
   description:
   type: integer
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-- displayed name : Date
+- displayed_name: Date
   long_name: <full “human readable” name>
   description:
   type: Date
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-- displayed name : Flux_t_h_P6
+- displayed_name: Flux_t_h_P6
   long_name: <full “human readable” name>
   description:
   type: numeric
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-- displayed name : Flux_t_h_pump
+- displayed_name: Flux_t_h_pump
   long_name: <full “human readable” name>
   description:
   type: numeric
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-- displayed name : Sand_concentration_P6
+- displayed_name: Sand_concentration_P6
   long_name: <full “human readable” name>
   description:
   type: numeric
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-- displayed name : Sand_concentration_pump
+- displayed_name: Sand_concentration_pump
   long_name: <full “human readable” name>
   description:
   type: numeric
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-- displayed name : Q_sampling_m3_s
+- displayed_name: Q_sampling_m3_s
   long_name: <full “human readable” name>
   description:
   type: numeric
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-Missing data codes:NA
+Missing data codes: NA
 
 Additional information:
 
@@ -690,74 +689,74 @@ Filename: data-comparison_pump-PP36_vs_US-P-6_grain-size-distribution_all-sites.
 
 Path: to
 
-Description: 
+Description: aaa
 
 Column information:
 
-- displayed name : ID
+- displayed_name: ID
   long_name: <full “human readable” name>
   description:
   type: integer
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-- displayed name : Date
+- displayed_name: Date
   long_name: <full “human readable” name>
   description:
   type: Date
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-- displayed name : Time
+- displayed_name: Time
   long_name: <full “human readable” name>
   description:
   type: logical
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-- displayed name : D10_P6
+- displayed_name: D10_P6
   long_name: <full “human readable” name>
   description:
   type: integer
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-- displayed name : D10_pump
+- displayed_name: D10_pump
   long_name: <full “human readable” name>
   description:
   type: numeric
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-- displayed name : D50_P6
+- displayed_name: D50_P6
   long_name: <full “human readable” name>
   description:
   type: integer
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-- displayed name : D50_pump
+- displayed_name: D50_pump
   long_name: <full “human readable” name>
   description:
   type: numeric
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-- displayed name : D90_P6
+- displayed_name: D90_P6
   long_name: <full “human readable” name>
   description:
   type: integer
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-- displayed name : D90_pump
+- displayed_name: D90_pump
   long_name: <full “human readable” name>
   description:
   type: numeric
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-Missing data codes:NA
+Missing data codes: NA
 
 Additional information:
 
@@ -766,46 +765,46 @@ Filename: data-comparison_pump-PP36_vs_US-P-6_point_all-sites.csv
 
 Path: to
 
-Description: 
+Description: aaa
 
 Column information:
 
-- displayed name : ID
+- displayed_name: ID
   long_name: <full “human readable” name>
   description:
   type: integer
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-- displayed name : Date
+- displayed_name: Date
   long_name: <full “human readable” name>
   description:
   type: Date
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-- displayed name : Time
+- displayed_name: Time
   long_name: <full “human readable” name>
   description:
   type: logical
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-- displayed name : Sand_concentration_P6
+- displayed_name: Sand_concentration_P6
   long_name: <full “human readable” name>
   description:
   type: numeric
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-- displayed name : Sand_concentration_pump
+- displayed_name: Sand_concentration_pump
   long_name: <full “human readable” name>
   description:
   type: numeric
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-Missing data codes:NA
+Missing data codes: NA
 
 Additional information:
 
@@ -814,172 +813,172 @@ Filename: data-gaugings_DB_localisation.csv
 
 Path: to
 
-Description: 
+Description: aaa
 
 Column information:
 
-- displayed name : ID
+- displayed_name: ID
   long_name: <full “human readable” name>
   description:
   type: integer
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-- displayed name : Comp
+- displayed_name: Comp
   long_name: <full “human readable” name>
   description:
   type: integer
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-- displayed name : Date
+- displayed_name: Date
   long_name: <full “human readable” name>
   description:
   type: Date
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-- displayed name : Start_sampling
+- displayed_name: Start_sampling
   long_name: <full “human readable” name>
   description:
   type: character
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-- displayed name : End_sampling
+- displayed_name: End_sampling
   long_name: <full “human readable” name>
   description:
   type: character
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-- displayed name : Sampler
+- displayed_name: Sampler
   long_name: <full “human readable” name>
   description:
   type: character
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-- displayed name : Q_sampling_m3_s
+- displayed_name: Q_sampling_m3_s
   long_name: <full “human readable” name>
   description:
   type: numeric
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-- displayed name : Stage_sampling_m
+- displayed_name: Stage_sampling_m
   long_name: <full “human readable” name>
   description:
   type: numeric
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-- displayed name : spm_sampling_g_l
+- displayed_name: spm_sampling_g_l
   long_name: <full “human readable” name>
   description:
   type: numeric
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-- displayed name : Sand_concentration_g_l
+- displayed_name: Sand_concentration_g_l
   long_name: <full “human readable” name>
   description:
   type: numeric
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-- displayed name : Sand_flux_kg_s
+- displayed_name: Sand_flux_kg_s
   long_name: <full “human readable” name>
   description:
   type: numeric
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-- displayed name : No_samples_used_for_ISO_gsd
+- displayed_name: No_samples_used_for_ISO_gsd
   long_name: <full “human readable” name>
   description:
   type: integer
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-- displayed name : D10_mum
+- displayed_name: D10_mum
   long_name: <full “human readable” name>
   description:
   type: numeric
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-- displayed name : D50_mum
+- displayed_name: D50_mum
   long_name: <full “human readable” name>
   description:
   type: numeric
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-- displayed name : D90_mum
+- displayed_name: D90_mum
   long_name: <full “human readable” name>
   description:
   type: numeric
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-- displayed name : Fine_concentration_g_l
+- displayed_name: Fine_concentration_g_l
   long_name: <full “human readable” name>
   description:
   type: logical
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-- displayed name : Fine_flux_kg_s
+- displayed_name: Fine_flux_kg_s
   long_name: <full “human readable” name>
   description:
   type: logical
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-- displayed name : U_C
+- displayed_name: U_C
   long_name: <full “human readable” name>
   description:
   type: numeric
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-- displayed name : U_Q
+- displayed_name: U_Q
   long_name: <full “human readable” name>
   description:
   type: numeric
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-- displayed name : U_F
+- displayed_name: U_F
   long_name: <full “human readable” name>
   description:
   type: numeric
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-- displayed name : Method
+- displayed_name: Method
   long_name: <full “human readable” name>
   description:
   type: character
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-- displayed name : sigma_mum
+- displayed_name: sigma_mum
   long_name: <full “human readable” name>
   description:
   type: numeric
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-- displayed name : S
+- displayed_name: S
   long_name: <full “human readable” name>
   description:
   type: logical
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-Missing data codes:NA
+Missing data codes: NA
 
 Additional information:
 
@@ -988,172 +987,172 @@ Filename: data-gaugings_US-P-6_localisation.csv
 
 Path: to
 
-Description: 
+Description: aaa
 
 Column information:
 
-- displayed name : ID
+- displayed_name: ID
   long_name: <full “human readable” name>
   description:
   type: integer
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-- displayed name : Comp
+- displayed_name: Comp
   long_name: <full “human readable” name>
   description:
   type: integer
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-- displayed name : Date
+- displayed_name: Date
   long_name: <full “human readable” name>
   description:
   type: Date
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-- displayed name : Start_sampling
+- displayed_name: Start_sampling
   long_name: <full “human readable” name>
   description:
   type: character
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-- displayed name : End_sampling
+- displayed_name: End_sampling
   long_name: <full “human readable” name>
   description:
   type: character
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-- displayed name : Sampler
+- displayed_name: Sampler
   long_name: <full “human readable” name>
   description:
   type: character
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-- displayed name : Q_sampling_m3_s
+- displayed_name: Q_sampling_m3_s
   long_name: <full “human readable” name>
   description:
   type: numeric
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-- displayed name : Stage_sampling_m
+- displayed_name: Stage_sampling_m
   long_name: <full “human readable” name>
   description:
   type: numeric
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-- displayed name : spm_sampling_g_l
+- displayed_name: spm_sampling_g_l
   long_name: <full “human readable” name>
   description:
   type: numeric
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-- displayed name : Sand_concentration_g_l
+- displayed_name: Sand_concentration_g_l
   long_name: <full “human readable” name>
   description:
   type: numeric
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-- displayed name : Sand_flux_kg_s
+- displayed_name: Sand_flux_kg_s
   long_name: <full “human readable” name>
   description:
   type: numeric
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-- displayed name : No_samples_used_for_ISO_gsd
+- displayed_name: No_samples_used_for_ISO_gsd
   long_name: <full “human readable” name>
   description:
   type: integer
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-- displayed name : D10_mum
+- displayed_name: D10_mum
   long_name: <full “human readable” name>
   description:
   type: numeric
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-- displayed name : D50_mum
+- displayed_name: D50_mum
   long_name: <full “human readable” name>
   description:
   type: numeric
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-- displayed name : D90_mum
+- displayed_name: D90_mum
   long_name: <full “human readable” name>
   description:
   type: numeric
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-- displayed name : Fine_concentration_g_l
+- displayed_name: Fine_concentration_g_l
   long_name: <full “human readable” name>
   description:
   type: numeric
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-- displayed name : Fine_flux_kg_s
+- displayed_name: Fine_flux_kg_s
   long_name: <full “human readable” name>
   description:
   type: numeric
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-- displayed name : U_C
+- displayed_name: U_C
   long_name: <full “human readable” name>
   description:
   type: numeric
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-- displayed name : U_Q
+- displayed_name: U_Q
   long_name: <full “human readable” name>
   description:
   type: numeric
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-- displayed name : U_F
+- displayed_name: U_F
   long_name: <full “human readable” name>
   description:
   type: numeric
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-- displayed name : Method
+- displayed_name: Method
   long_name: <full “human readable” name>
   description:
   type: character
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-- displayed name : sigma_mum
+- displayed_name: sigma_mum
   long_name: <full “human readable” name>
   description:
   type: numeric
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-- displayed name : S
+- displayed_name: S
   long_name: <full “human readable” name>
   description:
   type: numeric
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-Missing data codes:NA
+Missing data codes: NA
 
 Additional information:
 
@@ -1162,45 +1161,45 @@ Filename: meta_cross-section-area_Grenoble-Campus.csv
 
 Path: to
 
-Description: 
+Description: aaa
 
 Column information:
 
-- displayed name : Date
+- displayed_name: Date
   long_name: <full “human readable” name>
   description:
   type: Date
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-- displayed name : X_cell_size_m
+- displayed_name: X_cell_size_m
   long_name: <full “human readable” name>
   description:
   type: numeric
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-- displayed name : Y_cell_size_m
+- displayed_name: Y_cell_size_m
   long_name: <full “human readable” name>
   description:
   type: numeric
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-- displayed name : N_cells
+- displayed_name: N_cells
   long_name: <full “human readable” name>
   description:
   type: integer
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-- displayed name : Area_m2
+- displayed_name: Area_m2
   long_name: <full “human readable” name>
   description:
   type: numeric
   unit: <if applicable>
   allowed_values: <list of possible values>
 
-Missing data codes:NA
+Missing data codes: NA
 
 Additional information:

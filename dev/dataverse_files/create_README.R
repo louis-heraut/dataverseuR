@@ -1,16 +1,10 @@
 
+README = readLines("README_template_en.txt")
+
 nchar_line = 80
-today = Sys.Date()
+TODAY = Sys.Date()
 
-header = paste0(
-r"( ___  ___    _    ___   __  __  ___ 
-| _ \| __|  /_\  |   \ |  \/  || __|
-|   /| _|  / _ \ | |) || |\/| || _|   RDG x RiverLy README File Template
-|_|_\|___|/_/ \_\|___/ |_|  |_||___|  English - Version: 1 (2025-12-15)
-
-This README file was automatically generated on )",
-Sys.Date(), " by Louis Héraut.
-Last update: ", Sys.Date() , ".")
+README = gsub("[{]TODAY[}]", TODAY, README)
 
 
 
@@ -23,18 +17,55 @@ RDG_PUBLICATION = "Marggraf, Jessica (in prep.), Evaluation of Delft Bottle and 
 
 
 
-cut_line = function (line_title, line_content, nchar_line) {
-    line = paste0(line_title, ": ", line_content)
-    if (nchar(line) > nchar_line) {
-        line_content = paste0(paste0("  ",
-                                     strwrap(line_content,
-                                             width=nchar_line-2)),
-                              collapse="\n")
-        line = paste0(line_title, ": >\n",
-                      line_content)
+
+cut_line = function (line_title, line_content, indent=0, nchar_line=80) {
+    if (nchar(line_title) > 0) {
+        if (grepl("[-]", line_title)) {
+            line_title = paste0(strrep(" ", indent), "- ")
+        } else {
+            line_title = paste0(strrep(" ", indent), line_title, ": ")
+        }
     }
-    return (line)
+
+    result = paste0(line_title, line_content) 
+    if (nchar(result) > nchar_line) {
+        line_content = paste0(paste0(strrep(" ", indent), "  ",
+                                     strwrap(line_content,
+                                             width=nchar_line-2-indent)),
+                              collapse="\n")
+        result = paste0(line_title, ">\n",
+                        line_content) 
+    }
+    return (result)
 }
+
+
+format_yml = function (line_title, line_content, indent=0, nchar_line=80) {
+
+    n_title = length(line_title)
+    n_content = length(line_content)
+
+    if (n_title == 1 & n_content == 1) {
+        result = cut_line(line_title, line_content, indent, nchar_line)
+    } else if (n_title == 1 & n_content > 1) {
+        result = paste0(strrep(" ", indent), line_title, ": ")
+        for (i in 1:n_content) {
+            l_content = line_content[i]
+            l_content = cut_line("- ", l_content, indent+2, nchar_line)
+            result = paste0(result, "\n", l_content)
+        }
+    } else if (n_title > 1 & n_title == n_content) {
+        result = paste0(mapply(cut_line, line_title,
+                               line_content, indent, nchar_line),
+                        collapse="\n")
+    } else {
+        stop()
+    }
+    
+    return (result)
+}
+
+
 
 get_info_dir = function(path) {
     paths = list.files(path,
@@ -55,83 +86,31 @@ get_info_dir = function(path) {
 }
 
 
-section = "# GENERAL INFORMATION __________________________________________________________"
+title = format_yml("Dataset title", RDG_TITLE, 0, nchar_line)
+README = gsub("[{]TITLE[}]", title, README)
 
-title = cut_line("Dataset title", RDG_TITLE, nchar_line)
-doi = paste0("DOI: ", RDG_DOI)
-citation = cut_line("Citation", RDG_CITATION, nchar_line)
+doi = format_yml("DOI", RDG_DOI, 0, nchar_line)
+README = gsub("[{]DOI[}]", doi, README)
 
-if (length(RDG_CONTACT_EMAIL) == 1) {
-    email = paste0("Contact email: ", RDG_CONTACT_EMAIL)
-} else {
-    email = paste0("Contact email:\n",
-                   paste0(paste0("  - ", RDG_CONTACT_EMAIL),
-                          collapse="\n"))
-}
+citation = format_yml("Citation", RDG_CITATION, 0, nchar_line)
+README = gsub("[{]CITATION[}]", citation, README)
 
-# if more than one
-publication = cut_line("Related publication", RDG_PUBLICATION, nchar_line)
+email = format_yml("Contact email", RDG_CONTACT_EMAIL,
+                   0, nchar_line)
+README = gsub("[{]EMAIL[}]", email, README)
 
-content = paste(title,
-                doi,
-                citation,
-                email,
-                publication,
-                "<Remove or add any section if applicable>", 
-                sep="\n\n")
-    
-general_info =
-    paste0(section, "\n", content)
+publication = format_yml("Related publication",
+                         RDG_PUBLICATION,
+                         0, nchar_line)
+README = gsub("[{]PUBLICATION[}]", publication, README)
+
+tree = capture.output(fs::dir_tree(RDG_datadir))
+# TREE[1] = "."
+tree = c(tree, get_info_dir(RDG_datadir))
+tree = paste0(tree, collapse="\n")
+README = gsub("[{]TREE[}]", tree, README)
 
 
-
-methodo_info =
-    "# METHODOLOGICAL INFORMATION ___________________________________________________
-## Environmental/experimental condition ________________________________________
-
-## Description of sources and methods used to collect and generate data ________
-# <If applicable, describe standards, calibration information, facility
-# instruments, etc.>
-
-## Methods for processing the data _____________________________________________
-# <If applicable, describe how submitted data were processed and include details
-# that may be important for data reuse or replication. Add comments to explain
-# each step taken. For example, include data cleaning and analysis methods; code
-# and/or algorithms, de-identification procedures for sensitive data human
-# subjects or endangered species data.>
- 
-## Quality-assurance procedures performed on the data __________________________
-
-## Other contextual information ________________________________________________
-# <Any information that you consider important for the evaluation of the
-# dataset’s quality and reuse thereof: for example, information about the
-# software required to interpret the data. If applicable and not covered above,
-# include full name and version of software, and any necessary packages or
-# libraries needed to read and interpret the data, *e.g.* to run scripts.>"
-
-
-section = 
-"# DATA & FILE OVERVIEW _________________________________________________________
-## File hierarchy convention ___________________________________________________"
-
-
-content = capture.output(fs::dir_tree(RDG_datadir))
-# content[1] = "."
-content = c(content, get_info_dir(RDG_datadir))
-content = paste0(content, collapse="\n")
-
-additional_info =
-    "## File naming convention ______________________________________________________
-
-
-## Additional information ______________________________________________________"
-    
-content = paste0(content, "\n\n", additional_info)
-data_overview = paste0(section, "\n", content)
-
-
-
-section = "# DATA-SPECIFIC INFORMATION ____________________________________________________"
 
 Paths = list.files(RDG_datadir, pattern="*.csv", full.names=TRUE) 
 nPaths = length(Paths)
@@ -141,6 +120,7 @@ data_info = c()
 for (i in 1:nPaths) {
     path = Paths[i]
     data = ASHE::read_tibble(path)
+    RDG_FILE_DESCRIPTION = "aaa"
 
     subsection = paste0("## File ", i)
     n_underscore = max(nchar_line - nchar(subsection) - 1, 0)
@@ -150,10 +130,11 @@ for (i in 1:nPaths) {
 
     filename = paste0("Filename: ", basename(path))
     dirpath = paste0("Path: ", dirname(path))
-    description = paste0("Description: ")
+    description = format_yml("Description", RDG_FILE_DESCRIPTION,
+                             0, nchar_line)
 
     column_info_list =
-        paste0("- displayed name : ", names(data), "
+        paste0("- displayed_name: ", names(data), "
   long_name: <full “human readable” name>
   description:
   type: ", sapply(data, class), "
@@ -163,7 +144,7 @@ for (i in 1:nPaths) {
     column_info = paste0("Column information:\n\n",
                          column_info_list)
     
-    missing = paste0("Missing data codes:", "NA")
+    missing = paste0("Missing data codes: ", "NA")
     add_info = paste0("Additional information:")
     
     content = paste(filename,
@@ -180,15 +161,8 @@ for (i in 1:nPaths) {
 }
 
 data_info = paste0(data_info, collapse="\n\n")
-data_info = paste0(section, "\n", data_info)
 
-
-README = paste(header,
-               general_info,
-               methodo_info,
-               data_overview,
-               data_info,
-               sep="\n\n\n")
+README = gsub("[{]DATA[}]", data_info, README)
 
 
 writeLines(README, "README_tmp.txt")

@@ -336,6 +336,77 @@ get_datasets_metrics = function(dataset_DOI,
 }
 
 
+#' @title get_datasets_citation
+#' @description Retrieves formatted citations for a selection of datasets using their DOI.
+#' @param dataset_DOI A vector of character strings representing the DOI of datasets.
+#' @param BASE_URL A character string for the base URL of the Dataverse API.
+#' @param API_TOKEN A character string for the API token required to authenticate the request.
+#' @param verbose If `FALSE`, no processing information is displayed. Defaults to `TRUE`.
+#' @return A tibble containing dataset DOI and formatted citation.
+#' @examples
+#' \dontrun{
+#' dotenv::load_dot_env()
+#' dataset_DOI = c("doi:10.57745/LNBEGZ")
+#' get_datasets_citation(dataset_DOI)
+#' }
+#' @seealso
+#' - [Native API documentation](https://guides.dataverse.org/en/latest/api/native-api.html#citation-api)
+#' @md
+#' @export
+get_datasets_citation = function(dataset_DOI,
+                                 BASE_URL=Sys.getenv("BASE_URL"),
+                                 API_TOKEN=Sys.getenv("API_TOKEN"),
+                                 verbose=TRUE) {
+
+    results = dplyr::tibble()
+    nDOI = length(dataset_DOI)
+
+    for (i in 1:nDOI) {
+        dDOI = dataset_DOI[i]
+
+        query_url = paste0(
+            BASE_URL,
+            "/api/datasets/:persistentId/versions/:latest/citation?persistentId=",
+            utils::URLencode(dDOI, reserved=TRUE)
+        )
+
+        response = httr::GET(query_url,
+                             httr::add_headers("Accept"="application/json"))
+
+        if (httr::status_code(response) == 200) {
+            json_content = httr::content(response, "parsed",
+                                          simplifyVector=TRUE)
+            citation_value = json_content$data$message
+        } else {
+            warning(paste0(
+                dDOI, " - citation : ",
+                httr::status_code(response), " ",
+                httr::content(response, "text")
+            ))
+            citation_value = NA
+        }
+ 
+        results_tmp = dplyr::tibble(
+            dataset_DOI=dDOI,
+            citation=citation_value
+        )
+
+        results = dplyr::bind_rows(results, results_tmp)
+
+        if (verbose) {
+            message(paste0(
+                round(i / nDOI * 100, 1),
+                "% : citation for dataset ",
+                convert_DOI_to_URL(dDOI),
+                " retrieved"
+            ))
+        }
+    }
+
+    return (results)
+}
+
+
 
 #' @title create_datasets
 #' @description Create new datasets in a specified dataverse for a selection of metadata JSON file. See [generate_metadata_json()] in order to generate efficiently metadata JSON file.
@@ -378,8 +449,8 @@ create_datasets = function(dataverse,
                             dataverse, "/datasets")
         response = httr::POST(create_url,
                               httr::add_headers("X-Dataverse-key"=API_TOKEN),
-                              body = mjson,
-                              encode = "json") 
+                              body=mjson,
+                              encode="json") 
 
         if (httr::status_code(response) != 201) {
             stop(paste0(httr::status_code(response), " ",
@@ -490,6 +561,31 @@ move_datasets = function(dataset_DOI,
 }
 
 
+get_datasets_metadata_call = function(dataset_DOI,
+                                      BASE_URL=Sys.getenv("BASE_URL"),
+                                      API_TOKEN=Sys.getenv("API_TOKEN")) {
+
+
+    api_url = paste0(BASE_URL, "/api/datasets/:persistentId/?persistentId=", dataset_DOI)
+    response = httr::GET(api_url, httr::add_headers("X-Dataverse-key"=API_TOKEN))
+    
+    if (httr::status_code(response) != 200) {
+        stop(paste0(httr::status_code(response), " ",
+                    httr::content(response, "text")))
+    }
+
+    response_content = httr::content(response, as="text",
+                                     encoding="UTF-8")
+    dataset = jsonlite::fromJSON(response_content,
+                                 simplifyDataFrame=FALSE,
+                                 simplifyVector=TRUE)
+    metadata_json = dataset$data[c("metadataLanguage",
+                                   "latestVersion")]
+
+    return (metadata_json)
+}
+
+
 #' @title get_datasets_metadata
 #' @description Retrieves metadata for a selection of dataset. See [convert_metadata_to_yml()] in order to convert metadata extracted by this function to R parameterisation file.
 #' @param dataset_DOI A vector of character string representing the DOI of datasets that will be process.
@@ -526,21 +622,11 @@ get_datasets_metadata = function(dataset_DOI,
         dDOI = dataset_DOI[i]
         mpath = metadata_json_path[i]
 
-        api_url = paste0(BASE_URL, "/api/datasets/:persistentId/?persistentId=", dDOI)
-        response = httr::GET(api_url, httr::add_headers("X-Dataverse-key"=API_TOKEN))
-        
-        if (httr::status_code(response) != 200) {
-            stop(paste0(httr::status_code(response), " ",
-                        httr::content(response, "text")))
-        }
+        metadata_json =
+            get_datasets_metadata_call(dDOI,
+                                       BASE_URL=BASE_URL,
+                                       API_TOKEN=API_TOKEN)
 
-        response_content = httr::content(response, as="text",
-                                         encoding="UTF-8")
-        dataset = jsonlite::fromJSON(response_content,
-                                     simplifyDataFrame=FALSE,
-                                     simplifyVector=TRUE)
-        metadata_json = dataset$data[c("metadataLanguage",
-                                       "latestVersion")]
         # if (nDOI == 1) {
         #     metadata_list = metadata_json
         # } else {

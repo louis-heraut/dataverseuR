@@ -78,10 +78,13 @@ get_info_dir = function(path) {
 
 
 
-create_README = function (dataset_DOI,
-                          BASE_URL=Sys.getenv("BASE_URL"),
-                          API_TOKEN=Sys.getenv("API_TOKEN")) {
+create_datasets_README = function (dataset_DOI,
+                                   dirpath,
+                                   BASE_URL=Sys.getenv("BASE_URL"),
+                                   API_TOKEN=Sys.getenv("API_TOKEN")) {
 
+
+    
     metadata_json =
         get_datasets_metadata_call(dataset_DOI,
                                    BASE_URL=BASE_URL,
@@ -208,4 +211,176 @@ create_README = function (dataset_DOI,
 
 
 
-
+#' @title clean_datasets_files
+#' @description Clean and convert dataset files using ASHE::convert_tibble. Processes tabular files from specified datasets and saves cleaned versions in organized directories. By default, processes common tabular formats while excluding README and metadata files.
+#' @param dataset_DOI A vector of character strings of dataset DOI(s). Files from each dataset will be cleaned.
+#' @param dirpath A character string representing the base local directory path where original files are located and where cleaned files will be saved. Defaults to `"dataverse_files"`. Cleaned files will be saved in subdirectories named `{sanitized_doi}_cleaned`.
+#' @param include_extensions A vector of character strings representing file extensions to include for cleaning. Defaults to `c("csv", "txt", "tab", "tsv", "dat")`. Extensions should be provided without the dot.
+#' @param exclude_patterns A vector of character strings representing patterns to exclude from cleaning. Files matching any of these patterns (case-insensitive) will be skipped. Defaults to `c("readme", "license", "licence", "citation")`. Set to `NULL` to disable exclusion.
+#' @param output_extension A character string representing the output file extension. Defaults to `".csv"`. The original extension will be replaced by this one.
+#' @param overwrite A logical value indicating whether to overwrite existing files. Defaults to FALSE.
+#' @param verbose If `FALSE`, no processing informations are displayed. Defaults to `TRUE`.
+#' @return A list of results from ASHE::convert_tibble for each processed file, organized by dataset.
+#' @examples
+#' \dontrun{
+#' dotenv::load_dot_env()
+#' 
+#' # Clean tabular files from a single dataset (default behavior)
+#' dataset_DOI = "doi:10.57745/LNBEGZ"
+#' clean_datasets_files(dataset_DOI)
+#' # Processes: .csv, .txt, .tab, .tsv, .dat
+#' # Excludes: files containing "readme", "license", "citation"
+#' # Original files in: dataverse_files/doi_10-57745_LNBEGZ/
+#' # Cleaned files in: dataverse_files/doi_10-57745_LNBEGZ_cleaned/
+#' 
+#' # Clean files from multiple datasets
+#' dataset_DOI = c("doi:10.57745/LNBEGZ", "doi:10.57745/TGYZ8L")
+#' clean_datasets_files(dataset_DOI)
+#' 
+#' # Only clean CSV files
+#' clean_datasets_files(dataset_DOI, include_extensions="csv")
+#' 
+#' # Add custom exclusion patterns
+#' clean_datasets_files(dataset_DOI, 
+#'                      exclude_patterns=c("readme", "license", "metadata", "description"))
+#' 
+#' # Disable exclusions (process all matching extensions)
+#' clean_datasets_files(dataset_DOI, exclude_patterns=NULL)
+#' 
+#' # Custom extensions and output format
+#' clean_datasets_files(dataset_DOI, 
+#'                      include_extensions=c("csv", "tsv"),
+#'                      output_extension=".parquet")
+#' 
+#' # With custom directory
+#' clean_datasets_files(dataset_DOI, dirpath="my_data")
+#' }
+#' @seealso
+#' - [download_datasets_files()] for downloading dataset files
+#' - [ASHE::convert_tibble()] for the underlying conversion function
+#' - [dataverseuR GitHub documentation](https://github.com/louis-heraut/dataverseuR) <https://github.com/louis-heraut/dataverseuR>
+#' @md
+#' @export
+clean_datasets_files = function(dataset_DOI,
+                                dirpath="dataverse_files",
+                                include_extensions=c("csv", "txt", "tab"),
+                                exclude_patterns=c("tmp", "readme", "license",
+                                                   "licence", "citation"),
+                                output_extension=".csv",
+                                overwrite=FALSE,
+                                verbose=TRUE) {
+    
+    nDatasets = length(dataset_DOI)
+    all_results = list()
+    
+    for (i in 1:nDatasets) {
+        dDOI = dataset_DOI[i]
+        sanitized_doi = sanitize_doi(dDOI)
+        
+        # Définir les chemins d'entrée et de sortie
+        input_dir = file.path(dirpath, sanitized_doi)
+        output_dir = file.path(dirpath, paste0(sanitized_doi, "_cleaned"))
+        
+        # Vérifier que le dossier d'entrée existe
+        if (!dir.exists(input_dir)) {
+            warning(paste0("Input directory does not exist: ", input_dir, 
+                          ". Skipping dataset ", dDOI))
+            next
+        }
+        
+        # Créer le dossier de sortie
+        if (!dir.exists(output_dir)) {
+            dir.create(output_dir, recursive=TRUE)
+        }
+        
+        # Lister tous les fichiers du dossier
+        all_files = list.files(input_dir, full.names=TRUE)
+        
+        if (length(all_files) == 0) {
+            if (verbose) {
+                message(paste0("No files found in ", input_dir))
+            }
+            next
+        }
+        
+        # Filtrer par extension
+        file_extensions = tolower(tools::file_ext(all_files))
+        include_mask = file_extensions %in% tolower(include_extensions)
+        input_paths = all_files[include_mask]
+        
+        if (length(input_paths) == 0) {
+            if (verbose) {
+                message(paste0("No files with extensions [", 
+                              paste(include_extensions, collapse=", "),
+                              "] found in ", input_dir))
+            }
+            next
+        }
+        
+        # Filtrer par patterns d'exclusion (case-insensitive)
+        if (!is.null(exclude_patterns) && length(exclude_patterns) > 0) {
+            file_basenames = tolower(basename(input_paths))
+            exclude_mask = rep(FALSE, length(input_paths))
+            
+            for (pattern in exclude_patterns) {
+                exclude_mask = exclude_mask | grepl(tolower(pattern), file_basenames)
+            }
+            
+            excluded_files = input_paths[exclude_mask]
+            input_paths = input_paths[!exclude_mask]
+            
+            if (verbose && length(excluded_files) > 0) {
+                message(paste0("Excluded ", length(excluded_files), 
+                              " file(s) matching exclusion patterns: ",
+                              paste(basename(excluded_files), collapse=", ")))
+            }
+        }
+        
+        if (length(input_paths) == 0) {
+            if (verbose) {
+                message(paste0("No files remaining after applying exclusion filters for dataset ",
+                              convert_DOI_to_URL(dDOI)))
+            }
+            next
+        }
+        
+        # Créer les chemins de sortie
+        output_paths = file.path(output_dir, basename(input_paths))
+        
+        # Remplacer l'extension
+        if (!is.null(output_extension) && output_extension != "") {
+            output_paths = sub("\\.[^.]*$", output_extension, output_paths)
+        }
+        
+        if (verbose) {
+            message(paste0("Processing ", length(input_paths), " file(s) from dataset ",
+                          convert_DOI_to_URL(dDOI)))
+        }
+        
+        # Appliquer convert_tibble à tous les fichiers
+        results = mapply(convert_tibble,
+                         path=input_paths,
+                         output_path=output_paths,
+                         read_guess_sep=TRUE,
+                         read_guess_text_encoding=TRUE,
+                         overwrite=overwrite,
+                         SIMPLIFY=FALSE)
+        
+        all_results[[sanitized_doi]] = results
+        
+        if (verbose) {
+            message(paste0("Dataset ", convert_DOI_to_URL(dDOI), 
+                          " cleaned: ", length(input_paths), 
+                          " file(s) saved in ", output_dir))
+        }
+    }
+    
+    if (verbose && length(all_results) > 0) {
+        total_files = sum(sapply(all_results, length))
+        message(paste0("Cleaning complete: ", total_files, 
+                      " file(s) processed across ", 
+                      length(all_results), " dataset(s)"))
+    }
+    
+    invisible(all_results)
+}

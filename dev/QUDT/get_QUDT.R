@@ -6,6 +6,8 @@ qudt_ttl_file = "qudt-unit-3.1.9.ttl"
 qudt_csv_raw_file = gsub(".ttl", "_raw.csv", qudt_ttl_file)
 qudt_csv_file = gsub(".ttl", ".csv", qudt_ttl_file)
 
+qudt_properites_csv_file = gsub(".ttl", "_properites.csv", qudt_ttl_file)
+
 
 if (!file.exists(qudt_ttl_file)) {
     download.file(url=url,
@@ -15,26 +17,81 @@ if (!file.exists(qudt_ttl_file)) {
 }
 
 
-if (!file.exists(qudt_csv_raw_file)) {
-    qudt = rdf_parse(qudt_ttl_file, format="turtle")
-
-    query = "
+if (!file.exists(qudt_properites_csv_file)) {
+    # number of unit
+    query_count = "
 PREFIX qudt: <http://qudt.org/schema/qudt/>
-PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX dcterms: <http://purl.org/dc/terms/>
 
-SELECT ?unit ?label ?lang ?symbol ?ucum ?description
+SELECT (COUNT(DISTINCT ?unit) as ?count)
 WHERE {
   ?unit a qudt:Unit .
-  OPTIONAL { ?unit rdfs:label ?label . BIND(LANG(?label) AS ?lang) }
-  OPTIONAL { ?unit qudt:symbol ?symbol }
-  OPTIONAL { ?unit qudt:ucumCode ?ucum }
-  OPTIONAL { ?unit dcterms:description ?description }
 }
 "
-    units = rdf_query(qudt, query)
-    write.csv(units, qudt_csv_raw_file)
+    count_result = rdflib::rdf_query(qudt, query_count)
+    print(paste("Total units:", count_result$count))
+
+    # list of properties
+    query_properties = "
+PREFIX qudt: <http://qudt.org/schema/qudt/>
+
+SELECT DISTINCT ?property (COUNT(DISTINCT ?unit) as ?unitCount)
+WHERE {
+  ?unit a qudt:Unit .
+  ?unit ?property ?value .
 }
+GROUP BY ?property
+ORDER BY DESC(?unitCount)
+"
+    properties = rdflib::rdf_query(qudt, query_properties)
+    print(properties)
+    write.csv(properties, "", row.names=FALSE)
+}
+
+
+if (!file.exists(qudt_csv_raw_file)) {
+    qudt = rdflib::rdf_parse(qudt_ttl_file, format="turtle")
+
+#     query = "
+# PREFIX qudt: <http://qudt.org/schema/qudt/>
+# PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+# PREFIX dcterms: <http://purl.org/dc/terms/>
+
+# SELECT ?unit ?label ?lang ?symbol ?ucum ?description
+# WHERE {
+#   ?unit a qudt:Unit .
+#   OPTIONAL { ?unit rdfs:label ?label . BIND(LANG(?label) AS ?lang) }
+#   OPTIONAL { ?unit qudt:symbol ?symbol }
+#   OPTIONAL { ?unit qudt:ucumCode ?ucum }
+#   OPTIONAL { ?unit dcterms:description ?description }
+# }
+# LIMIT 10
+# "
+    # units = rdflib::rdf_query(qudt, query)
+#     write.csv(units, qudt_csv_raw_file)
+
+#     query_all = "
+# PREFIX qudt: <http://qudt.org/schema/qudt/>
+# PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+# PREFIX dcterms: <http://purl.org/dc/terms/>
+
+# SELECT DISTINCT ?unit ?property ?value
+# WHERE {
+#   ?unit a qudt:Unit .
+#   ?unit ?property ?value .
+#   FILTER (!isBlank(?value))  # Optional: exclude blank nodes
+# }
+# ORDER BY ?unit ?property
+# LIMIT 10
+# "
+#     units_all = rdflib::rdf_query(qudt, query_all)
+    #     write.csv(units_all, qudt_csv_raw_file, row.names=FALSE)
+}
+
+
+
+stop()
+
+
 
 
 if (!file.exists(qudt_csv_file)) {

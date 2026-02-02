@@ -357,42 +357,48 @@ get_datasets_citation = function(dataset_DOI,
                                  BASE_URL=Sys.getenv("BASE_URL"),
                                  API_TOKEN=Sys.getenv("API_TOKEN"),
                                  verbose=TRUE) {
-
     results = dplyr::tibble()
     nDOI = length(dataset_DOI)
-
+    
     for (i in 1:nDOI) {
         dDOI = dataset_DOI[i]
-
-        query_url = paste0(
-            BASE_URL,
-            "/api/datasets/:persistentId/versions/:latest/citation?persistentId=",
-            utils::URLencode(dDOI, reserved=TRUE)
-        )
-
-        response = httr::GET(query_url,
-                             httr::add_headers("Accept"="application/json"))
-
-        if (httr::status_code(response) == 200) {
-            json_content = httr::content(response, "parsed",
-                                          simplifyVector=TRUE)
-            citation_value = json_content$data$message
-        } else {
+        citation_value = NA
+        
+        # Essayer d'abord avec :latest (dataset publié)
+        for (version in c("latest", "draft")) {
+            query_url = paste0(
+                BASE_URL,
+                "/api/datasets/:persistentId/versions/:", version, 
+                "/citation?persistentId=",
+                utils::URLencode(dDOI, reserved=TRUE)
+            )
+            
+            response = httr::GET(query_url,
+                                 httr::add_headers("Accept"="application/json",
+                                                   "X-Dataverse-key"=API_TOKEN))
+            
+            if (httr::status_code(response) == 200) {
+                json_content = httr::content(response, "parsed",
+                                              simplifyVector=TRUE)
+                citation_value = json_content$data$message
+                break  # Citation trouvée, on sort de la boucle
+            }
+        }
+        
+        if (is.na(citation_value)) {
             warning(paste0(
-                dDOI, " - citation : ",
+                dDOI, " - citation non trouvée pour les versions latest et draft : ",
                 httr::status_code(response), " ",
                 httr::content(response, "text")
             ))
-            citation_value = NA
         }
- 
+        
         results_tmp = dplyr::tibble(
             dataset_DOI=dDOI,
             citation=citation_value
         )
-
         results = dplyr::bind_rows(results, results_tmp)
-
+        
         if (verbose) {
             message(paste0(
                 round(i / nDOI * 100, 1),
@@ -402,8 +408,7 @@ get_datasets_citation = function(dataset_DOI,
             ))
         }
     }
-
-    return (results)
+    return(results)
 }
 
 
@@ -626,13 +631,6 @@ get_datasets_metadata = function(dataset_DOI,
             get_datasets_metadata_call(dDOI,
                                        BASE_URL=BASE_URL,
                                        API_TOKEN=API_TOKEN)
-
-        # if (nDOI == 1) {
-        #     metadata_list = metadata_json
-        # } else {
-        #     metadata_list = append(metadata_list, list(metadata_json))
-        #     names(metadata_list)[i] = dDOI
-        # }
         if (file.exists(mpath) & !overwrite) {
             message (paste0("Metadata file already exists in ",
                             mpath))
@@ -648,7 +646,6 @@ get_datasets_metadata = function(dataset_DOI,
                                     " retrieved in ",
                                     mpath))
     }
-    # return (metadata_list)
 }
 
 
@@ -958,12 +955,111 @@ rename_datasets_files = function(file_DOI, new_name,
 }
 
 
+#' @title download_some_datasets_files
+#' @description Download specific files based on their DOI or ID. This function allows selective file downloads when you don't want to download all files from a dataset.
+#' @param file_DOI A vector of character strings representing the DOI (or ID if `is_DOI_ID=TRUE`) of files to be downloaded.
+#' @param save_paths A vector of character strings representing the local file paths where files should be saved. Must have the same length as `file_DOI`.
+#' @param is_DOI_ID If the dataset is not published yet, the DOI of the file does not exist, so `file_DOI` needs to be the file id of the database instead of a DOI. If `TRUE`, `file_DOI` is `id` from the results of [list_datasets_files()], otherwise if `FALSE`, `file_DOI` is actual file DOI. Defaults to `FALSE`.
+#' @param overwrite A logical value indicating whether to overwrite existing files. Defaults to `FALSE`.
+#' @param BASE_URL A character string for the base URL of the Dataverse API. By default, it uses the value from the environment variable `BASE_URL`.
+#' @param API_TOKEN A character string for the API token required to authenticate the request. By default, it uses the value from the environment variable `API_TOKEN`.
+#' @param verbose If `FALSE`, no processing informations are displayed. Defaults to `TRUE`.
+#' @return Invisible NULL. Files are downloaded to the specified paths.
+#' @examples
+#' \dontrun{
+#' dotenv::load_dot_env()
+#' 
+#' # Download a single file with published DOI
+#' file_DOI = "doi:10.57745/QB73Q0"
+#' download_some_datasets_files(file_DOI, save_paths="LICENCE.pdf")
+#' 
+#' # Download multiple specific files
+#' file_DOI = c("doi:10.57745/QB73Q0", "doi:10.57745/AUTRE")
+#' save_paths = c("LICENCE.pdf", "README.md")
+#' download_some_datasets_files(file_DOI, save_paths)
+#' 
+#' # Download files from a DRAFT dataset using file IDs
+#' dataset_DOI = "doi:10.57745/LNBEGZ"
+#' files = list_datasets_files(dataset_DOI)
+#' licence = dplyr::filter(files, grepl("LICENCE", label))
+#' download_some_datasets_files(file_DOI=licence$id,
+#'                              save_paths="LICENCE_Etalab.pdf",
+#'                              is_DOI_ID=TRUE)
+#' 
+#' # Download with custom directory structure
+#' file_DOI = "doi:10.57745/QB73Q0"
+#' download_some_datasets_files(file_DOI, save_paths="data/licences/LICENCE.pdf")
+#' }
+#' @seealso
+#' - [download_datasets_files()] for downloading all files from one or multiple datasets
+#' - [list_datasets_files()] for listing available files in a dataset
+#' - [dataverseuR GitHub documentation](https://github.com/louis-heraut/dataverseuR) <https://github.com/louis-heraut/dataverseuR>
+#' - [R example in context](https://github.com/louis-heraut/dataverseuR_toolbox/blob/main/DRYvER/modify_README.R) <https://github.com/louis-heraut/dataverseuR_toolbox/blob/main/DRYvER/modify_README.R>
+#' - [Native API documentation](https://guides.dataverse.org/en/5.3/api/native-api.html#accessing-downloading-files) <https://guides.dataverse.org/en/5.3/api/native-api.html#accessing-downloading-files>
+#' @md
+#' @export
+download_some_datasets_files = function(file_DOI,
+                                        save_paths,
+                                        is_DOI_ID=FALSE,
+                                        overwrite=FALSE,
+                                        BASE_URL=Sys.getenv("BASE_URL"),
+                                        API_TOKEN=Sys.getenv("API_TOKEN"),
+                                        verbose=TRUE) {
+    
+    nFiles = length(file_DOI)
+    nPaths = length(save_paths)
+    
+    # Vérifier la cohérence des longueurs
+    if (nFiles != nPaths) {
+        stop(paste0("file_DOI and save_paths must have the same length. ",
+                    "Got ", nFiles, " file(s) and ", nPaths, " path(s)."))
+    }
+    
+    for (i in 1:nFiles) {
+        fDOI = file_DOI[i]
+        save_path = save_paths[i]
+        
+        # Créer le dossier parent si nécessaire
+        save_dir = dirname(save_path)
+        if (!dir.exists(save_dir) && save_dir != ".") {
+            dir.create(save_dir, recursive=TRUE)
+        }
+        
+        # Construire l'URL de l'API
+        if (is_DOI_ID) {
+            api_url = paste0(BASE_URL, "/api/access/datafile/", fDOI)
+        } else {
+            api_url = paste0(BASE_URL, "/api/access/datafile/:persistentId/?persistentId=", fDOI)
+        }
+        
+        # Télécharger le fichier
+        response = httr::GET(api_url, 
+                             httr::add_headers("X-Dataverse-key"=API_TOKEN),
+                             httr::write_disk(save_path, overwrite=overwrite))
+        
+        if (httr::status_code(response) != 200) {
+            stop(paste0("Failed to download file ", 
+                        ifelse(is_DOI_ID, fDOI, convert_DOI_to_URL(fDOI)),
+                        ". Error: ", httr::status_code(response), " - ",
+                        httr::content(response, "text")))
+        }
+        
+        if (verbose) {
+            message(paste0(round(i/nFiles*100, 1), "% : file ", 
+                          ifelse(is_DOI_ID, fDOI, convert_DOI_to_URL(fDOI)), 
+                          " saved in ", save_path))
+        }
+    }
+    
+    return (NULL)
+}
+
+
 #' @title download_datasets_files
-#' @description Download files based on their DOI.
-#' @param file_DOI A vector of character string of the DOI of files to be processed.
-#' @param save_paths A vector of character string representing the local path where files should be saved.
-#' @param is_DOI_ID If the dataset is not published yet, the DOI of the file does not exist, so `file_DOI` needs to be the file id of the database instead of a DOI. So if `TRUE`, `file_DOI` is `id` from the results of [list_datasets_files()], elsewhere if `FALSE`, `file_DOI` is actual file DOI. Default, `FALSE`.
-#' @param overwrite A logical value indicating whether to overwrite an existing file. Defaults to FALSE.
+#' @description Download all files from one or multiple datasets. Files are automatically organized in subdirectories named after sanitized dataset DOIs.
+#' @param dataset_DOI A vector of character string of dataset DOI(s). All files from each dataset will be downloaded.
+#' @param save_dirpath A character string representing the base local directory path where files should be saved. Defaults to `"dataverse_files"`. Subdirectories will be created for each dataset based on sanitized dataset DOIs.
+#' @param overwrite A logical value indicating whether to overwrite existing files. Defaults to FALSE.
 #' @param BASE_URL A character string for the base URL of the Dataverse API. By default, it uses the value from the environment variable `BASE_URL`.
 #' @param API_TOKEN A character string for the API token required to authenticate the request. By default, it uses the value from the environment variable `API_TOKEN`.
 #' @param verbose If `FALSE`, no processing informations are displayed. Defaults to `TRUE`.
@@ -971,55 +1067,100 @@ rename_datasets_files = function(file_DOI, new_name,
 #' \dontrun{
 #' dotenv::load_dot_env()
 #' 
-#' # In general
-#' file_DOI = "doi:10.57745/QB73Q0"
-#' download_datasets_files(file_DOI, save_paths="LICENCE.pdf")
-#' 
-#' # A more complexe example when the dataset is a DRAFT
+#' # Download all files from a single dataset
 #' dataset_DOI = "doi:10.57745/LNBEGZ"
-#' files = list_datasets_files(dataset_DOI)
-#' licence = dplyr::filter(files, grepl("LICENCE", label))
-#' download_datasets_files(file_DOI=licence$id,
-#'                         save_paths="LICENCE_Etalab.pdf",
-#'                         is_DOI_ID=TRUE)
+#' download_datasets_files(dataset_DOI)
+#' # Files saved in: dataverse_files/doi_10-57745_LNBEGZ/
+#' 
+#' # Download all files from multiple datasets
+#' dataset_DOI = c("doi:10.57745/LNBEGZ", "doi:10.57745/TGYZ8L")
+#' download_datasets_files(dataset_DOI)
+#' # Files saved in: dataverse_files/doi_10-57745_LNBEGZ/ and dataverse_files/doi_10-57745_TGYZ8L/
+#' 
+#' # With custom save directory
+#' download_datasets_files(dataset_DOI, save_dirpath="my_files")
+#' 
+#' # Works with DRAFT datasets too
+#' dataset_DOI = "doi:10.57745/LNBEGZ"
+#' download_datasets_files(dataset_DOI)
 #' }
-#' @note
-#' *developpement* For a better user friendly experience, `save_paths` should be automatically detected if `NULL`. 
 #' @seealso
 #' - [dataverseuR GitHub documentation](https://github.com/louis-heraut/dataverseuR) <https://github.com/louis-heraut/dataverseuR>
 #' - [R example in context](https://github.com/louis-heraut/dataverseuR_toolbox/blob/main/DRYvER/modify_README.R) <https://github.com/louis-heraut/dataverseuR_toolbox/blob/main/DRYvER/modify_README.R>
 #' - [Native API documentation](https://guides.dataverse.org/en/5.3/api/native-api.html#accessing-downloading-files) <https://guides.dataverse.org/en/5.3/api/native-api.html#accessing-downloading-files>
 #' @md
 #' @export
-download_datasets_files = function(file_DOI,
-                                   save_paths,
-                                   is_DOI_ID=FALSE,
+download_datasets_files = function(dataset_DOI,
+                                   save_dirpath="dataverse_files",
                                    overwrite=FALSE,
                                    BASE_URL=Sys.getenv("BASE_URL"),
                                    API_TOKEN=Sys.getenv("API_TOKEN"),
                                    verbose=TRUE) {
-
-    nFiles = length(file_DOI)
     
-    for (i in 1:nFiles) {
-        fDOI = file_DOI[i]
-        save_path = save_paths[i]
-
-        if (is_DOI_ID) {
-            api_url = paste0(BASE_URL, "/api/access/datafile/", fDOI)
-        } else {
-            api_url = paste0(BASE_URL, "/api/access/datafile/:persistentId/?persistentId=", fDOI)
+    nDatasets = length(dataset_DOI)
+    total_files = 0
+    files_downloaded = 0
+    
+    # Compter le nombre total de fichiers pour la progression
+    if (verbose) {
+        for (dDOI in dataset_DOI) {
+            files_info = list_datasets_files(dDOI, BASE_URL, API_TOKEN)
+            total_files = total_files + nrow(files_info)
+        }
+    }
+    
+    # Télécharger les fichiers de chaque dataset
+    for (i in 1:nDatasets) {
+        dDOI = dataset_DOI[i]
+        
+        # Récupérer les métadonnées des fichiers
+        files_info = list_datasets_files(dDOI, BASE_URL, API_TOKEN)
+        
+        if (nrow(files_info) == 0) {
+            if (verbose) {
+                message(paste0("No files found in dataset ", convert_DOI_to_URL(dDOI)))
+            }
+            next
         }
         
-        response = httr::GET(api_url, 
-                             httr::add_headers("X-Dataverse-key"=API_TOKEN),
-                             httr::write_disk(save_path, overwrite=overwrite))
-        
-        if (httr::status_code(response) != 200) {
-            stop(paste0(httr::status_code(response), " ",
-                        httr::content(response, "text")))
+        # Créer le dossier pour ce dataset
+        sanitized_doi = sanitize_doi(dDOI)
+        dataset_dir = file.path(save_dirpath, sanitized_doi)
+        if (!dir.exists(dataset_dir)) {
+            dir.create(dataset_dir, recursive=TRUE)
         }
-        if (verbose) message(paste0(round(i/nFiles*100, 1), "% : file ", convert_DOI_to_URL(fDOI), " saved in ", save_path))
+        
+        # Télécharger chaque fichier du dataset
+        for (j in 1:nrow(files_info)) {
+            file_id = files_info$id[j]
+            file_label = files_info$label[j]
+            save_path = file.path(dataset_dir, file_label)
+            
+            api_url = paste0(BASE_URL, "/api/access/datafile/", file_id)
+            
+            response = httr::GET(api_url, 
+                                 httr::add_headers("X-Dataverse-key"=API_TOKEN),
+                                 httr::write_disk(save_path, overwrite=overwrite))
+            
+            if (httr::status_code(response) != 200) {
+                warning(paste0("Failed to download file ", file_label, 
+                              " (ID: ", file_id, ") from dataset ", dDOI,
+                              ". Error: ", httr::status_code(response), " - ",
+                              httr::content(response, "text")))
+            } else {
+                files_downloaded = files_downloaded + 1
+                if (verbose) {
+                    message(paste0(round(files_downloaded / total_files * 100, 1), 
+                                  "% : file ", file_label, 
+                                  " from dataset ", convert_DOI_to_URL(dDOI),
+                                  " saved in ", save_path))
+                }
+            }
+        }
+    }
+    
+    if (verbose) {
+        message(paste0("Download complete: ", files_downloaded, " file(s) downloaded"))
     }
 }
 

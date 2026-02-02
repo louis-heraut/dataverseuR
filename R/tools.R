@@ -38,3 +38,12 @@ check_dir = function (path) {
         dir.create(dirname(path), recursive=TRUE)
     }
 }
+
+
+# Fonction pour sanitizer les DOI en noms de dossiers
+sanitize_doi = function(doi) {
+    sanitized = gsub(":", "_", doi)
+    sanitized = gsub("/", "_", sanitized)
+    sanitized = gsub("\\.", "-", sanitized)
+    return (sanitized)
+}

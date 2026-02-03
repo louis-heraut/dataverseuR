@@ -337,10 +337,13 @@ get_datasets_metrics = function(dataset_DOI,
 
 
 #' @title get_datasets_citation
-#' @description Retrieves formatted citations for a selection of datasets using their DOI.
+#' @description Retrieves formatted citations for a selection of datasets using their DOI. Citations are cleaned from HTML entities and UNF codes.
 #' @param dataset_DOI A vector of character strings representing the DOI of datasets.
 #' @param BASE_URL A character string for the base URL of the Dataverse API.
 #' @param API_TOKEN A character string for the API token required to authenticate the request.
+#' @param clean_html If `TRUE`, decodes HTML entities (e.g., &eacute; to é). Defaults to `TRUE`.
+#' @param remove_unf If `TRUE`, removes the UNF code at the end of citations. Defaults to `TRUE`.
+#' @param replace_draft_version If `TRUE`, replaces "DRAFT VERSION" with "V1". Defaults to `TRUE`.
 #' @param verbose If `FALSE`, no processing information is displayed. Defaults to `TRUE`.
 #' @return A tibble containing dataset DOI and formatted citation.
 #' @examples
@@ -348,6 +351,12 @@ get_datasets_metrics = function(dataset_DOI,
 #' dotenv::load_dot_env()
 #' dataset_DOI = c("doi:10.57745/LNBEGZ")
 #' get_datasets_citation(dataset_DOI)
+#' 
+#' # Keep original DRAFT VERSION
+#' get_datasets_citation(dataset_DOI, replace_draft_version=FALSE)
+#' 
+#' # Keep HTML entities and UNF code
+#' get_datasets_citation(dataset_DOI, clean_html=FALSE, remove_unf=FALSE)
 #' }
 #' @seealso
 #' - [Native API documentation](https://guides.dataverse.org/en/latest/api/native-api.html#citation-api)
@@ -356,6 +365,9 @@ get_datasets_metrics = function(dataset_DOI,
 get_datasets_citation = function(dataset_DOI,
                                  BASE_URL=Sys.getenv("BASE_URL"),
                                  API_TOKEN=Sys.getenv("API_TOKEN"),
+                                 clean_html=TRUE,
+                                 remove_unf=TRUE,
+                                 replace_draft_version=FALSE,
                                  verbose=TRUE) {
     results = dplyr::tibble()
     nDOI = length(dataset_DOI)
@@ -391,6 +403,31 @@ get_datasets_citation = function(dataset_DOI,
                 httr::status_code(response), " ",
                 httr::content(response, "text")
             ))
+        } else {
+            # Nettoyer la citation
+            if (clean_html) {
+                # Décoder les entités HTML
+                citation_value = xml2::xml_text(xml2::read_html(
+                    paste0("<p>", citation_value, "</p>")
+                ))
+            }
+            
+            if (remove_unf) {
+                # Supprimer le code UNF et tout ce qui suit
+                # Pattern: , UNF:6:... [fileUNF] à la fin
+                citation_value = sub(",?\\s*UNF:[^\\[]*\\[fileUNF\\]\\s*$", "", citation_value)
+                # Aussi supprimer juste le UNF code s'il apparaît autrement
+                citation_value = sub(",?\\s*UNF:[^,]*$", "", citation_value)
+            }
+            
+            if (replace_draft_version) {
+                citation_value = gsub("DRAFT VERSION", "V1",
+                                      citation_value)
+            }
+            
+            # Nettoyer les espaces multiples et trim
+            citation_value = gsub("\\s+", " ", citation_value)
+            citation_value = trimws(citation_value)
         }
         
         results_tmp = dplyr::tibble(
@@ -410,7 +447,6 @@ get_datasets_citation = function(dataset_DOI,
     }
     return(results)
 }
-
 
 
 #' @title create_datasets
@@ -1058,7 +1094,7 @@ download_some_datasets_files = function(file_DOI,
 #' @title download_datasets_files
 #' @description Download all files from one or multiple datasets. Files are automatically organized in subdirectories named after sanitized dataset DOIs.
 #' @param dataset_DOI A vector of character string of dataset DOI(s). All files from each dataset will be downloaded.
-#' @param save_dirpath A character string representing the base local directory path where files should be saved. Defaults to `"dataverse_files"`. Subdirectories will be created for each dataset based on sanitized dataset DOIs.
+#' @param dirpath A character string representing the base local directory path where files should be saved. Defaults to `"dataverse_files"`. Subdirectories will be created for each dataset based on sanitized dataset DOIs.
 #' @param overwrite A logical value indicating whether to overwrite existing files. Defaults to FALSE.
 #' @param BASE_URL A character string for the base URL of the Dataverse API. By default, it uses the value from the environment variable `BASE_URL`.
 #' @param API_TOKEN A character string for the API token required to authenticate the request. By default, it uses the value from the environment variable `API_TOKEN`.
@@ -1078,7 +1114,7 @@ download_some_datasets_files = function(file_DOI,
 #' # Files saved in: dataverse_files/doi_10-57745_LNBEGZ/ and dataverse_files/doi_10-57745_TGYZ8L/
 #' 
 #' # With custom save directory
-#' download_datasets_files(dataset_DOI, save_dirpath="my_files")
+#' download_datasets_files(dataset_DOI, dirpath="my_files")
 #' 
 #' # Works with DRAFT datasets too
 #' dataset_DOI = "doi:10.57745/LNBEGZ"
@@ -1091,7 +1127,7 @@ download_some_datasets_files = function(file_DOI,
 #' @md
 #' @export
 download_datasets_files = function(dataset_DOI,
-                                   save_dirpath="dataverse_files",
+                                   dirpath="dataverse_files",
                                    overwrite=FALSE,
                                    BASE_URL=Sys.getenv("BASE_URL"),
                                    API_TOKEN=Sys.getenv("API_TOKEN"),
@@ -1108,7 +1144,7 @@ download_datasets_files = function(dataset_DOI,
             total_files = total_files + nrow(files_info)
         }
     }
-    
+
     # Télécharger les fichiers de chaque dataset
     for (i in 1:nDatasets) {
         dDOI = dataset_DOI[i]
@@ -1125,11 +1161,11 @@ download_datasets_files = function(dataset_DOI,
         
         # Créer le dossier pour ce dataset
         sanitized_doi = sanitize_doi(dDOI)
-        dataset_dir = file.path(save_dirpath, sanitized_doi)
+        dataset_dir = file.path(dirpath, sanitized_doi)
         if (!dir.exists(dataset_dir)) {
             dir.create(dataset_dir, recursive=TRUE)
         }
-        
+
         # Télécharger chaque fichier du dataset
         for (j in 1:nrow(files_info)) {
             file_id = files_info$id[j]

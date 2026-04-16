@@ -75,7 +75,7 @@ format_full_metadata = function (file="rechercheDataGouv-full-metadata.json",
 #' @param overwrite A logical value indicating whether to overwrite an existing metadata template. Defaults to FALSE.
 #' @return The function returns the path to the created .env file.
 #' @seealso
-#' - [dataverseuR GitHub documentation](https://github.com/louis-heraut/dataverseuR) <https://github.com/louis-heraut/dataverseuR>
+#' - [dataverseuR GitHub documentation](https://github.com/lou-heraut/dataverseuR) <https://github.com/lou-heraut/dataverseuR>
 #' @examples
 #' \dontrun{
 #' # Create the metadata template to the working directory
@@ -320,7 +320,7 @@ format_metadata_tbl = function (metadata_tbl) {
 #' metadata_json_path = generate_metadata_json("metadata.yml")
 #' }
 #' @seealso
-#' - [dataverseuR GitHub documentation](https://github.com/louis-heraut/dataverseuR) <https://github.com/louis-heraut/dataverseuR>
+#' - [dataverseuR GitHub documentation](https://github.com/lou-heraut/dataverseuR) <https://github.com/lou-heraut/dataverseuR>
 #' @md
 #' @export
 generate_metadata_json = function (metadata_yml_path,
@@ -495,7 +495,7 @@ convert_metadata_to_yml_hide = function(metadata_json) {
 #' metadata_yml_path = convert_metadata_to_yml("metadata.json")
 #' }
 #' @seealso
-#' - [dataverseuR GitHub documentation](https://github.com/louis-heraut/dataverseuR) <https://github.com/louis-heraut/dataverseuR>
+#' - [dataverseuR GitHub documentation](https://github.com/lou-heraut/dataverseuR) <https://github.com/lou-heraut/dataverseuR>
 #' @md
 #' @export
 convert_metadata_to_yml = function (metadata_json_path,

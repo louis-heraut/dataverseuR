@@ -36,6 +36,6 @@ metadata_json_path = generate_metadata_json("metadata.yml")
 }
 \seealso{
 \itemize{
-\item \href{https://github.com/louis-heraut/dataverseuR}{dataverseuR GitHub documentation} \url{https://github.com/louis-heraut/dataverseuR}
+\item \href{https://github.com/lou-heraut/dataverseuR}{dataverseuR GitHub documentation} \url{https://github.com/lou-heraut/dataverseuR}
 }
 }

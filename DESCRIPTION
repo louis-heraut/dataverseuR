@@ -22,10 +22,11 @@ Imports:
     httr,
     jsonlite,
     yaml,
+    xml2,
     ASHE
 Depends: ASHE
 Remotes:
-    louis-heraut/ASHE
+    lou-heraut/ASHE
 RoxygenNote: 7.3.2
 Roxygen: list(markdown = TRUE)
-URL: https://github.com/louis-heraut/dataverseuR
+URL: https://github.com/lou-heraut/dataverseuR

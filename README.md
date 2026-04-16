@@ -1,9 +1,9 @@
-# dataverseuR <img src="https://github.com/louis-heraut/dataverseuR/blob/e50a7ce8e819978059d891105334d19b61d813d4/man/figures/logo_dataverseuR_small.png" align="right" width=160 height=160 alt=""/>
+# dataverseuR <img src="https://github.com/lou-heraut/dataverseuR/blob/e50a7ce8e819978059d891105334d19b61d813d4/man/figures/logo_dataverseuR_small.png" align="right" width=160 height=160 alt=""/>
 
 <!-- badges: start -->
-[![R-CMD-check](https://github.com/louis-heraut/dataverseuR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/louis-heraut/dataverseuR/actions/workflows/R-CMD-check.yaml)
+[![R-CMD-check](https://github.com/lou-heraut/dataverseuR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/lou-heraut/dataverseuR/actions/workflows/R-CMD-check.yaml)
 [![Lifecycle: stable](https://img.shields.io/badge/lifecycle-stable-green)](https://lifecycle.r-lib.org/articles/stages.html)
-![](https://img.shields.io/github/last-commit/louis-heraut/dataverseuR)
+![](https://img.shields.io/github/last-commit/lou-heraut/dataverseuR)
 [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg)](code_of_conduct.md) 
 <!-- badges: end -->
 
@@ -15,7 +15,7 @@ This project was carried out for the National Research Institute for Agriculture
 ## Installation
 For the latest development version:
 ``` r
-remotes::install_github("louis-heraut/dataverseuR")
+remotes::install_github("lou-heraut/dataverseuR")
 ```
 
 
@@ -162,7 +162,7 @@ title: Hydrological projections of discharge for the model {MODEL}
 ```
 
 Every piece of metadata must be clearly identified as such. Therefore:
-- The metadata name is precise and non-negotiable (you need to start from an [example](https://github.com/louis-heraut/dataverseuR_toolbox) or download metadata from Dataverse using the function `get_datasets_metadata()` to find a metadata name; see [Metadata Importation](#metadata-importation)).
+- The metadata name is precise and non-negotiable (you need to start from an [example](https://github.com/lou-heraut/dataverseuR_toolbox) or download metadata from Dataverse using the function `get_datasets_metadata()` to find a metadata name; see [Metadata Importation](#metadata-importation)).
 - Some metadata can be duplicated, such as author names, so you need to use an indented dash list format (see below).
 
 This way, you can create a YAML file that gathers all these metadata, like this:
@@ -172,7 +172,7 @@ This way, you can create a YAML file that gathers all these metadata, like this:
 # ░█▀▄░█▀▀▄░▀█▀░█▀▀▄░▄░░░▄░█▀▀░█▀▀▄░█▀▀░█▀▀░█░▒█░▒█▀▀▄
 # ░█░█░█▄▄█░░█░░█▄▄█░░█▄█░░█▀▀░█▄▄▀░▀▀▄░█▀▀░█░▒█░▒█▄▄▀
 # ░▀▀░░▀░░▀░░▀░░▀░░▀░░░▀░░░▀▀▀░▀░▀▀░▀▀▀░▀▀▀░░▀▀▀░▒█░▒█ _______________
-# GitHub : https://github.com/louis-heraut/dataverseuR
+# GitHub : https://github.com/lou-heraut/dataverseuR
 # Author : Héraut, Louis
 # Affiliation : INRAE, UR RiverLy, Villeurbanne, France
 # ORCID : 0009-0006-4372-0923
@@ -314,13 +314,13 @@ metadata_yml_path = convert_metadata_to_yml(metadata_json_path)
 
 
 ### Workflow Examples
-A dedicated repository provides use cases in [dataverseuR_toolbox](https://github.com/louis-heraut/dataverseuR_toolbox).  
-If you need help creating a personal workflow and cannot find what you need in these examples, [open an issue](https://github.com/louis-heraut/dataverseuR_toolbox/issues).
+A dedicated repository provides use cases in [dataverseuR_toolbox](https://github.com/lou-heraut/dataverseuR_toolbox).  
+If you need help creating a personal workflow and cannot find what you need in these examples, [open an issue](https://github.com/lou-heraut/dataverseuR_toolbox/issues).
 
 
 ## FAQ
 📬 — **I would like an upgrade / I have a question / Need to reach me**  
-Feel free to [open an issue](https://github.com/louis-heraut/dataverseuR/issues) ! I’m actively maintaining this project, so I’ll do my best to respond quickly.  
+Feel free to [open an issue](https://github.com/lou-heraut/dataverseuR/issues) ! I’m actively maintaining this project, so I’ll do my best to respond quickly.  
 I’m also reachable on my institutional INRAE [email](mailto:louis.heraut@inrae.fr?subject=%5BdataverseuR%5D) for more in-depth discussions.
 
 🛠️ — **I found a bug**  
@@ -329,9 +329,9 @@ I’m also reachable on my institutional INRAE [email](mailto:louis.heraut@inrae
 - *Best Solution* : Fix the issue and submit a pull request. This is the fastest way to get a bug fixed.
 
 🚀 — **Want to contribute ?**  
-If you don't know where to start, [open an issue](https://github.com/louis-heraut/dataverseuR/issues).
+If you don't know where to start, [open an issue](https://github.com/lou-heraut/dataverseuR/issues).
 
-If you want to try by yourself, why not start by also [opening an issue](https://github.com/louis-heraut/dataverseuR/issues) to let me know you're working on something ? Then:
+If you want to try by yourself, why not start by also [opening an issue](https://github.com/lou-heraut/dataverseuR/issues) to let me know you're working on something ? Then:
 
 - Fork this repository  
 - Clone your fork locally and make changes (or even better, create a new branch for your modifications)

@@ -23,7 +23,7 @@
 #' @title dataverseuR
 #' @description A dataverse API wraper to enhance deposit procedure with user-friendly YAML parameterization files.
 #' 
-#' @details See [dataverseuR GitHub documentation](https://github.com/louis-heraut/dataverseuR) <https://github.com/louis-heraut/dataverseuR> for an easier approach.
+#' @details See [dataverseuR GitHub documentation](https://github.com/lou-heraut/dataverseuR) <https://github.com/lou-heraut/dataverseuR> for an easier approach.
 #'
 #' @author
 #' Main Developer and Maintainer

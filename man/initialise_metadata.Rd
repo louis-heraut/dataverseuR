@@ -27,6 +27,6 @@ initialise_metadata("path/to/metadata_project.yml")
 }
 \seealso{
 \itemize{
-\item \href{https://github.com/louis-heraut/dataverseuR}{dataverseuR GitHub documentation} \url{https://github.com/louis-heraut/dataverseuR}
+\item \href{https://github.com/lou-heraut/dataverseuR}{dataverseuR GitHub documentation} \url{https://github.com/lou-heraut/dataverseuR}
 }
 }

@@ -26,7 +26,7 @@
 #' @param verbose If `FALSE`, no processing informations are displayed. Defaults to `TRUE`.
 #' @return The function returns the path to the created .env file.
 #' @seealso
-#' - [dataverseuR GitHub documentation](https://github.com/louis-heraut/dataverseuR) <https://github.com/louis-heraut/dataverseuR>
+#' - [dataverseuR GitHub documentation](https://github.com/lou-heraut/dataverseuR) <https://github.com/lou-heraut/dataverseuR>
 #' @examples
 #' \dontrun{
 #' # Create the .env file to the working directory
@@ -105,7 +105,7 @@ convert_datasets_search_to_tibble = function (datasets_search) {
 #' @examples
 #' convert_DOI_to_URL("doi:10.57745/LNBEGZ")
 #' @seealso
-#' - [dataverseuR GitHub documentation](https://github.com/louis-heraut/dataverseuR) <https://github.com/louis-heraut/dataverseuR>
+#' - [dataverseuR GitHub documentation](https://github.com/lou-heraut/dataverseuR) <https://github.com/lou-heraut/dataverseuR>
 #' @md
 #' @export
 convert_DOI_to_URL = function (DOI) {
@@ -158,8 +158,8 @@ convert_DOI_to_URL = function (DOI) {
 #'                            n_search=1000)
 #' }
 #' @seealso
-#' - [dataverseuR GitHub documentation](https://github.com/louis-heraut/dataverseuR) <https://github.com/louis-heraut/dataverseuR>
-#' - [R example in context](https://github.com/louis-heraut/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R) <https://github.com/louis-heraut/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R>
+#' - [dataverseuR GitHub documentation](https://github.com/lou-heraut/dataverseuR) <https://github.com/lou-heraut/dataverseuR>
+#' - [R example in context](https://github.com/lou-heraut/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R) <https://github.com/lou-heraut/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R>
 #' - [Search API documentation](https://guides.dataverse.org/en/5.3/api/search.html) <https://guides.dataverse.org/en/5.3/api/search.html>
 #' @md
 #' @export
@@ -217,8 +217,8 @@ search_datasets = function(query="*", publication_status="*",
 #' get_datasets_size(dataset_DOI)
 #' }
 #' @seealso
-#' - [dataverseuR GitHub documentation](https://github.com/louis-heraut/dataverseuR) <https://github.com/louis-heraut/dataverseuR>
-#' - [R example in context](https://github.com/louis-heraut/dataverseuR_toolbox/blob/main/RiverLy_HCERES_2025/script.R) <https://github.com/louis-heraut/dataverseuR_toolbox/blob/main/RiverLy_HCERES_2025/script.R>
+#' - [dataverseuR GitHub documentation](https://github.com/lou-heraut/dataverseuR) <https://github.com/lou-heraut/dataverseuR>
+#' - [R example in context](https://github.com/lou-heraut/dataverseuR_toolbox/blob/main/RiverLy_HCERES_2025/script.R) <https://github.com/lou-heraut/dataverseuR_toolbox/blob/main/RiverLy_HCERES_2025/script.R>
 #' - [Native API documentation](https://guides.dataverse.org/en/5.3/api/native-api.html#report-the-data-file-size-of-a-dataverse) <https://guides.dataverse.org/en/5.3/api/native-api.html#report-the-data-file-size-of-a-dataverse>
 #' @md
 #' @export
@@ -278,8 +278,8 @@ get_datasets_size = function(dataset_DOI,
 #' get_datasets_metrics(dataset_DOI)
 #' }
 #' @seealso
-#' - [dataverseuR GitHub documentation](https://github.com/louis-heraut/dataverseuR) <https://github.com/louis-heraut/dataverseuR>
-#' - [R example in context](https://github.com/louis-heraut/dataverseuR_toolbox/blob/main/RiverLy_HCERES_2025/script.R) <https://github.com/louis-heraut/dataverseuR_toolbox/blob/main/RiverLy_HCERES_2025/script.R>
+#' - [dataverseuR GitHub documentation](https://github.com/lou-heraut/dataverseuR) <https://github.com/lou-heraut/dataverseuR>
+#' - [R example in context](https://github.com/lou-heraut/dataverseuR_toolbox/blob/main/RiverLy_HCERES_2025/script.R) <https://github.com/lou-heraut/dataverseuR_toolbox/blob/main/RiverLy_HCERES_2025/script.R>
 #' - [Native API documentation](https://guides.dataverse.org/en/5.3/api/native-api.html#dataset-metrics) <https://guides.dataverse.org/en/5.3/api/native-api.html#dataset-metrics>
 #' @md
 #' @export
@@ -465,8 +465,8 @@ get_datasets_citation = function(dataset_DOI,
 #' create_datasets(dataverse, metadata_json_path)
 #' }
 #' @seealso
-#' - [dataverseuR GitHub documentation](https://github.com/louis-heraut/dataverseuR) <https://github.com/louis-heraut/dataverseuR>
-#' - [R example in context](https://github.com/louis-heraut/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R) <https://github.com/louis-heraut/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R>
+#' - [dataverseuR GitHub documentation](https://github.com/lou-heraut/dataverseuR) <https://github.com/lou-heraut/dataverseuR>
+#' - [R example in context](https://github.com/lou-heraut/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R) <https://github.com/lou-heraut/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R>
 #' - [Native API documentation](https://guides.dataverse.org/en/5.3/api/native-api.html#create-a-dataset-in-a-dataverse) <https://guides.dataverse.org/en/5.3/api/native-api.html#create-a-dataset-in-a-dataverse>
 #' @md
 #' @export
@@ -644,8 +644,8 @@ get_datasets_metadata_call = function(dataset_DOI,
 #' modify_datasets(dataset_DOI, metadata_json_path)
 #' }
 #' @seealso
-#' - [dataverseuR GitHub documentation](https://github.com/louis-heraut/dataverseuR) <https://github.com/louis-heraut/dataverseuR>
-#' - [R example in context](https://github.com/louis-heraut/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R) <https://github.com/louis-heraut/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R>
+#' - [dataverseuR GitHub documentation](https://github.com/lou-heraut/dataverseuR) <https://github.com/lou-heraut/dataverseuR>
+#' - [R example in context](https://github.com/lou-heraut/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R) <https://github.com/lou-heraut/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R>
 #' - [Native API documentation](https://guides.dataverse.org/en/5.3/api/native-api.html#get-json-representation-of-a-dataset) <https://guides.dataverse.org/en/5.3/api/native-api.html#get-json-representation-of-a-dataset>
 #' @md
 #' @export
@@ -703,8 +703,8 @@ get_datasets_metadata = function(dataset_DOI,
 #' modify_datasets("inrae", dataset_DOI, metadata_json_path)
 #' }
 #' @seealso
-#' - [dataverseuR GitHub documentation](https://github.com/louis-heraut/dataverseuR) <https://github.com/louis-heraut/dataverseuR>
-#' - [R example in context](https://github.com/louis-heraut/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R) <https://github.com/louis-heraut/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R>
+#' - [dataverseuR GitHub documentation](https://github.com/lou-heraut/dataverseuR) <https://github.com/lou-heraut/dataverseuR>
+#' - [R example in context](https://github.com/lou-heraut/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R) <https://github.com/lou-heraut/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R>
 #' - [Native API documentation](https://guides.dataverse.org/en/5.3/api/native-api.html#update-metadata-for-a-dataset) <https://guides.dataverse.org/en/5.3/api/native-api.html#update-metadata-for-a-dataset>
 #' @md
 #' @export
@@ -777,8 +777,8 @@ modify_datasets = function(dataverse,
 #' not_added = add_datasets_files(dataset_DOI, paths)
 #' }
 #' @seealso
-#' - [dataverseuR GitHub documentation](https://github.com/louis-heraut/dataverseuR) <https://github.com/louis-heraut/dataverseuR>
-#' - [R example in context](https://github.com/louis-heraut/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R) <https://github.com/louis-heraut/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R>
+#' - [dataverseuR GitHub documentation](https://github.com/lou-heraut/dataverseuR) <https://github.com/lou-heraut/dataverseuR>
+#' - [R example in context](https://github.com/lou-heraut/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R) <https://github.com/lou-heraut/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R>
 #' - [Native API documentation](https://guides.dataverse.org/en/5.3/api/native-api.html#add-a-file-to-a-dataset) <https://guides.dataverse.org/en/5.3/api/native-api.html#add-a-file-to-a-dataset>
 #' @md
 #' @export
@@ -877,8 +877,8 @@ add_datasets_files = function(dataset_DOI, file_paths,
 #' files = list_datasets_files(dataset_DOI)
 #' }
 #' @seealso
-#' - [dataverseuR GitHub documentation](https://github.com/louis-heraut/dataverseuR) <https://github.com/louis-heraut/dataverseuR>
-#' - [R example in context](https://github.com/louis-heraut/dataverseuR_toolbox/blob/main/DRYvER/modify_README.R) <https://github.com/louis-heraut/dataverseuR_toolbox/blob/main/DRYvER/modify_README.R>
+#' - [dataverseuR GitHub documentation](https://github.com/lou-heraut/dataverseuR) <https://github.com/lou-heraut/dataverseuR>
+#' - [R example in context](https://github.com/lou-heraut/dataverseuR_toolbox/blob/main/DRYvER/modify_README.R) <https://github.com/lou-heraut/dataverseuR_toolbox/blob/main/DRYvER/modify_README.R>
 #' -  [Native API documentation](https://guides.dataverse.org/en/5.3/api/native-api.html#list-files-in-a-dataset) <https://guides.dataverse.org/en/5.3/api/native-api.html#list-files-in-a-dataset>
 #' @md
 #' @export
@@ -950,8 +950,8 @@ list_datasets_files = function(dataset_DOI,
 #'                       is_DOI_ID=TRUE)
 #' }
 #' @seealso
-#' - [dataverseuR GitHub documentation](https://github.com/louis-heraut/dataverseuR) <https://github.com/louis-heraut/dataverseuR>
-#' - [R example in context](https://github.com/louis-heraut/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R) <https://github.com/louis-heraut/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R>
+#' - [dataverseuR GitHub documentation](https://github.com/lou-heraut/dataverseuR) <https://github.com/lou-heraut/dataverseuR>
+#' - [R example in context](https://github.com/lou-heraut/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R) <https://github.com/lou-heraut/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R>
 #' - [Native API documentation](https://guides.dataverse.org/en/5.3/api/native-api.html#updating-file-metadata) <https://guides.dataverse.org/en/5.3/api/native-api.html#updating-file-metadata>
 #' @md
 #' @export
@@ -1029,8 +1029,8 @@ rename_datasets_files = function(file_DOI, new_name,
 #' @seealso
 #' - [download_datasets_files()] for downloading all files from one or multiple datasets
 #' - [list_datasets_files()] for listing available files in a dataset
-#' - [dataverseuR GitHub documentation](https://github.com/louis-heraut/dataverseuR) <https://github.com/louis-heraut/dataverseuR>
-#' - [R example in context](https://github.com/louis-heraut/dataverseuR_toolbox/blob/main/DRYvER/modify_README.R) <https://github.com/louis-heraut/dataverseuR_toolbox/blob/main/DRYvER/modify_README.R>
+#' - [dataverseuR GitHub documentation](https://github.com/lou-heraut/dataverseuR) <https://github.com/lou-heraut/dataverseuR>
+#' - [R example in context](https://github.com/lou-heraut/dataverseuR_toolbox/blob/main/DRYvER/modify_README.R) <https://github.com/lou-heraut/dataverseuR_toolbox/blob/main/DRYvER/modify_README.R>
 #' - [Native API documentation](https://guides.dataverse.org/en/5.3/api/native-api.html#accessing-downloading-files) <https://guides.dataverse.org/en/5.3/api/native-api.html#accessing-downloading-files>
 #' @md
 #' @export
@@ -1121,8 +1121,8 @@ download_some_datasets_files = function(file_DOI,
 #' download_datasets_files(dataset_DOI)
 #' }
 #' @seealso
-#' - [dataverseuR GitHub documentation](https://github.com/louis-heraut/dataverseuR) <https://github.com/louis-heraut/dataverseuR>
-#' - [R example in context](https://github.com/louis-heraut/dataverseuR_toolbox/blob/main/DRYvER/modify_README.R) <https://github.com/louis-heraut/dataverseuR_toolbox/blob/main/DRYvER/modify_README.R>
+#' - [dataverseuR GitHub documentation](https://github.com/lou-heraut/dataverseuR) <https://github.com/lou-heraut/dataverseuR>
+#' - [R example in context](https://github.com/lou-heraut/dataverseuR_toolbox/blob/main/DRYvER/modify_README.R) <https://github.com/lou-heraut/dataverseuR_toolbox/blob/main/DRYvER/modify_README.R>
 #' - [Native API documentation](https://guides.dataverse.org/en/5.3/api/native-api.html#accessing-downloading-files) <https://guides.dataverse.org/en/5.3/api/native-api.html#accessing-downloading-files>
 #' @md
 #' @export
@@ -1224,8 +1224,8 @@ download_datasets_files = function(dataset_DOI,
 #'                       is_DOI_ID=TRUE)
 #' }
 #' @seealso
-#' - [dataverseuR GitHub documentation](https://github.com/louis-heraut/dataverseuR) <https://github.com/louis-heraut/dataverseuR>
-#' - [R example in context](https://github.com/louis-heraut/dataverseuR_toolbox/blob/main/DRYvER/modify_README.R) <https://github.com/louis-heraut/dataverseuR_toolbox/blob/main/DRYvER/modify_README.R>
+#' - [dataverseuR GitHub documentation](https://github.com/lou-heraut/dataverseuR) <https://github.com/lou-heraut/dataverseuR>
+#' - [R example in context](https://github.com/lou-heraut/dataverseuR_toolbox/blob/main/DRYvER/modify_README.R) <https://github.com/lou-heraut/dataverseuR_toolbox/blob/main/DRYvER/modify_README.R>
 #' - [Native API documentation](https://guides.dataverse.org/en/5.3/api/native-api.html#files) <https://guides.dataverse.org/en/5.3/api/native-api.html#files>
 #' @md
 #' @export
@@ -1271,8 +1271,8 @@ delete_datasets_files = function(file_DOI,
 #' delete_all_datasets_files(dataset_DOI)
 #' }
 #' @seealso
-#' - [dataverseuR GitHub documentation](https://github.com/louis-heraut/dataverseuR) <https://github.com/louis-heraut/dataverseuR>
-#' - [R example in context](https://github.com/louis-heraut/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R) <https://github.com/louis-heraut/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R>
+#' - [dataverseuR GitHub documentation](https://github.com/lou-heraut/dataverseuR) <https://github.com/lou-heraut/dataverseuR>
+#' - [R example in context](https://github.com/lou-heraut/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R) <https://github.com/lou-heraut/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R>
 #' - [Native API documentation](https://guides.dataverse.org/en/5.3/api/native-api.html#files) <https://guides.dataverse.org/en/5.3/api/native-api.html#files>
 #' @md
 #' @export
@@ -1335,8 +1335,8 @@ delete_all_datasets_files = function(dataset_DOI,
 #' publish_datasets(dataset_DOI)
 #' }
 #' @seealso
-#' - [dataverseuR GitHub documentation](https://github.com/louis-heraut/dataverseuR) <https://github.com/louis-heraut/dataverseuR>
-#' - [R example in context](https://github.com/louis-heraut/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R) <https://github.com/louis-heraut/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R>
+#' - [dataverseuR GitHub documentation](https://github.com/lou-heraut/dataverseuR) <https://github.com/lou-heraut/dataverseuR>
+#' - [R example in context](https://github.com/lou-heraut/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R) <https://github.com/lou-heraut/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R>
 #' - [Native API documentation](https://guides.dataverse.org/en/5.3/api/native-api.html#publish-a-dataset) <https://guides.dataverse.org/en/5.3/api/native-api.html#publish-a-dataset>
 #' @md
 #' @export
@@ -1377,8 +1377,8 @@ publish_datasets = function(dataset_DOI, type="major",
 #' delete_datasets(dataset_DOI)
 #' }
 #' @seealso
-#' - [dataverseuR GitHub documentation](https://github.com/louis-heraut/dataverseuR) <https://github.com/louis-heraut/dataverseuR>
-#' - [R example in context](https://github.com/louis-heraut/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R) <https://github.com/louis-heraut/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R>
+#' - [dataverseuR GitHub documentation](https://github.com/lou-heraut/dataverseuR) <https://github.com/lou-heraut/dataverseuR>
+#' - [R example in context](https://github.com/lou-heraut/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R) <https://github.com/lou-heraut/dataverseuR_toolbox/blob/main/Explore2/post_hydrological_projection.R>
 #' - [Native API documentation](https://guides.dataverse.org/en/5.3/api/native-api.html#delete-unpublished-dataset) <https://guides.dataverse.org/en/5.3/api/native-api.html#delete-unpublished-dataset>
 #' @md
 #' @export

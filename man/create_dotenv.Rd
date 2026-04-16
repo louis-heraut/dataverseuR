@@ -38,6 +38,6 @@ dotenv::load_dot_env("path/to/dir/.env-demo")
 }
 \seealso{
 \itemize{
-\item \href{https://github.com/louis-heraut/dataverseuR}{dataverseuR GitHub documentation} \url{https://github.com/louis-heraut/dataverseuR}
+\item \href{https://github.com/lou-heraut/dataverseuR}{dataverseuR GitHub documentation} \url{https://github.com/lou-heraut/dataverseuR}
 }
 }

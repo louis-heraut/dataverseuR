@@ -117,7 +117,7 @@ get_info_dir = function(path) {
 #' @seealso
 #' - [download_datasets_files()] for downloading dataset files
 #' - [ASHE::convert_tibble()] for the underlying conversion function
-#' - [dataverseuR GitHub documentation](https://github.com/louis-heraut/dataverseuR) <https://github.com/louis-heraut/dataverseuR>
+#' - [dataverseuR GitHub documentation](https://github.com/lou-heraut/dataverseuR) <https://github.com/lou-heraut/dataverseuR>
 #' @md
 #' @export
 clean_datasets_files = function(dataset_DOI,
@@ -285,7 +285,7 @@ clean_datasets_files = function(dataset_DOI,
 #' - [download_datasets_files()] for downloading dataset files
 #' - [get_datasets_metadata_call()] for retrieving dataset metadata
 #' - [get_datasets_citation()] for retrieving dataset citations
-#' - [dataverseuR GitHub documentation](https://github.com/louis-heraut/dataverseuR) <https://github.com/louis-heraut/dataverseuR>
+#' - [dataverseuR GitHub documentation](https://github.com/lou-heraut/dataverseuR) <https://github.com/lou-heraut/dataverseuR>
 #' @md
 #' @export
 create_datasets_README = function(dataset_DOI,
@@ -300,7 +300,7 @@ create_datasets_README = function(dataset_DOI,
     
     for (idx in 1:nDatasets) {
         dDOI = dataset_DOI[idx]
-        
+
         sanitized_doi = sanitize_doi(dDOI)
         RDG_datadir = file.path(dirpath, paste0(sanitized_doi, "_cleaned"))
         README_path = file.path(RDG_datadir, "README.txt")
@@ -387,57 +387,57 @@ create_datasets_README = function(dataset_DOI,
         README = gsub("[{]TREE[}]", tree, README)
         
         # Lister les fichiers à documenter
-        Paths = list.files(RDG_datadir, pattern=glob2rx(file_pattern),
-                          full.names=TRUE)
+        # Paths = list.files(RDG_datadir, pattern=glob2rx(file_pattern),
+                           # full.names=TRUE)
+        Paths = list.files(RDG_datadir, full.names=TRUE)
         nPaths = length(Paths)
-        
         if (nPaths == 0) {
-            if (verbose) {
-                message(paste0("No files matching pattern '", file_pattern,
-                              "' found in ", RDG_datadir))
-            }
+            message(paste0("No files matching pattern found in ", RDG_datadir))
         }
-        
+
         data_info = c()
-        
         for (i in 1:nPaths) {
             path = Paths[i]
-            data = ASHE::read_tibble(path)
+
             RDG_FILE_DESCRIPTION = "**complete file description**"
-            
             subsection = paste0("## File ", i)
             n_underscore = max(nchar_line - nchar(subsection) - 1, 0)
             subsection = paste0(subsection, " ",
-                               paste0(rep("_", n_underscore), "",
-                                      collapse=""))
+                                paste0(rep("_", n_underscore), "",
+                                       collapse=""))
             
             filename = paste0("Filename: ", basename(path))
             dir = paste0("Path: ", dirname(path))
-            description = format_yml("Description", RDG_FILE_DESCRIPTION,
-                                    0, nchar_line)
-            
-            column_info_list = paste0(
-                "- displayed_name: ", names(data), "\n",
-                "  long_name: <full \"human readable\" name>\n",
-                "  description:\n",
-                "  type: ", sapply(data, class), "\n",
-                "  unit: <if applicable>\n",
-                "  allowed_values: <list of possible values>"
-            )
-            column_info_list = paste0(column_info_list, collapse="\n\n")
-            column_info = paste0("Column information:\n\n", column_info_list)
-            
-            missing = paste0("Missing data codes: ", "NA")
-            add_info = paste0("Additional information:")
-            
-            content = paste(filename, dir, description, column_info,
-                           missing, add_info, sep="\n\n")
+            description = format_yml("Description",
+                                     RDG_FILE_DESCRIPTION,
+                                     0, nchar_line)
+
+            if (!is.null(file_pattern) && grepl(glob2rx(file_pattern), path)) {
+                data = ASHE::read_tibble(path)
+                column_info_list = paste0(
+                    "- displayed_name: ", names(data), "\n",
+                    "  long_name: <full \"human readable\" name>\n",
+                    "  description:\n",
+                    "  type: ", sapply(data, class), "\n",
+                    "  unit: <if applicable>\n",
+                    "  allowed_values: <list of possible values>"
+                )
+                column_info_list = paste0(column_info_list, collapse="\n\n")
+                column_info = paste0("Column information:\n\n", column_info_list)
+                missing = paste0("Missing data codes: ", "NA")
+                add_info = paste0("Additional information:")
+                content = paste(filename, dir, description, column_info,
+                                missing, add_info, sep="\n\n")
+            } else {
+                add_info = paste0("Additional information:")
+                content = paste(filename, dir, description, add_info, sep="\n\n")
+            }
             
             file_info = paste0(subsection, "\n", content)
             data_info = c(data_info, file_info)
         }
         
-        data_info = paste0(data_info, collapse="\n\n")
+        data_info = paste0(data_info, collapse="\n\n")        
         README = gsub("[{]DATA[}]", data_info, README)
         
         # Écrire le README

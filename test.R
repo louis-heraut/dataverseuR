@@ -166,9 +166,8 @@ if ("get_metrics" %in% to_do) {
 
 if ("generate_README" %in% to_do) {
     
-    dataset_DOI =c("doi:10.57745/TGYZ8L")
-                   # "doi:10.57745/FGAOCD")
-    dirpath = file.path("dev", "dataverse_data_tmp")
+    dataset_DOI =c("doi:10.57745/DP0DQH")
+    dirpath = file.path("dev", "dataverse_data_katarina")
 
 
 devtools::load_all("/home/lheraut/Documents/INRAE/projects/ASHE_project/ASHE")
@@ -177,5 +176,7 @@ devtools::load_all("/home/lheraut/Documents/INRAE/projects/ASHE_project/ASHE")
 
     download_datasets_files(dataset_DOI, dirpath)
     clean_datasets_files(dataset_DOI, dirpath)
-    create_datasets_README(dataset_DOI, dirpath, overwrite=TRUE)
+    create_datasets_README(dataset_DOI, dirpath,
+                           file_pattern=NULL,
+                           overwrite=TRUE)
 }

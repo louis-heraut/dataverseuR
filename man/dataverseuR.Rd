@@ -7,7 +7,7 @@
 A dataverse API wraper to enhance deposit procedure with user-friendly YAML parameterization files.
 }
 \details{
-See \href{https://github.com/louis-heraut/dataverseuR}{dataverseuR GitHub documentation} \url{https://github.com/louis-heraut/dataverseuR} for an easier approach.
+See \href{https://github.com/lou-heraut/dataverseuR}{dataverseuR GitHub documentation} \url{https://github.com/lou-heraut/dataverseuR} for an easier approach.
 }
 \seealso{
 To start :
